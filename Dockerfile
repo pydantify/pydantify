@@ -25,6 +25,7 @@ COPY ./yang2pydantic/ ./yang2pydantic/
 
 # Install dependencies and build project.
 # Copy files to /my_pkgs/ for easier access in the production stage.
+RUN pdm config python.use_venv False
 RUN pdm install --prod --no-lock --no-editable -v && \
     cp -r ./__pypackages__/${VERSION}/lib /my_pkgs/
 
