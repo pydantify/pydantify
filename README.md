@@ -9,12 +9,17 @@
 - [Yang concepts (yangson)](https://yangson.labs.nic.cz/concepts-terms.html)
 
 ## Ecosystem
-- [pyang](https://github.com/mbj4668/pyang)
-- [libyang](https://github.com/CESNET/libyang)
-- [pyangbind](https://github.com/robshakir/pyangbind)
+### Yang
+- [pyang](https://github.com/mbj4668/pyang): yang validator, transformator and code generator
+- [libyang](https://github.com/CESNET/libyang): C-based yang parser
+- [pyangbind](https://github.com/robshakir/pyangbind): extensive pyang plugin capable of generating python code (abandoned?)
 - [ydk-gen](https://github.com/CiscoDevNet/ydk-gen)
-- [yangson](https://github.com/CZ-NIC/yangson)
-- [yang2swagger](https://github.com/bartoszm/yang2swagger)
+- [yangson](https://github.com/CZ-NIC/yangson): python yang parser, editor
+- [yang2swagger](https://github.com/bartoszm/yang2swagger): java cli tool
+- [pyang-pydantic](https://github.com/karlnewell/pyang-pydantic): small, dodgy pyang plugin to generate pydantic files
+### Restconf
+- [pynso-restconf](https://github.com/workfloworchestrator/pynso-restconf)
+- [restconf via requests example](https://github.com/twr14152/Network-Automation-Scripts_Python3/tree/master/restconf)
 
 ## Utility
 - [PDM Package Manager](https://pdm.fming.dev/)
