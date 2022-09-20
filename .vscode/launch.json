@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Make network automation pydantic",
+            "type": "python",
+            "request": "launch",
+            "module": "yang2pydantic",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "__pypackages__/3.10/lib",
+            },
+        }
+    ]
+}

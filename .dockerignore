@@ -1,0 +1,8 @@
+__pycache__
+__pypackages__
+.dockerignore
+.git
+.pdm.toml
+.vscode
+*.pyc
+Dockerfile
