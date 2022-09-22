@@ -1,0 +1,33 @@
+{
+    "openconfig-interfaces:admin-status": "UP",
+    "openconfig-interfaces:counters": {
+        "in-broadcast-pkts": 0,
+        "in-discards": 0,
+        "in-errors": 0,
+        "in-fcs-errors": 0,
+        "in-multicast-pkts": 972,
+        "in-octets": 116602,
+        "in-unicast-pkts": 131,
+        "out-broadcast-pkts": 1,
+        "out-discards": 0,
+        "out-errors": 0,
+        "out-multicast-pkts": 1761,
+        "out-octets": 199997,
+        "out-unicast-pkts": {
+            "value": 122,
+            "type": "int32"
+        }
+    },
+    "openconfig-interfaces:description": "restconf_test",
+    "openconfig-interfaces:enabled": true,
+    "openconfig-platform-port:hardware-port": "Port1",
+    "openconfig-interfaces:ifindex": 1,
+    "arista-intf-augments:inactive": false,
+    "openconfig-interfaces:last-change": 1624966430515012864,
+    "openconfig-interfaces:loopback-mode": false,
+    "openconfig-interfaces:mtu": 0,
+    "openconfig-interfaces:name": "Ethernet1",
+    "openconfig-interfaces:oper-status": "UP",
+    "openconfig-vlan:tpid": "openconfig-vlan-types:TPID_0X8100",
+    "openconfig-interfaces:type": "iana-if-type:ethernetCsmacd"
+}
