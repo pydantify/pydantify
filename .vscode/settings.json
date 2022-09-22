@@ -4,5 +4,21 @@
     ],
     "python.analysis.extraPaths": [
         "__pypackages__/3.10/lib"
+    ],
+    // Remove ignored files from project sidebar
+    "explorer.excludeGitIgnore": true,
+    // Formatting and linting
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modifications",
+    "files.eol": "\n",
+    "files.trimTrailingWhitespace": true,
+    "python.formatting.autopep8Args": [
+        "ignore=501"
+    ],
+    "python.linting.flake8Args": [
+        // Codes:
+        // https://flake8.pycqa.org/en/latest/user/error-codes.html
+        // https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
+        "--ignore=E501"
     ]
 }
