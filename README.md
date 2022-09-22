@@ -17,6 +17,7 @@
 - [yangson](https://github.com/CZ-NIC/yangson): python yang parser, editor
 - [yang2swagger](https://github.com/bartoszm/yang2swagger): java cli tool
 - [pyang-pydantic](https://github.com/karlnewell/pyang-pydantic): small, dodgy pyang plugin to generate pydantic files
+- [jsontopydantic](https://github.com/brokenloop/jsontopydantic): Literally our entire project? Are we missing something?
 ### Restconf
 - [pynso-restconf](https://github.com/workfloworchestrator/pynso-restconf)
 - [restconf via requests example](https://github.com/twr14152/Network-Automation-Scripts_Python3/tree/master/restconf)
