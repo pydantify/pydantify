@@ -8,6 +8,9 @@
 ## Explanations
 - [Yang concepts (yangson)](https://yangson.labs.nic.cz/concepts-terms.html)
 
+## Yang models
+- [YangModels/yang](https://github.com/YangModels/yang): Yang models galore
+
 ## Ecosystem
 ### Yang
 - [pyang](https://github.com/mbj4668/pyang): yang validator, transformator and code generator
