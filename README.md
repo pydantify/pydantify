@@ -7,6 +7,7 @@
 
 ## Explanations
 - [Yang concepts (yangson)](https://yangson.labs.nic.cz/concepts-terms.html)
+- [yang-python training examples](https://github.com/cmoberg/netconf-yang-training)
 
 ## Yang models
 - [YangModels/yang](https://github.com/YangModels/yang): Yang models galore
@@ -23,7 +24,10 @@
 - [jsontopydantic](https://github.com/brokenloop/jsontopydantic): Literally our entire project? Are we missing something?
 ### Restconf
 - [pynso-restconf](https://github.com/workfloworchestrator/pynso-restconf)
-- [restconf via requests example](https://github.com/twr14152/Network-Automation-Scripts_Python3/tree/master/restconf)
+- [restconf via requests example](https://github.com/twr14152/Network-Automation-Scripts_Python3/tree/master/restconf) [yang-python training examples](https://github.com/cmoberg/netconf-yang-training)
+
+### Netconf
+- [ncclient](https://github.com/ncclient/ncclient): python lib to make script interacting with netconf. Used in []()
 
 ## Utility
 - [PDM Package Manager](https://pdm.fming.dev/)
