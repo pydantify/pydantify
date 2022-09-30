@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-from pyang import plugin
-from pyang import util
-from pyang import statements
-
 import json
 
 
@@ -20,7 +16,8 @@ def fetch(address: str, port: int) -> json:
 
 
 def main():
-    pass
+    from .run import run
+    run()
 
 
 if __name__ == "__main__":

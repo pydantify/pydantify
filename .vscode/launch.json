@@ -7,6 +7,12 @@
             "request": "launch",
             "module": "yang2pydantic",
             "console": "integratedTerminal",
+            "args": [
+                "--format=pydantic",
+                "--plugindir=${workspaceFolder}\\yang2pydantic\\plugins",
+                "-V",
+                "${workspaceFolder}/examples/ietf-interfaces.yang"
+            ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
             },
