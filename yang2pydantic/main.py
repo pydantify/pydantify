@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
+from pyang import plugin
+from pyang import util
+from pyang import statements
+
 import json
-from datamodel_code_generator.parser.jsonschema import JsonSchemaParser, Parser
 
 
 def fetch(address: str, port: int) -> json:
@@ -16,26 +19,8 @@ def fetch(address: str, port: int) -> json:
     return result.json()
 
 
-def convert(data: json):
-    from genson import SchemaBuilder
-    builder = SchemaBuilder()
-    builder.add_object(data)
-    schema = builder.to_schema()
-    parser: Parser = JsonSchemaParser(
-        source=json.dumps(schema),
-        base_class="pydantic.BaseModel",
-    )
-    return parser.parse()
-
-
 def main():
-    input = 'input.json'
-    output = f'{__package__}/out.py'
-    with open(input) as f:
-        a = json.load(f)
-        b = convert(a)
-        with open(output, "w+") as fout:
-            fout.write(b)
+    pass
 
 
 if __name__ == "__main__":
