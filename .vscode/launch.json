@@ -10,8 +10,10 @@
             "args": [
                 "--format=pydantic",
                 "--plugindir=${workspaceFolder}\\yang2pydantic\\plugins",
+                "",
                 "-V",
-                "${workspaceFolder}/examples/ietf-interfaces.yang"
+                "${workspaceFolder}/examples/ietf-interfaces.yang",
+                "--output=./out.py"
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",

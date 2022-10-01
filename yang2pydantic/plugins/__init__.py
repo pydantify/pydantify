@@ -1,1 +1,1 @@
-from .pydantic import Yang2Pydantic
+from .pydantic_plugin import Yang2Pydantic

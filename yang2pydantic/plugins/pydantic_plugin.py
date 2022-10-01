@@ -1,10 +1,12 @@
 from io import TextIOWrapper
 from pyang.plugin import PyangPlugin, register_plugin
 from pyang import util
+from pyang.statements import ModSubmodStatement, Statement
 from pyang import statements
 from pyang.context import Context
-from typing import Dict
-
+from typing import Dict, List, Any
+from pydantic import BaseModel, Field
+from pydantic.fields import Undefined
 
 
 def pyang_plugin_init():
@@ -22,20 +24,20 @@ class Yang2Pydantic(PyangPlugin):
         self.multiple_modules = True
         self.handle_comments = True
 
-    def emit(self, ctx: Context, modules, fd: TextIOWrapper):
+    def emit(self, ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
         """Convert yang model."""
         self.__write_imports(fd)
         self.__generate(modules, fd)
 
-    def __generate(self, modules, fd: TextIOWrapper):
+    def __generate(self, modules: List[Statement], fd: TextIOWrapper):
         """Generates and yealds """
         for module in modules:
+            module: Statement
             chs = [ch for ch in module.i_children
                 if ch.keyword in statements.data_definition_keywords]
 
-            if len(chs) > 0:
-                for ch in chs:
-                    fd.write(self.print_container(ch))
+            for ch in chs:
+                fd.write(self.print_container(ch))
 
             mods = [module]
             for m in mods:
@@ -90,7 +92,7 @@ class Yang2Pydantic(PyangPlugin):
 
         match keyword:
             case "leaf":
-                rv += f"    {arg}: \n"
+                rv += f"    {arg}: str\n"
             case "leaf-list":
                 rv += f"    {arg}: List[str]\n"
             case "list":
@@ -105,7 +107,8 @@ class Yang2Pydantic(PyangPlugin):
         return rv
 
     def __write_imports(self, fd: TextIOWrapper):
-        fd.writelines([
+        fd.write("\n".join([
             "from typing import List, Optional, Union",
-            "from pydantic import BaseModel, Field"
-        ])
+            "from pydantic import BaseModel, Field",
+            "\n\n"
+        ]))
