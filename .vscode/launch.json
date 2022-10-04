@@ -11,6 +11,7 @@
                 "--format=pydantic",
                 "--plugindir=${workspaceFolder}\\yang2pydantic\\plugins",
                 "",
+                "--path=${workspaceFolder}/examples/",
                 "-V",
                 "${workspaceFolder}/examples/ietf-interfaces.yang",
                 "--output=./out.py"
