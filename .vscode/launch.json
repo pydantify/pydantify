@@ -9,6 +9,8 @@
             "console": "integratedTerminal",
             "args": [
                 "--format=pydantic",
+                "--keep-comments",
+                "--canonical",
                 "--plugindir=${workspaceFolder}\\yang2pydantic\\plugins",
                 "",
                 "--path=${workspaceFolder}/examples/",
