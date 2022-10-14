@@ -12,11 +12,16 @@
 ## Yang models
 - [YangModels/yang](https://github.com/YangModels/yang): Yang models galore
 
+## Pyang
+- All types listed in `yang_type_specs`
+
 ## Ecosystem
 ### Yang
 - [pyang](https://github.com/mbj4668/pyang): yang validator, transformator and code generator
 - [libyang](https://github.com/CESNET/libyang): C-based yang parser
+    - Only has [C++](https://github.com/CESNET/libyang-cpp/) and [Rust](https://github.com/rwestphal/yang2-rs/) bindings, but could become an option with some effort.
 - [pyangbind](https://github.com/robshakir/pyangbind): extensive pyang plugin capable of generating python code (abandoned?)
+    - Does its own parsing, storing and generating of YANG models. Possible starting off point if we don't find a library that does it for us.
 - [ydk-gen](https://github.com/CiscoDevNet/ydk-gen)
 - [yangson](https://github.com/CZ-NIC/yangson): python yang parser, editor
 - [yang2swagger](https://github.com/bartoszm/yang2swagger): java cli tool
