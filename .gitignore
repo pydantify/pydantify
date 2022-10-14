@@ -3,3 +3,6 @@ __pypackages__
 .pdm.toml
 *.pyc
 dist
+out.py
+*.jsonschema
+*.png
