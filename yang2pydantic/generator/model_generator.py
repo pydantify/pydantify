@@ -3,6 +3,9 @@ from pyang.statements import ModSubmodStatement, Statement
 from pyang import statements
 from pyang.context import Context
 from typing import Dict, List
+from ..models.models import PyangModule
+from datamodel_code_generator import generate
+from pathlib import Path
 
 
 class ModelGenerator:
@@ -16,20 +19,11 @@ class ModelGenerator:
     def __generate(modules: List[Statement], fd: TextIOWrapper):
         """Generates and yealds """
         for module in modules:
-            module: Statement
-            children = [ch for ch in module.i_children if ch.keyword in statements.data_definition_keywords]
-            for ch in children:
-                fd.write(ModelGenerator.print_container(ch))
-
-            mods = [module]
-            for m in mods:
-                for augment in m.search('augment'):
-                    if hasattr(augment, 'i_children'):
-                        children = [ch for ch in augment.i_children if ch.keyword in statements.data_definition_keywords]
-
-                        if len(children) > 0:
-                            for ch in children:
-                                fd.write(ModelGenerator.print_container(ch))
+            module: ModSubmodStatement
+            a = PyangModule(module)
+            json = a.to_pydantic_class().schema_json()
+            generate(json, output=Path('./out.py'))
+            pass
 
     @staticmethod
     def print_container(node: statements.Statement):
