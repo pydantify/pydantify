@@ -563,6 +563,9 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
             raise
         if tmpfile is not None:
             fd.close()
+            from pathlib import Path
+            if (Path(o.outfile).exists()):
+                os.remove(o.outfile)
             os.rename(tmpfile, o.outfile)
 
     sys.exit(exit_code)
