@@ -11,13 +11,11 @@ from pathlib import Path
 class ModelGenerator:
     @staticmethod
     def generate(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
-        ModelGenerator.__write_imports(fd)
-        fd.write("class UnknownType(str):\n    pass\n\n\n")
         ModelGenerator.__generate(modules, fd)
 
     @staticmethod
     def __generate(modules: List[Statement], fd: TextIOWrapper):
-        """Generates and yealds """
+        """Generates and yealds"""
         for module in modules:
             module: ModSubmodStatement
             json = PyangModule(module).to_pydantic_schema()
@@ -81,10 +79,3 @@ class ModelGenerator:
                 rv += f"{chs}"
                 rv += "]\n"
         return rv
-
-    def __write_imports(fd: TextIOWrapper):
-        fd.write("\n".join([
-            "from typing import List, Optional, Union",
-            "from pydantic import BaseModel, Field",
-            "\n\n"
-        ]))
