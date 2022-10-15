@@ -4,7 +4,7 @@ from pyang import statements
 from pyang.context import Context
 from typing import Dict, List
 from ..models.models import PyangModule
-from datamodel_code_generator import generate
+from datamodel_code_generator import generate, InputFileType
 from pathlib import Path
 
 
@@ -20,9 +20,8 @@ class ModelGenerator:
         """Generates and yealds """
         for module in modules:
             module: ModSubmodStatement
-            a = PyangModule(module)
-            json = a.to_pydantic_class().schema_json()
-            generate(json, output=Path('./out.py'))
+            json = PyangModule(module).to_pydantic_schema()
+            generate(json, snake_case_field=True, input_file_type=InputFileType.JsonSchema, output=Path('./out2.py'))
             pass
 
     @staticmethod

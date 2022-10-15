@@ -38,13 +38,11 @@ class PyangStatement:
         self.arg = stm.arg
         assert self.keyword == self.raw_keyword
 
-    def to_pydantic_class(self) -> Type[BaseModel]:
+    def to_pydantic_schema(self) -> Type[BaseModel]:
         return create_model(
             self.arg,
             __base__=BaseModel,
-            **{
-                stm.arg: stm.to_pydantic_field() for stm in self.substmts if hasattr(stm, 'arg')
-            }
+            **{}
         )
 
     def to_pydantic_field(self) -> Field:
@@ -161,3 +159,20 @@ class PyangModule(PyangStatement):
         self.undefined_augment_nodes = module.i_undefined_augment_nodes
         self.is_primary_module: bool = module.i_is_primary_module
         self.latest_revision: str = module.i_latest_revision
+
+    def to_pydantic_schema(self) -> json:
+        z = Annotated[str, Field(default="test", title="version")]
+        k = ModelField(name="test", type_=z, default="123",required=False, class_validators={}, model_config=FieldConfig, )
+        a = create_model(
+            f"{self.arg}Module",
+            __config__= FieldConfig,
+            **{
+                k.name: (k.type_, k.default)
+            },
+        )
+        b = a.schema_json()
+        return b
+
+
+class FieldConfig(BaseConfig):
+    arbitrary_types_allowed=True
