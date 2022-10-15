@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from abc import abstractmethod
 from typing import Any, Dict, List, Tuple, Type
 
 from pyang.context import Context
@@ -9,8 +8,10 @@ from pyang.statements import (ContainerStatement, LeafLeaflistStatement,
                               ModSubmodStatement, Statement, TypedefStatement,
                               TypeStatement)
 from pyang.types import TypeSpec
-from pydantic import BaseConfig, BaseModel, create_model
-from pydantic.fields import ModelField
+from pydantic import BaseConfig, BaseModel, create_model, Field
+from pydantic.config import Extra
+from pydantic.fields import ModelField, Undefined
+from pydantic.types import conint, constr
 
 # https://network.developer.nokia.com/sr/learn/yang/understanding-yang/
 # https://www.rfc-editor.org/rfc/rfc6020#section-7
@@ -20,7 +21,7 @@ class NotImplementedException(Exception):
     pass
 
 
-class PyangStatement:
+class PyangStatement(BaseModel):
     def __init__(
         self,
         stm: Statement,
@@ -30,6 +31,7 @@ class PyangStatement:
     ) -> None:
         assert isinstance(stm, Statement)
         # Print where the current data is coming from ASAP
+        super().__init__()
         self._raw_statement: Statement = stm
         self.keyword = stm.keyword
         self.pos = stm.pos
@@ -40,22 +42,22 @@ class PyangStatement:
         self.substmts = PyangStatement.extract_statement_list(stm, 'substmts') if resolve_substatements else []
 
         self.comments = " ".join((c.arg.lstrip('/ \n') for c in (stm.search('_comment'))))
-        self.arg = stm.arg
+        self.arg: str = stm.arg
         self.top = stm.top
         self.parent = stm.parent
         self.raw_keyword = stm.raw_keyword
         self.ext_mod = stm.ext_mod
         assert self.keyword == self.raw_keyword
 
-    def to_pydantic_schema(self) -> Type[BaseModel]:
-        return create_model(
-            self.arg,
-            __base__=BaseModel,
-            **{}
-        )
+    class Config:
+        arbitrary_types_allowed = True
+        extra = Extra.allow
 
-    def to_pydantic_field(self) -> Field:
-        return Undefined
+    def to_pydantic_schema(self) -> Type[BaseModel]:
+        return create_model(self.arg, __base__=BaseModel, **{})
+
+    def to_pydantic_field(self) -> Any:
+        pass
 
     @staticmethod
     def extract_statement_list(statement: Statement, attr_name: str) -> List[PyangStatement]:
@@ -156,7 +158,7 @@ class FieldConfig(BaseConfig):
 
 class PyangModule(PyangStatement):
     class Serializable(BaseModel):
-        version: str
+        version: conint(le=1, ge=1)  # Only PYANG RFC 6020 supported for now.
         prefix: str
         # identities: Dict[str, Statement] = {}
         latest_revision: str | None = None
@@ -197,10 +199,17 @@ class PyangModule(PyangStatement):
         )
 
     def to_pydantic_schema(self) -> str:
-        fields_ = self.serializable.__fields__
-        fields: Dict[str, Tuple[Type, Any]] = {
-            name: (fields_[name].type_, getattr(self.serializable, name, None))
-            for name in fields_.keys()
+        class Test(BaseModel):
+            also_id: constr(min_length=1, regex='.*')
+            id: str = Field(description="This is a description", min_length=1, regex='.*')
+            val: conint(gt=2, lt=5)
+
+        t = Test(id="asdf", also_id="cool", val=4)
+        t = Test
+
+        fields_ = t.__fields__
+        fields: Dict[str, Tuple[type, Any]] = {
+            name: (fields_[name].type_, getattr(t, name, Undefined)) for name in fields_.keys()
         }
         a = create_model(f"{self.arg}Module", __config__=FieldConfig, **fields)
         b = a.schema()
