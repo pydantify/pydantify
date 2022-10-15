@@ -53,9 +53,7 @@ class PyangStatement:
     @staticmethod
     def extract_statement_list(statement: Statement, attr_name: str) -> List[PyangStatement]:
         rv = getattr(statement, attr_name, [])
-        if rv:
-            rv = [PyangStatementFactory.generate(ch) for ch in rv]
-        return rv
+        return [ch for ch in map(PyangStatementFactory.generate, rv) if ch is not None]
 
 
 class GenericStatement(PyangStatement):
