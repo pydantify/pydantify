@@ -1,16 +1,20 @@
 from __future__ import annotations
 
-import json
 from typing import Any, Dict, List, Tuple, Type
 
 from pyang.context import Context
-from pyang.statements import (ContainerStatement, LeafLeaflistStatement,
-                              ModSubmodStatement, Statement, TypedefStatement,
-                              TypeStatement)
+from pyang.statements import (
+    ContainerStatement,
+    LeafLeaflistStatement,
+    ModSubmodStatement,
+    Statement,
+    TypedefStatement,
+    TypeStatement,
+)
 from pyang.types import TypeSpec
-from pydantic import BaseConfig, BaseModel, create_model, Field
+from pydantic import BaseConfig, BaseModel, create_model
 from pydantic.config import Extra
-from pydantic.fields import ModelField, Undefined
+from pydantic.fields import ModelField
 from pydantic.types import conint, constr
 
 # https://network.developer.nokia.com/sr/learn/yang/understanding-yang/
@@ -89,6 +93,7 @@ class PyangStatementFactory:
         def _register(type: type):
             for keyword in keywords:
                 cls._implemented_mappings[keyword] = cls.ClassMapping(maps_to=type, is_container=is_container)
+
         return _register
 
     @classmethod
@@ -158,14 +163,10 @@ class FieldConfig(BaseConfig):
 
 class PyangModule(PyangStatement):
     class Serializable(BaseModel):
-        version: conint(le=1, ge=1)  # Only PYANG RFC 6020 supported for now.
-        prefix: str
+        version: constr(regex='^1$')  # Only PYANG RFC 6020 supported for now.
+        prefix: constr(min_length=1)
+        latest_revision: str | None
         # identities: Dict[str, Statement] = {}
-        latest_revision: str | None = None
-        children: List[PyangStatement] = []
-
-        class Config(FieldConfig):
-            pass
 
     def __init__(self, module: ModSubmodStatement) -> None:
         assert isinstance(module, ModSubmodStatement)
@@ -199,18 +200,14 @@ class PyangModule(PyangStatement):
         )
 
     def to_pydantic_schema(self) -> str:
-        class Test(BaseModel):
-            also_id: constr(min_length=1, regex='.*')
-            id: str = Field(description="This is a description", min_length=1, regex='.*')
-            val: conint(gt=2, lt=5)
-
-        t = Test(id="asdf", also_id="cool", val=4)
-        t = Test
-
-        fields_ = t.__fields__
-        fields: Dict[str, Tuple[type, Any]] = {
-            name: (fields_[name].type_, getattr(t, name, Undefined)) for name in fields_.keys()
-        }
+        fields_ = self.serializable.__fields__
+        fields: Dict[str, Tuple[type, Any]] = dict()  # name : (type, default_value)
+        for name in fields_.keys():
+            if self.serializable.__class__.__fields__[name].required:
+                fields[name] = (fields_[name].type_, ...)
+            else:
+                val = self.serializable.__class__.__fields__[name].get_default()
+                fields[name] = (fields_[name].type_, val)
         a = create_model(f"{self.arg}Module", __config__=FieldConfig, **fields)
-        b = a.schema()
-        return json.dumps(b)
+        b = a.schema_json()
+        return b
