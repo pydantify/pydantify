@@ -11,11 +11,10 @@
                 "--format=pydantic",
                 "--keep-comments",
                 "--canonical",
-                "--plugindir=${workspaceFolder}\\yang2pydantic\\plugins",
-                "",
-                "--path=${workspaceFolder}/examples/",
+                "--plugindir=${workspaceFolder}/yang2pydantic/plugins",
+                "--path=${workspaceFolder}/examples/minimal/",
                 "-V",
-                "${workspaceFolder}/examples/ietf-interfaces.yang",
+                "${workspaceFolder}/examples/minimal/interfaces.yang",
                 "--output=./out.py"
             ],
             "env": {
