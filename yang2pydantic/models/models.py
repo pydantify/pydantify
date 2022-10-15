@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Tuple, Type
 from pyang import statements
 from pyang.context import Context
-from pyang.statements import LeafLeaflistStatement, ModSubmodStatement, Statement, ContainerStatement, ListStatement, Statement, TypeStatement
+from pyang.statements import LeafLeaflistStatement, ModSubmodStatement, Statement, ContainerStatement, ListStatement, Statement, TypeStatement, TypedefStatement
 from pyang.types import TypeSpec
 from pydantic import BaseModel, Field, create_model
 from pydantic.fields import Undefined
@@ -86,7 +86,6 @@ class PyangStatementFactory:
     def generate(cls, stm: Statement) -> PyangStatement:
         assert isinstance(stm, Statement)
         if stm.keyword not in cls._implemented_mappings.keys():
-            return None
             cls.register_statement_class([stm.keyword])(GenericStatement)
             print(f'"{stm.keyword}" has not yet been implemented as a type.')
         a = cls._implemented_mappings[stm.keyword](stm)
@@ -100,6 +99,15 @@ class PyangType(PyangStatement):
         assert isinstance(stm, TypeStatement)
         super().__init__(stm)
         self.type_spec: TypeSpec = stm.i_type_spec
+        pass
+
+
+@PyangStatementFactory.register_statement_class(['typedef'])
+class PyangTypedef(PyangStatement):
+    def __init__(self, stm: TypedefStatement) -> None:
+        # Can contain:  default, description, reference, status, type, units
+        assert isinstance(stm, TypedefStatement)
+        super().__init__(stm)
         pass
 
 
