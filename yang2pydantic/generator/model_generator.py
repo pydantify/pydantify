@@ -9,10 +9,17 @@ from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 from pathlib import Path
 
 
+# Helper function
+def dynamically_serialized_helper_function():
+    if 6 > 5:
+        print("This is working.")
+
+
 class ModelGenerator:
     @staticmethod
     def generate(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
         ModelGenerator.__generate(modules, fd)
+        fd.write(__class__.__function_to_source_code(dynamically_serialized_helper_function))
 
     @staticmethod
     def __generate(modules: List[Statement], fd: TextIOWrapper):
@@ -24,3 +31,11 @@ class ModelGenerator:
             result = parser.parse()
             fd.write(result)
             pass
+
+    @staticmethod
+    def __function_to_source_code(f: Callable):
+        import inspect
+
+        src = '\n\n'
+        src += inspect.getsource(f)
+        return src
