@@ -2,6 +2,8 @@ from io import TextIOWrapper
 from pyang.statements import ModSubmodStatement, Statement
 from pyang import statements
 from pyang.context import Context
+from typing import Callable, Dict, List
+
 from semver import parse
 from ..models.models import PyangModule
 from datamodel_code_generator import generate, InputFileType
@@ -27,7 +29,16 @@ class ModelGenerator:
         for module in modules:
             module: ModSubmodStatement
             json = PyangModule(module).to_pydantic_schema()
-            parser = JsonSchemaParser(json, snake_case_field=True)
+            parser = JsonSchemaParser(
+                json,
+                snake_case_field=True,
+                apply_default_values_for_required_fields=True,
+                use_annotated=True,
+                field_constraints=True,
+                use_schema_description=True,
+                reuse_model=True,
+                strict_nullable=True,
+            )
             result = parser.parse()
             fd.write(result)
             pass
