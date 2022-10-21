@@ -10,9 +10,14 @@
     // Formatting and linting
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modifications",
+    "python.formatting.provider": "black",
     "files.insertFinalNewline": true,
     "files.eol": "\n",
     "files.trimTrailingWhitespace": true,
+    "python.formatting.blackArgs": [
+        "--skip-string-normalization",
+        "--line-length=120",
+    ],
     "python.formatting.autopep8Args": [
         "ignore=501"
     ],

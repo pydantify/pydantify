@@ -33,6 +33,7 @@ Repository = "https://gitlab.ost.ch/pydantic-sa/yang2pydantic"
 [tool.pdm.dev-dependencies]
 dev = [
     "autopep8>=1.7.0",
+    "black>=22.10.0",
 ]
 
 [build-system]
