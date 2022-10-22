@@ -1,8 +1,11 @@
 from __future__ import annotations
+from abc import ABC, abstractclassmethod, abstractmethod
+from dataclasses import InitVar
 from operator import truediv
 from sre_parse import State
 
 from typing import Annotated, Any, Dict, List, Optional, Tuple, Type
+from typing_extensions import Self
 
 from pyang.context import Context
 from pyang.statements import (
@@ -30,36 +33,29 @@ class NotImplementedException(Exception):
 
 class PyangStatement(BaseModel):
 
-    _raw_statement: Annotated[Statement, Field(exclude=True)]
-    arg: Annotated[str, Field(exclude=True)] = ''
-    children: Annotated[List[PyangStatement|Type[PyangStatement]], Field(exclude=True)] = []
+    arg: Annotated[str, Field(exclude=True)] = None
+    keyword: Annotated[str, Field(exclude=True)] = None
+    children: Annotated[List[PyangStatement | Type[PyangStatement]], Field(exclude=True)] = None
+    raw_statement: Annotated[Type[Statement], Field(exclude=True)] = None
 
-    def __init__(
-        self,
-        stm: Statement,
-        *,
-        resolve_substatements: bool = False,
-        resolve_children: bool = False,
-    ) -> None:
-        assert isinstance(stm, Statement)
-        # Print where the current data is coming from ASAP
-        print(f'Creating "{stm.keyword}" read from "{stm.pos.ref}:{stm.pos.line}"')
-        children=PyangStatement.extract_statement_list(stm, 'i_children') if resolve_children else []
-        super().__init__(
-            arg=stm.arg,
-            _raw_statement=stm,
-            children=children,
-        )
-        # self.pos: Annotated[Any, Field(exclude=True)] = stm.pos
-        # print(f'Creating "{self.keyword}" read from "{self.pos.ref}:{self.pos.line}"')
+    def __init__(self, stm: Statement):
+        super().__init__()
+        self.children = __class__._extract_children(stm)
+        self.arg = stm.arg
+        self.keyword = stm.keyword
+        self.raw_statement = stm
         # Load the rest of the values
         # self.substmts: Annotated[PyangStatement, Field(exclude=True)] = PyangStatement.extract_statement_list(stm, 'substmts') if resolve_substatements else []
         # self.typedefs: Annotated[Dict[str, TypedefStatement], Field(exclude=True)] = stm.i_typedefs
         # self.comments = " ".join((c.arg.lstrip('/ \n') for c in (stm.search('_comment'))))
 
-    class Config:
+    class Config(BaseConfig):
         arbitrary_types_allowed = True
         # extra = Extra.allow
+
+    @staticmethod
+    def _extract_children(stm: Statement):
+        return __class__.extract_statement_list(stm, 'i_children')
 
     def to_pydantic_schema(self) -> Type[BaseModel]:
         return create_model(self.arg, __base__=BaseModel, **{})
@@ -142,10 +138,10 @@ class PyangTypedef(PyangStatement):
 class PyangLeaf(PyangStatement):
     def __init__(self, stm: LeafLeaflistStatement) -> None:
         super().__init__(stm)
-        a = stm.search_one(keyword='type')
-        self.description: str = "\n".join((d.arg for d in stm.search(keyword='description')))
-        self.substmts
-        print(self.comments)
+        #a = stm.search_one(keyword='type')
+        # self.description: str = "\n".join((d.arg for d in stm.search(keyword='description')))
+        # self.substmts
+        # print(self.comments)
         pass
 
 
@@ -175,13 +171,13 @@ class FieldConfig(BaseConfig):
 
 
 class PyangModule(PyangStatement):
-    #typedefs: Annotated[Dict[str, TypedefStatement], Field(exclude=True)] = {}
+    # typedefs: Annotated[Dict[str, TypedefStatement], Field(exclude=True)] = {}
     version: constr(regex='^1$') = '1'  # Only PYANG RFC 6020 supported for now.
     latest_revision: str = ''
 
     def __init__(self, module: ModSubmodStatement) -> None:
         assert isinstance(module, ModSubmodStatement)
-        super().__init__(module, resolve_children=True, resolve_substatements=True)
+        super().__init__(module)
         # self.prefixes: Dict[str, Tuple[str, Any]] = module.i_prefixes
         # self.unused_prefixes = module.i_unused_prefixes
         # self.missing_prefixes = module.i_missing_prefixes
@@ -192,7 +188,7 @@ class PyangModule(PyangStatement):
         # self.ctx: Context = module.i_ctx
         # self.undefined_augment_nodes = module.i_undefined_augment_nodes
         # self.is_primary_module: bool = module.i_is_primary_module
-        #self.typedefs = module.i_typedefs
+        # self.typedefs = module.i_typedefs
         self.version: constr(regex='^1$') = module.i_version  # Only PYANG RFC 6020 supported for now.
         self.latest_revision: str | None
 
@@ -207,7 +203,7 @@ class PyangModule(PyangStatement):
         )
 
     def to_pydantic_schema(self) -> str:
-        fields_ = self.__fields__  # .serializable.__fields__
+        fields_ = {k: v for k, v in self.__fields__.items() if k not in self.__exclude_fields__.keys()}
         fields: Dict[str, Tuple[type, Any]] = dict()  # name : (type, default_value)
         for name in fields_.keys():
             default = self.__class__.__fields__[name].get_default()
