@@ -7,3 +7,4 @@ out.py
 *.jsonschema
 *.png
 *.tmp
+examples/cisco
