@@ -38,6 +38,7 @@ class InterfacesModule(BaseModel):
 
 
 # Demonstration purposes only. Not included in actual output.
+# To run: pdm run python examples/minimal/sample_output.py
 if __name__ == "__main__":
     from pathlib import Path
 
