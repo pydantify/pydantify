@@ -1,11 +1,12 @@
 module interfaces {
-  // A simple module to validate comments,
-  // typedefs, and pattern validators.
-  // Source: https://ultraconfig.com.au/blog/learn-yang-full-tutorial-for-beginners/
   namespace
   "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
 
   prefix if;
+
+  description 'A simple module to validate comments,'
+    + ' typedefs, and pattern validators.'
+    + ' Source: https://ultraconfig.com.au/blog/learn-yang-full-tutorial-for-beginners/';
 
   typedef dotted-quad {
     // Simple typedef with string pattern validator
@@ -21,8 +22,8 @@ module interfaces {
 
   container interfaces {
     list interface {
-      // Regular IPv4 address with subnet
       key "name";
+      description "Regular IPv4 address with subnet";
       leaf name {
         type string;
         mandatory "true";
