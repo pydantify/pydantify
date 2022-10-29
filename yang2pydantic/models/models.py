@@ -157,6 +157,7 @@ class LeafNode(Node):
         return FieldInfo(**args)
 
 
+@NodeFactory.register_statement_class(['module'])
 class ModuleNode(Node):
     def __init__(self, module: ModSubmodStatement) -> None:
         assert isinstance(module, ModSubmodStatement)

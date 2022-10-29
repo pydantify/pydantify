@@ -1,14 +1,10 @@
 from io import TextIOWrapper
 from pyang.statements import ModSubmodStatement, Statement
-from pyang import statements
 from pyang.context import Context
-from typing import Callable, Dict, List
+from typing import Callable, List
 
-from semver import parse
-from ..models.models import ModuleNode
-from datamodel_code_generator import generate, InputFileType
+from ..models.models import NodeFactory
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
-from pathlib import Path
 
 
 # Helper function
@@ -28,7 +24,7 @@ class ModelGenerator:
         """Generates and yealds"""
         for module in modules:
             module: ModSubmodStatement
-            mod = ModuleNode(module)
+            mod = NodeFactory.generate(module)
             json = mod.to_pydantic_model().schema_json()
             parser = JsonSchemaParser(
                 json,
