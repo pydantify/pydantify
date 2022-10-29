@@ -5,7 +5,7 @@ from pyang.context import Context
 from typing import Callable, Dict, List
 
 from semver import parse
-from ..models.models import PyangModule
+from ..models.models import ModuleNode
 from datamodel_code_generator import generate, InputFileType
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 from pathlib import Path
@@ -20,7 +20,7 @@ def dynamically_serialized_helper_function():
 class ModelGenerator:
     @staticmethod
     def generate(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
-        ModelGenerator.__generate(modules, fd)
+        __class__.__generate(modules, fd)
         fd.write(__class__.__function_to_source_code(dynamically_serialized_helper_function))
 
     @staticmethod
@@ -28,7 +28,8 @@ class ModelGenerator:
         """Generates and yealds"""
         for module in modules:
             module: ModSubmodStatement
-            json = PyangModule(module).to_pydantic_schema()
+            mod = ModuleNode(module)
+            json = mod.to_pydantic_model().schema_json()
             parser = JsonSchemaParser(
                 json,
                 snake_case_field=True,

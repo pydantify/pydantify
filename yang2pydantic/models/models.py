@@ -1,27 +1,25 @@
 from __future__ import annotations
-from abc import ABC, abstractclassmethod, abstractmethod
-from dataclasses import InitVar
-from operator import truediv
-from sre_parse import State
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
-from typing import Annotated, Any, Dict, List, Optional, Tuple, Type
-from typing_extensions import Self
+from typing import Annotated, Any, Dict, List, Tuple, Type
 
-from pyang.context import Context
+
 from pyang.statements import (
-    ContainerStatement,
     LeafLeaflistStatement,
     ModSubmodStatement,
     Statement,
-    TypedefStatement,
-    TypeStatement,
 )
-from pyang.types import TypeSpec
-from pydantic import BaseConfig, BaseModel, create_model
-from pydantic.class_validators import validator
-from pydantic.config import Extra
-from pydantic.fields import Field, ModelField
-from pydantic.types import conint, constr
+from pydantic import BaseConfig, BaseModel as PydanticBaseModel, create_model
+from pydantic.fields import FieldInfo, ModelField
+from pydantic.types import constr
+
+
+class BaseModel(PydanticBaseModel):
+    class Config:
+        # arbitrary_types_allowed = True
+        pass
+
 
 # https://network.developer.nokia.com/sr/learn/yang/understanding-yang/
 # https://www.rfc-editor.org/rfc/rfc6020#section-7
@@ -31,184 +29,141 @@ class NotImplementedException(Exception):
     pass
 
 
-class PyangStatement(BaseModel):
+@dataclass
+class GeneratedClass:
+    """Holds information about dynamically generated output plasses."""
 
-    arg: Annotated[str, Field(exclude=True)] = None
-    keyword: Annotated[str, Field(exclude=True)] = None
-    children: Annotated[List[PyangStatement | Type[PyangStatement]], Field(exclude=True)] = None
-    raw_statement: Annotated[Type[Statement], Field(exclude=True)] = None
+    class_name: str
+    cls: type
+    field_info: FieldInfo
 
+
+class Node(ABC):
     def __init__(self, stm: Statement):
-        super().__init__()
-        self.children = __class__._extract_children(stm)
-        self.arg = stm.arg
-        self.keyword = stm.keyword
-        self.raw_statement = stm
-        # Load the rest of the values
-        # self.substmts: Annotated[PyangStatement, Field(exclude=True)] = PyangStatement.extract_statement_list(stm, 'substmts') if resolve_substatements else []
-        # self.typedefs: Annotated[Dict[str, TypedefStatement], Field(exclude=True)] = stm.i_typedefs
-        # self.comments = " ".join((c.arg.lstrip('/ \n') for c in (stm.search('_comment'))))
+        self.children: List[Type[Node]] = __class__.extract_statement_list(stm, 'i_children')
+        self.arg: str = stm.arg
+        self.keyword: str = stm.keyword
+        self.raw_statement: Type[Statement] = stm
+        self.substmts: List[Type[Statement]] = stm.substmts
+        self.comments: str | None = __class__.__extract_comments(stm)
+        self.description: str | None = __class__.__extract_description(stm)
+        self.default = getattr(self.raw_statement, "i_default", None)
 
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
-        # extra = Extra.allow
+        self.__output_class: GeneratedClass = None
 
-    @staticmethod
-    def _extract_children(stm: Statement):
-        return __class__.extract_statement_list(stm, 'i_children')
-
-    def to_pydantic_schema(self) -> Type[BaseModel]:
-        return create_model(self.arg, __base__=BaseModel, **{})
-
-    def to_pydantic_field(self) -> Any:
+    @abstractmethod
+    def get_output_class_name(self) -> str:
+        """Returns the name of the output class."""
         pass
 
+    def get_base_class(self) -> type:
+        """Returns the class the output class should be derived from. Defaults to BaseModel."""
+        return BaseModel
+
+    @property
+    def output_class(self) -> GeneratedClass:
+        """Generates or fetches all the data necessary to integrate the node in the output model."""
+        if self.__output_class is None:
+            self.__output_class = GeneratedClass(
+                class_name=self.get_output_class_name(),
+                cls=self.to_pydantic_model(),
+                field_info=self.to_pydantic_field(),
+            )
+        return self.__output_class
+
     @staticmethod
-    def extract_statement_list(statement: Statement, attr_name: str) -> List[PyangStatement]:
+    def __extract_comments(stm: Statement) -> str | None:
+        """Gathers and returns all comments located in the node's root, if present."""
+        comments = stm.search('_comment')
+        if comments:
+            return " ".join((c.arg.lstrip('/ \n') for c in comments))
+        return None
+
+    @staticmethod
+    def __extract_description(stm: Statement) -> str | None:
+        """Returns the content of the "description" field, if present."""
+        description = stm.search_one('description')
+        return description.arg if description is not None else None
+
+    def to_pydantic_model(self) -> Type[BaseModel]:
+        """Generates the output class representing this node."""
+        fields: Dict[str, Any] = self._children_to_fields()
+        a = create_model(self.get_output_class_name(), __base__=self.get_base_class(), **fields)
+        a.__doc__ = self.description
+        return a
+
+    @abstractmethod
+    def to_pydantic_field(self) -> FieldInfo:
+        pass
+
+    def _children_to_fields(self) -> Dict[str, Tuple[Any]]:
+        return {ch.arg: (ch.output_class.cls, ch.output_class.field_info) for ch in self.children}
+
+    @staticmethod
+    def extract_statement_list(statement: Statement, attr_name: str) -> List[Node]:
         rv = getattr(statement, attr_name, [])
-        return [ch for ch in map(PyangStatementFactory.generate, rv) if ch is not None]
+        return [ch for ch in map(NodeFactory.generate, rv) if ch is not None]
 
 
-class GenericStatement(PyangStatement):
-    def __init__(self, stm: Statement) -> None:
-        super().__init__(stm)
-
-
-class PyangStatementFactory:
+class NodeFactory:
     # src: statements.data_definition_keywords
-    class ClassMapping(BaseModel):
-        is_container: bool = False
+    @dataclass
+    class ClassMapping:
         maps_to: type
 
         def __call__(self, *args: Any, **kwds: Any) -> Any:
             return self.maps_to(*args, **kwds)
 
-    known_types: Dict[str, Type[PyangStatement]] = dict()
+    known_types: Dict[str, Type[Node]] = dict()
     _implemented_mappings: Dict[str, ClassMapping] = {}
 
     @classmethod
-    def register_statement_class(cls, keywords: List[str], is_container: bool = False):
+    def register_statement_class(cls, keywords: List[str]):
         for keyword in keywords:
             assert keyword not in cls._implemented_mappings.keys()
 
         def _register(type: type):
             for keyword in keywords:
-                cls._implemented_mappings[keyword] = cls.ClassMapping(maps_to=type, is_container=is_container)
+                cls._implemented_mappings[keyword] = cls.ClassMapping(maps_to=type)
 
         return _register
 
     @classmethod
-    def generate(cls, stm: Statement) -> PyangStatement:
+    def generate(cls, stm: Statement) -> Node:
         assert isinstance(stm, Statement)
         if stm.keyword not in cls._implemented_mappings.keys():
-            cls.register_statement_class([stm.keyword])(GenericStatement)
-            print(f'"{stm.keyword}" has not yet been implemented as a type.')
+            raise Exception(f'"{stm.keyword}" has not yet been implemented as a type.')
         mapping = cls._implemented_mappings[stm.keyword]
         a = mapping.maps_to(stm)
         return a
 
-    @staticmethod
-    def register_type_definition(type_name: str, type: PyangType):
-        if __class__.known_types.get(type_name, None) is None:
-            __class__.known_types[type_name] = type
-        else:
-            raise Exception(f"Type already registered. Possible duplicate type name: '{type_name}'")
 
-
-@PyangStatementFactory.register_statement_class(['type'])
-class PyangType(PyangStatement):
-    def __init__(self, stm: TypeStatement) -> None:
-        # Can contain: description, type, default, referencem status, units
-        assert isinstance(stm, TypeStatement)
-        super().__init__(stm)
-        self.type_spec: TypeSpec = stm.i_type_spec
-        pass
-
-
-@PyangStatementFactory.register_statement_class(['typedef'])
-class PyangTypedef(PyangStatement):
-    def __init__(self, stm: TypedefStatement) -> None:
-        # Can contain:  default, description, reference, status, type, units
-        assert isinstance(stm, TypedefStatement)
-        super().__init__(stm)
-        pass
-
-
-@PyangStatementFactory.register_statement_class(['leaf'])
-class PyangLeaf(PyangStatement):
+@NodeFactory.register_statement_class(['leaf'])
+class LeafNode(Node):
     def __init__(self, stm: LeafLeaflistStatement) -> None:
         super().__init__(stm)
-        #a = stm.search_one(keyword='type')
-        # self.description: str = "\n".join((d.arg for d in stm.search(keyword='description')))
-        # self.substmts
-        # print(self.comments)
         pass
 
+    def get_output_class_name(self) -> str:
+        return f'{self.arg}Node'
 
-@PyangStatementFactory.register_statement_class(['container'], is_container=True)
-class PyangContainer(PyangStatement):
-    def __init__(self, stm: ContainerStatement) -> None:
-        super().__init__(stm)
-        pass
+    def get_base_class(self) -> type:
+        return constr()  # TODO: different base class based on encountered type.
 
-
-@PyangStatementFactory.register_statement_class(['list'], is_container=True)
-class PyangList(PyangStatement):
-    def __init__(self, stm: Statement) -> None:
-        super().__init__(stm)
-        pass
+    def to_pydantic_field(self) -> FieldInfo:
+        args = {}
+        if self.default is not None:
+            args['default'] = self.default
+        return FieldInfo(**args)
 
 
-@PyangStatementFactory.register_statement_class(['leaf-list'])
-class PyangLeafList(PyangStatement):
-    def __init__(self, stm: Statement) -> None:
-        super().__init__(stm)
-        pass
-
-
-class FieldConfig(BaseConfig):
-    arbitrary_types_allowed = True
-
-
-class PyangModule(PyangStatement):
-    # typedefs: Annotated[Dict[str, TypedefStatement], Field(exclude=True)] = {}
-    version: constr(regex='^1$') = '1'  # Only PYANG RFC 6020 supported for now.
-    latest_revision: str = ''
-
+class ModuleNode(Node):
     def __init__(self, module: ModSubmodStatement) -> None:
         assert isinstance(module, ModSubmodStatement)
         super().__init__(module)
-        # self.prefixes: Dict[str, Tuple[str, Any]] = module.i_prefixes
-        # self.unused_prefixes = module.i_unused_prefixes
-        # self.missing_prefixes = module.i_missing_prefixes
-        # self.modulename: str = module.i_modulename
-        # self.features = module.i_features
-        # self.extensions = module.i_extensions
-        # self.including_modulename = module.i_including_modulename
-        # self.ctx: Context = module.i_ctx
-        # self.undefined_augment_nodes = module.i_undefined_augment_nodes
-        # self.is_primary_module: bool = module.i_is_primary_module
-        # self.typedefs = module.i_typedefs
-        self.version: constr(regex='^1$') = module.i_version  # Only PYANG RFC 6020 supported for now.
-        self.latest_revision: str | None
 
-    def create_model_field(self, name, value) -> ModelField:
-        return ModelField(
-            name=name,
-            type_=type(value),
-            default=value,
-            required=False,
-            class_validators={},
-            model_config=FieldConfig,
-        )
+    def to_pydantic_field(self) -> FieldInfo:
+        return None
 
-    def to_pydantic_schema(self) -> str:
-        fields_ = {k: v for k, v in self.__fields__.items() if k not in self.__exclude_fields__.keys()}
-        fields: Dict[str, Tuple[type, Any]] = dict()  # name : (type, default_value)
-        for name in fields_.keys():
-            default = self.__class__.__fields__[name].get_default()
-            type = fields_[name].type_
-            fields[name] = (type, default if default is not None else ...)
-        a = create_model(f"{self.arg}Module", __config__=FieldConfig, **fields)
-        b = a.schema_json()
-        return b
+    def get_output_class_name(self) -> str:
+        return f"{self.arg}Module"

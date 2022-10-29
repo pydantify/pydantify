@@ -8,7 +8,7 @@ module interfaces {
 
   leaf address {
     type string;
-    mandatory "true";
+    default "test";
     description "Basic leaf node.";
   }
 }
