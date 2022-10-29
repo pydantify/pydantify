@@ -12,11 +12,11 @@ summary = "Classes Without Boilerplate"
 
 [[package]]
 name = "autopep8"
-version = "1.7.0"
+version = "2.0.0"
 summary = "A tool that automatically formats Python code to conform to the PEP 8 style guide"
 dependencies = [
     "pycodestyle>=2.9.1",
-    "toml",
+    "tomli",
 ]
 
 [[package]]
@@ -67,7 +67,7 @@ summary = "Cross-platform colored terminal text."
 
 [[package]]
 name = "datamodel-code-generator"
-version = "0.13.1"
+version = "0.13.3"
 requires_python = ">=3.6.1,<4.0.0"
 summary = "Datamodel Code Generator"
 dependencies = [
@@ -361,9 +361,9 @@ content_hash = "sha256:93c4d62ee9bb5ff1a9c0dcf07b1e1b7d5a8d5c13e3fdc4e58cad72f0e
     {url = "https://files.pythonhosted.org/packages/1a/cb/c4ffeb41e7137b23755a45e1bfec9cbb76ecf51874c6f1d113984ecaa32c/attrs-22.1.0.tar.gz", hash = "sha256:29adc2665447e5191d0e7c568fde78b21f9672d344281d0c6e1ab085429b22b6"},
     {url = "https://files.pythonhosted.org/packages/f2/bc/d817287d1aa01878af07c19505fafd1165cd6a119e9d0821ca1d1c20312d/attrs-22.1.0-py2.py3-none-any.whl", hash = "sha256:86efa402f67bf2df34f51a335487cf46b1ec130d02b8d39fd248abfd30da551c"},
 ]
-"autopep8 1.7.0" = [
-    {url = "https://files.pythonhosted.org/packages/5d/9b/1ed75f8c9086fafe0e9bbb379a70c43b1aa9dff6154ddcfb818f78cb0736/autopep8-1.7.0-py2.py3-none-any.whl", hash = "sha256:6f09e90a2be784317e84dc1add17ebfc7abe3924239957a37e5040e27d812087"},
-    {url = "https://files.pythonhosted.org/packages/d0/5d/016888824972086a4ee164806520d85ff173e83699907b9cfe119aaefbbc/autopep8-1.7.0.tar.gz", hash = "sha256:ca9b1a83e53a7fad65d731dc7a2a2d50aa48f43850407c59f6a1a306c4201142"},
+"autopep8 2.0.0" = [
+    {url = "https://files.pythonhosted.org/packages/2a/c0/a1372bd95578778aae8dc5359e4f8ec03a94479d2f36e30543298d30c48a/autopep8-2.0.0-py2.py3-none-any.whl", hash = "sha256:ad924b42c2e27a1ac58e432166cc4588f5b80747de02d0d35b1ecbd3e7d57207"},
+    {url = "https://files.pythonhosted.org/packages/ac/71/48b7fde78ef09f4636a9b81f926b879d0230f90768483c441f22059d2474/autopep8-2.0.0.tar.gz", hash = "sha256:8b1659c7f003e693199f52caffdc06585bb0716900bbc6a7442fd931d658c077"},
 ]
 "black 22.10.0" = [
     {url = "https://files.pythonhosted.org/packages/2c/11/f2737cd3b458d91401801e83a014e87c63e8904dc063200f77826c352f54/black-22.10.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:2039230db3c6c639bd84efe3292ec7b06e9214a2992cd9beb293d639c6402edb"},
@@ -408,9 +408,9 @@ content_hash = "sha256:93c4d62ee9bb5ff1a9c0dcf07b1e1b7d5a8d5c13e3fdc4e58cad72f0e
     {url = "https://files.pythonhosted.org/packages/2b/65/24d033a9325ce42ccbfa3ca2d0866c7e89cc68e5b9d92ecaba9feef631df/colorama-0.4.5.tar.gz", hash = "sha256:e6c6b4334fc50988a639d9b98aa429a0b57da6e17b9a44f0451f930b6967b7a4"},
     {url = "https://files.pythonhosted.org/packages/77/8b/7550e87b2d308a1b711725dfaddc19c695f8c5fa413c640b2be01662f4e6/colorama-0.4.5-py2.py3-none-any.whl", hash = "sha256:854bf444933e37f5824ae7bfc1e98d5bce2ebe4160d46b5edf346a89358e99da"},
 ]
-"datamodel-code-generator 0.13.1" = [
-    {url = "https://files.pythonhosted.org/packages/95/f4/57729296975c23233da6155129a80f70f4f041d8d4f167dd5fb445706917/datamodel-code-generator-0.13.1.tar.gz", hash = "sha256:437d84345be5603a78e555f2febf35155dc0376277cd4458f49381eaa2514659"},
-    {url = "https://files.pythonhosted.org/packages/c4/c0/c6eb6e4ff86821d19ae6a1654e89cb10e1a1d1b249f7b3732ed2877a8907/datamodel_code_generator-0.13.1-py3-none-any.whl", hash = "sha256:c61a0e18a32278490f2854ae13dda9097fb39fa116f47d209c3da0590d3ed2ab"},
+"datamodel-code-generator 0.13.3" = [
+    {url = "https://files.pythonhosted.org/packages/17/a2/bd47f6e7dad374a9ba06976bbd7a496fa1d59b64a1b573a23a140141e58b/datamodel_code_generator-0.13.3-py3-none-any.whl", hash = "sha256:d5ad2721acde419aaa6e88fb0a331072d6b73fef31cea7ed66df0e655dba3397"},
+    {url = "https://files.pythonhosted.org/packages/db/d3/871df7dba866be1aa5517c5b609b690261f80950580a94bd50707889c8ab/datamodel_code_generator-0.13.3.tar.gz", hash = "sha256:ebbe3505e8b5e11e7ffe84f20591781c40683cfa01e8c2c07682e46e4881f016"},
 ]
 "dnspython 2.2.1" = [
     {url = "https://files.pythonhosted.org/packages/99/fb/e7cd35bba24295ad41abfdff30f6b4c271fd6ac70d20132fa503c3e768e0/dnspython-2.2.1.tar.gz", hash = "sha256:0f7569a4a6ff151958b64304071d370daa3243d15941a7beedf0c9fe5105603e"},
