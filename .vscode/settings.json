@@ -9,7 +9,7 @@
     "explorer.excludeGitIgnore": true,
     // Formatting and linting
     "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "modifications",
+    "editor.formatOnSaveMode": "file",
     "python.formatting.provider": "black",
     "files.insertFinalNewline": true,
     "files.eol": "\n",
