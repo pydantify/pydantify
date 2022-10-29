@@ -1,0 +1,14 @@
+module interfaces {
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+
+  description 'A simple module to validate descriptions and nodes,';
+
+  leaf address {
+    type string;
+    mandatory "true";
+    description "Basic leaf node.";
+  }
+}
