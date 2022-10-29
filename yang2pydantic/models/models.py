@@ -18,7 +18,10 @@ from pydantic.types import constr
 class BaseModel(PydanticBaseModel):
     class Config:
         # arbitrary_types_allowed = True
-        pass
+        @staticmethod
+        def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:
+            for prop in schema.get('properties', {}).values():
+                prop.pop('title', None)
 
 
 # https://network.developer.nokia.com/sr/learn/yang/understanding-yang/
