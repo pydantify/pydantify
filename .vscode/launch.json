@@ -20,6 +20,17 @@
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
             },
+        },
+        {
+            "name": "Debug output",
+            "type": "python",
+            "request": "launch",
+            "program": "out.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "__pypackages__/3.10/lib",
+            },
         }
     ]
 }

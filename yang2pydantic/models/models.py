@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from typing import Annotated, Any, Dict, List, Tuple, Type
+from typing import Any, Dict, List, Tuple, Type
 
 
 from pyang.statements import (
@@ -12,12 +12,13 @@ from pyang.statements import (
 )
 from pydantic import BaseConfig, BaseModel as PydanticBaseModel, create_model
 from pydantic.fields import FieldInfo, ModelField
-from pydantic.types import constr
 
 
 class BaseModel(PydanticBaseModel):
-    class Config:
+    class Config(BaseConfig):
         # arbitrary_types_allowed = True
+        pass
+
         @staticmethod
         def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:
             for prop in schema.get('properties', {}).values():
@@ -91,7 +92,9 @@ class Node(ABC):
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        a = create_model(self.get_output_class_name(), __base__=self.get_base_class(), **fields)
+        class_name = self.get_output_class_name()
+        base = self.get_base_class()
+        a: Type[BaseModel] = create_model(class_name, __base__=(base,), **fields)
         a.__doc__ = self.description
         return a
 
@@ -151,7 +154,19 @@ class LeafNode(Node):
         return f'{self.arg}Node'
 
     def get_base_class(self) -> type:
-        return constr()  # TODO: different base class based on encountered type.
+        return str  # TODO: different base class based on encountered type.
+
+    def to_pydantic_model(self) -> Type[BaseModel]:
+        """Generates the output class representing this node."""
+        fields: Dict[str, Any] = self._children_to_fields()
+        class_name = self.get_output_class_name()
+        base = self.get_base_class()
+        a: Type[BaseModel] = create_model(class_name, __base__=(BaseModel,), **fields)
+        a.__fields__['__root__'] = ModelField.infer(
+            name='__root__', value=None, annotation=base, class_validators={}, config=BaseModel.Config
+        )
+        a.__doc__ = self.description
+        return a
 
     def to_pydantic_field(self) -> FieldInfo:
         args = {}

@@ -1,7 +1,9 @@
 from io import TextIOWrapper
 from pyang.statements import ModSubmodStatement, Statement
 from pyang.context import Context
-from typing import Callable, List
+from typing import Callable, List, Type
+
+from pydantic.main import BaseModel
 
 from ..models.models import NodeFactory
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
@@ -25,7 +27,7 @@ class ModelGenerator:
         for module in modules:
             module: ModSubmodStatement
             mod = NodeFactory.generate(module)
-            json = mod.to_pydantic_model().schema_json()
+            json = __class__.custom_dump(mod.to_pydantic_model())
             parser = JsonSchemaParser(
                 json,
                 snake_case_field=True,
@@ -39,6 +41,14 @@ class ModelGenerator:
             result = parser.parse()
             fd.write(result)
             pass
+
+    @staticmethod
+    def custom_dump(model: Type[BaseModel]) -> str:
+        schema = model.schema(by_alias=True)
+
+        import json
+
+        return json.dumps(schema)
 
     @staticmethod
     def __function_to_source_code(f: Callable):
