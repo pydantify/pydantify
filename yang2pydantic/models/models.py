@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Tuple, Type
 
 
 from pyang.statements import (
+    ContainerStatement,
     LeafLeaflistStatement,
     ModSubmodStatement,
     Statement,
@@ -172,6 +173,20 @@ class LeafNode(Node):
         args = {}
         args['description'] = self.description
         return FieldInfo(**args)
+
+@NodeFactory.register_statement_class(['container'])
+class ModuleNode(Node):
+    def __init__(self, module: ContainerStatement) -> None:
+        assert isinstance(module, ContainerStatement)
+        super().__init__(module)
+
+    def to_pydantic_field(self) -> FieldInfo:
+        args = {}
+        args['description'] = self.description
+        return FieldInfo(**args)
+
+    def get_output_class_name(self) -> str:
+        return f"{self.arg}ContainerNode"
 
 
 @NodeFactory.register_statement_class(['module'])
