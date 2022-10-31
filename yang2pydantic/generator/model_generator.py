@@ -11,15 +11,27 @@ from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 
 # Helper function
 def dynamically_serialized_helper_function():
-    if 6 > 5:
-        print("This is working.")
+    if __name__ == "__main__":
+        # Demonstration purposes only. Not included in actual output.
+        # To run: pdm run python examples/minimal/out.py
+        from pathlib import Path
+
+        with open(Path(__file__).parent.joinpath("sample_data.json")) as fd:
+            import json
+
+            data = json.load(fd)
+            a = InterfacesModuleNode(**data)
+            print("Instantiation successful!")
+            print(f"Output: {a.json()}")
+            assert json.loads(a.json()) == data
+            print("Serialization successful!")
 
 
 class ModelGenerator:
     @staticmethod
     def generate(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
         __class__.__generate(modules, fd)
-        fd.write(__class__.__function_to_source_code(dynamically_serialized_helper_function))
+        fd.write(__class__.__function_content_to_source_code(dynamically_serialized_helper_function))
 
     @staticmethod
     def __generate(modules: List[Statement], fd: TextIOWrapper):
@@ -56,4 +68,16 @@ class ModelGenerator:
 
         src = '\n\n'
         src += inspect.getsource(f)
+        return src
+
+    @staticmethod
+    def __function_content_to_source_code(f: Callable):
+        import inspect
+
+        src = '\n\n'
+        a = inspect.getsourcelines(f)[0]
+        import re
+
+        indentation = re.compile('^([\t ]+)').findall(a[1])[0]
+        src += "".join(line.replace(indentation, '', 1) for line in a[1:])
         return src
