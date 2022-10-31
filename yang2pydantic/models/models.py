@@ -94,9 +94,9 @@ class Node(ABC):
         fields: Dict[str, Any] = self._children_to_fields()
         class_name = self.get_output_class_name()
         base = self.get_base_class()
-        a: Type[BaseModel] = create_model(class_name, __base__=(base,), **fields)
-        a.__doc__ = self.description
-        return a
+        output_model: Type[BaseModel] = create_model(class_name, __base__=(base,), **fields)
+        output_model.__doc__ = self.description
+        return output_model
 
     @abstractmethod
     def to_pydantic_field(self) -> FieldInfo:
@@ -140,8 +140,8 @@ class NodeFactory:
         if stm.keyword not in cls._implemented_mappings.keys():
             raise Exception(f'"{stm.keyword}" has not yet been implemented as a type.')
         mapping = cls._implemented_mappings[stm.keyword]
-        a = mapping.maps_to(stm)
-        return a
+        node = mapping.maps_to(stm)
+        return node
 
 
 @NodeFactory.register_statement_class(['leaf'])
@@ -161,12 +161,12 @@ class LeafNode(Node):
         fields: Dict[str, Any] = self._children_to_fields()
         class_name = self.get_output_class_name()
         base = self.get_base_class()
-        a: Type[BaseModel] = create_model(class_name, __base__=(BaseModel,), **fields)
-        a.__fields__['__root__'] = ModelField.infer(
+        output_model: Type[BaseModel] = create_model(class_name, __base__=(BaseModel,), **fields)
+        output_model.__fields__['__root__'] = ModelField.infer(
             name='__root__', value=self.default, annotation=base, class_validators={}, config=BaseModel.Config
         )
-        a.__doc__ = self.description
-        return a
+        output_model.__doc__ = self.description
+        return output_model
 
     def to_pydantic_field(self) -> FieldInfo:
         args = {}
