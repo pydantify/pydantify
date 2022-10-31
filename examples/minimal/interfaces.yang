@@ -11,4 +11,16 @@ module interfaces {
     default "test";
     description "Basic leaf node.";
   }
+
+  leaf address2 {
+    type string;
+    default "test2";
+    description "Basic leaf node.";
+  }
+
+  leaf port {
+    type uint8;
+    default 3;
+    description "Basic int leaf node.";
+  }
 }

@@ -11,7 +11,7 @@ from pyang.statements import (
     Statement,
 )
 from pydantic import BaseConfig, BaseModel as PydanticBaseModel, create_model
-from pydantic.fields import FieldInfo, ModelField
+from pydantic.fields import FieldInfo, ModelField, Undefined
 
 
 class BaseModel(PydanticBaseModel):
@@ -51,7 +51,7 @@ class Node(ABC):
         self.substmts: List[Type[Statement]] = stm.substmts
         self.comments: str | None = __class__.__extract_comments(stm)
         self.description: str | None = __class__.__extract_description(stm)
-        self.default = getattr(self.raw_statement, "i_default", None)
+        self.default = getattr(self.raw_statement, "i_default", Undefined)
 
         self.__output_class: GeneratedClass = None
 
@@ -151,7 +151,7 @@ class LeafNode(Node):
         pass
 
     def get_output_class_name(self) -> str:
-        return f'{self.arg}Node'
+        return f'{self.arg}LeafNode'
 
     def get_base_class(self) -> type:
         return str  # TODO: different base class based on encountered type.
@@ -163,15 +163,14 @@ class LeafNode(Node):
         base = self.get_base_class()
         a: Type[BaseModel] = create_model(class_name, __base__=(BaseModel,), **fields)
         a.__fields__['__root__'] = ModelField.infer(
-            name='__root__', value=None, annotation=base, class_validators={}, config=BaseModel.Config
+            name='__root__', value=self.default, annotation=base, class_validators={}, config=BaseModel.Config
         )
         a.__doc__ = self.description
         return a
 
     def to_pydantic_field(self) -> FieldInfo:
         args = {}
-        if self.default is not None:
-            args['default'] = self.default
+        args['description'] = self.description
         return FieldInfo(**args)
 
 
@@ -185,4 +184,4 @@ class ModuleNode(Node):
         return None
 
     def get_output_class_name(self) -> str:
-        return f"{self.arg}Module"
+        return f"{self.arg}ModuleNode"

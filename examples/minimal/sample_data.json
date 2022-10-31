@@ -1,3 +1,5 @@
 {
-    "address": "Test"
+    "address": "Test",
+    "address2": "Nice",
+    "port": "25"
 }
