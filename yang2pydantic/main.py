@@ -7,7 +7,9 @@ import sys
 
 
 logging.basicConfig(
-    stream=sys.stdout, format='[%(levelname)s] (%(filename)s:%(funcName)s:%(lineno)d): %(message)s', level=logging.INFO
+    stream=sys.stdout,
+    format='[%(levelname)s] %(pathname)s:%(lineno)d (%(funcName)s): %(message)s',
+    level=logging.INFO,
 )
 logger = logging.getLogger('pydantify')
 
