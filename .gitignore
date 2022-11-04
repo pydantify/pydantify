@@ -8,3 +8,4 @@ out.py
 *.png
 *.tmp
 examples/cisco
+.idea

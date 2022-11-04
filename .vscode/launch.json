@@ -2,6 +2,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Minimal test",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/minimal/out.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "__pypackages__/3.10/lib",
+            },
+        },
+        {
             "name": "Make network automation pydantic",
             "type": "python",
             "request": "launch",
@@ -15,19 +26,8 @@
                 "--path=${workspaceFolder}/examples/minimal/",
                 "-V",
                 "${workspaceFolder}/examples/minimal/interfaces.yang",
-                "--output=./out.py"
+                "--output=${workspaceFolder}/examples/minimal/out.py"
             ],
-            "env": {
-                "PYTHONPATH": "__pypackages__/3.10/lib",
-            },
-        },
-        {
-            "name": "Debug output",
-            "type": "python",
-            "request": "launch",
-            "program": "out.py",
-            "console": "integratedTerminal",
-            "justMyCode": false,
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
             },
