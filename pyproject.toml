@@ -3,8 +3,8 @@ name = "yang2pydantic"
 version = "0.1.0"
 description = "Makes network automation pydantic."
 authors = [
-    {name = "Dominic Walther", email = "dominic.walther@ost.ch"},
-    {name = "Dejan Jovicic", email = "dejan.jovicic@ost.ch"},
+    { name = "Dominic Walther", email = "dominic.walther@ost.ch" },
+    { name = "Dejan Jovicic", email = "dejan.jovicic@ost.ch" },
 ]
 dependencies = [
     "pydantic>=1.10.2",
@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 [project.scripts]
-pydantify = "yang2pydantic.main:start"
+pydantify = "yang2pydantic.main:main"
 
 [project.urls]
 Repository = "https://gitlab.ost.ch/pydantic-sa/yang2pydantic"
