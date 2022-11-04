@@ -4,23 +4,28 @@ module interfaces {
 
   prefix if;
 
-  description 'A simple module to validate descriptions and nodes,';
+  description 'A simple module to validate comments,'
+    + ' typedefs, and pattern validators.'
+    + ' Source: https://ultraconfig.com.au/blog/learn-yang-full-tutorial-for-beginners/';
 
-  leaf address {
+  container interfaces {
+    leaf name {
     type string;
-    default "test";
-    description "Basic leaf node.";
-  }
-
-  leaf address2 {
+    mandatory "true";
+    description
+        "Interface name. Example value: GigabitEthernet 0/0/0";
+    }
+    leaf address {
     type string;
-    default "test2";
-    description "Basic leaf node.";
-  }
-
-  leaf port {
-    type uint8;
-    default 3;
-    description "Basic int leaf node.";
+    mandatory "true";
+    description
+        "Interface IP address. Example value: 10.10.10.1";
+    }
+    leaf port {
+    type string;
+    mandatory "true";
+    description
+        "Interface subnet mask. Example value: 255.255.255.0";
+    }
   }
 }

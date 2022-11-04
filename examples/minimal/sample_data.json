@@ -1,5 +1,7 @@
 {
-    "address": "Test",
-    "address2": "Nice",
-    "port": "25"
+    "interfaces": {
+        "address": "Test",
+        "name": "Nice",
+        "port": "25"
+    }
 }
