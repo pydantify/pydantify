@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 [project.scripts]
-run-my-project = "yang2pydantic.main:start"
+pydantify = "yang2pydantic.main:start"
 
 [project.urls]
 Repository = "https://gitlab.ost.ch/pydantic-sa/yang2pydantic"

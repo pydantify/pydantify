@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import logging
 
 from typing import Any, Dict, List, Tuple, Type
 
@@ -13,6 +14,8 @@ from pyang.statements import (
 )
 from pydantic import BaseConfig, BaseModel as PydanticBaseModel, create_model
 from pydantic.fields import FieldInfo, ModelField, Undefined
+
+logger = logging.getLogger('pydantify')
 
 
 class BaseModel(PydanticBaseModel):
@@ -148,6 +151,7 @@ class NodeFactory:
 @NodeFactory.register_statement_class(['leaf'])
 class LeafNode(Node):
     def __init__(self, stm: LeafLeaflistStatement) -> None:
+        logger.debug(f'Parsing {__class__}')
         super().__init__(stm)
         pass
 
@@ -173,9 +177,11 @@ class LeafNode(Node):
         args = {}
         return FieldInfo(**args)
 
+
 @NodeFactory.register_statement_class(['container'])
 class ModuleNode(Node):
     def __init__(self, module: ContainerStatement) -> None:
+        logger.debug(f'Parsing {__class__}')
         assert isinstance(module, ContainerStatement)
         super().__init__(module)
 
@@ -191,6 +197,7 @@ class ModuleNode(Node):
 @NodeFactory.register_statement_class(['module'])
 class ModuleNode(Node):
     def __init__(self, module: ModSubmodStatement) -> None:
+        logger.debug(f'Parsing {__class__}')
         assert isinstance(module, ModSubmodStatement)
         super().__init__(module)
 

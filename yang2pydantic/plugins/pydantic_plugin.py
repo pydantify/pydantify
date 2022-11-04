@@ -4,10 +4,14 @@ from pyang.plugin import PyangPlugin, register_plugin
 from pyang.statements import ModSubmodStatement
 from pyang.context import Context
 from typing import Dict
+import logging
+
+logger = logging.getLogger('pydantify')
 
 
 def pyang_plugin_init():
     register_plugin(Yang2Pydantic())
+    logger.debug('Plugin successfully registered.')
 
 
 class Yang2Pydantic(PyangPlugin):
@@ -20,7 +24,9 @@ class Yang2Pydantic(PyangPlugin):
         fmts['pydantic'] = self
         self.multiple_modules = True
         self.handle_comments = True
+        logger.debug('Plugin registered for pydantic format.')
 
     def emit(self, ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
         """Convert yang model."""
+        logger.debug('Pyang parsing complete. Beginning output creation.')
         ModelGenerator.generate(ctx=ctx, modules=modules, fd=fd)

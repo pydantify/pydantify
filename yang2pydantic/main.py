@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 
 import json
+from typing import List
+import logging
+import sys
+
+
+logging.basicConfig(
+    stream=sys.stdout, format='[%(levelname)s] (%(filename)s:%(funcName)s:%(lineno)d): %(message)s', level=logging.INFO
+)
+logger = logging.getLogger('pydantify')
 
 
 def fetch(address: str, port: int) -> json:

@@ -7,6 +7,9 @@ from pydantic.main import BaseModel
 
 from ..models.models import NodeFactory
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
+import logging
+
+logger = logging.getLogger('pydantify')
 
 
 # Helper function
