@@ -30,11 +30,21 @@ def dynamically_serialized_helper_function():
             print("Serialization successful!")
 
 
+def validate():
+    pass
+
+
 class ModelGenerator:
+    include_verification_code: bool = False
+
     @staticmethod
     def generate(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
         __class__.__generate(modules, fd)
+        fd.write('\n\n')
         fd.write(__class__.__function_content_to_source_code(dynamically_serialized_helper_function))
+        if __class__.include_verification_code:
+            fd.write('\n\n')
+            fd.write(__class__.__function_to_source_code(validate))
 
     @staticmethod
     def __generate(modules: List[Statement], fd: TextIOWrapper):
@@ -69,18 +79,14 @@ class ModelGenerator:
     def __function_to_source_code(f: Callable):
         import inspect
 
-        src = '\n\n'
-        src += inspect.getsource(f)
-        return src
+        return inspect.getsource(f)
 
     @staticmethod
     def __function_content_to_source_code(f: Callable):
         import inspect
 
-        src = '\n\n'
-        a = inspect.getsourcelines(f)[0]
+        src = inspect.getsourcelines(f)[0]
         import re
 
-        indentation = re.compile('^([\t ]+)').findall(a[1])[0]
-        src += "".join(line.replace(indentation, '', 1) for line in a[1:])
-        return src
+        indentation = re.compile('^([\t ]+)').findall(src[1])[0]
+        return "".join(line.replace(indentation, '', 1) for line in src[1:])

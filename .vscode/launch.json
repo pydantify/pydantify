@@ -19,10 +19,9 @@
             "module": "yang2pydantic",
             "console": "integratedTerminal",
             "args": [
-                "--format=pydantic",
+                "-v",
                 "--keep-comments",
                 "--canonical",
-                "--plugindir=${workspaceFolder}/yang2pydantic/plugins",
                 "--path=${workspaceFolder}/examples/minimal/",
                 "-V",
                 "${workspaceFolder}/examples/minimal/interfaces.yang",
