@@ -171,7 +171,6 @@ class LeafNode(Node):
 
     def to_pydantic_field(self) -> FieldInfo:
         args = {}
-        args['description'] = self.description
         return FieldInfo(**args)
 
 @NodeFactory.register_statement_class(['container'])
