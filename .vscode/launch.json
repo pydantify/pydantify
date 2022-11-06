@@ -23,7 +23,7 @@
                 "--keep-comments",
                 "--canonical",
                 "-i=${workspaceFolder}/examples/minimal/",
-                "-o=${workspaceFolder}/examples/minimal/out/",
+                "-o=${workspaceFolder}/out/examples/minimal/",
                 "-V",
                 "${workspaceFolder}/examples/minimal/interfaces.yang",
             ],
