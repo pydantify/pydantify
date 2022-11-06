@@ -2,10 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Minimal test",
+            "name": "Test output",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/minimal/out.py",
+            "program": "${workspaceFolder}/out/out.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "env": {
@@ -13,7 +13,7 @@
             },
         },
         {
-            "name": "Make network automation pydantic",
+            "name": "Minimal",
             "type": "python",
             "request": "launch",
             "module": "yang2pydantic",
@@ -23,9 +23,26 @@
                 "--keep-comments",
                 "--canonical",
                 "-i=${workspaceFolder}/examples/minimal/",
-                "-o=${workspaceFolder}/out/examples/minimal/",
                 "-V",
                 "${workspaceFolder}/examples/minimal/interfaces.yang",
+            ],
+            "env": {
+                "PYTHONPATH": "__pypackages__/3.10/lib",
+            },
+        },
+        {
+            "name": "With Typedef",
+            "type": "python",
+            "request": "launch",
+            "module": "yang2pydantic",
+            "console": "integratedTerminal",
+            "args": [
+                "-v",
+                "--keep-comments",
+                "--canonical",
+                "-i=${workspaceFolder}/examples/with_typedef/",
+                "-V",
+                "${workspaceFolder}/examples/with_typedef/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
