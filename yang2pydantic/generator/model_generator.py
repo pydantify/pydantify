@@ -4,10 +4,13 @@ from pyang.context import Context
 from typing import Callable, List, Type
 
 from pydantic.main import BaseModel
+from yang2pydantic.models.yang_sources_tracker import YANGSourcesTracker
 
 from ..models.models import NodeFactory
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 import logging
+from pathlib import Path
+
 
 logger = logging.getLogger('pydantify')
 
@@ -35,24 +38,30 @@ def validate():
 
 
 class ModelGenerator:
+    """In charge of generating the output model"""
+
     include_verification_code: bool = False
+    input_dir: Path
+    output_dir: Path
 
-    @staticmethod
-    def generate(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
-        __class__.__generate(modules, fd)
+    @classmethod
+    def generate(cls, ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
+        """Generate and write output model to a given file descriptor."""
+        cls.__generate(modules, fd)
         fd.write('\n\n')
-        fd.write(__class__.__function_content_to_source_code(dynamically_serialized_helper_function))
-        if __class__.include_verification_code:
+        fd.write(cls.__function_content_to_source_code(dynamically_serialized_helper_function))
+        if cls.include_verification_code:
             fd.write('\n\n')
-            fd.write(__class__.__function_to_source_code(validate))
+            fd.write(cls.__function_to_source_code(validate))
+            YANGSourcesTracker.copy_yang_files(input_root=cls.input_dir, output_dir=cls.output_dir)
 
-    @staticmethod
-    def __generate(modules: List[Statement], fd: TextIOWrapper):
+    @classmethod
+    def __generate(cls, modules: List[Statement], fd: TextIOWrapper):
         """Generates and yealds"""
         for module in modules:
             module: ModSubmodStatement
             mod = NodeFactory.generate(module)
-            json = __class__.custom_dump(mod.to_pydantic_model())
+            json = cls.custom_dump(mod.to_pydantic_model())
             parser = JsonSchemaParser(
                 json,
                 snake_case_field=True,

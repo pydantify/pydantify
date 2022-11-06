@@ -14,6 +14,7 @@ from pyang.statements import (
 )
 from pydantic import BaseConfig, BaseModel as PydanticBaseModel, create_model
 from pydantic.fields import FieldInfo, ModelField, Undefined
+from yang2pydantic.models.yang_sources_tracker import YANGSourcesTracker
 
 logger = logging.getLogger('pydantify')
 
@@ -58,6 +59,7 @@ class Node(ABC):
         self.default = getattr(self.raw_statement, "i_default", Undefined)
 
         self.__output_class: GeneratedClass = None
+        YANGSourcesTracker.track_from_pos(stm.pos)
 
     @abstractmethod
     def get_output_class_name(self) -> str:
