@@ -19,17 +19,19 @@ logger = logging.getLogger('pydantify')
 def dynamically_serialized_helper_function():
     if __name__ == "__main__":
         # Demonstration purposes only. Not included in actual output.
-        # To run: pdm run python examples/minimal/out.py
+        # To run: pdm run python out/out.py
         from pathlib import Path
 
         with open(Path(__file__).parent.joinpath("sample_data.json")) as fd:
             import json
 
             data = json.load(fd)
+            print(f"Input: {data}")
             a = InterfacesModuleNode(**data)
             print("Instantiation successful!")
-            print(f"Output: {a.json()}")
-            assert json.loads(a.json()) == data
+            output = a.json(exclude_defaults=True, by_alias=True)
+            print(f"Output: {output}")
+            assert json.loads(output) == data
             print("Serialization successful!")
 
 
