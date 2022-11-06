@@ -159,7 +159,7 @@ class LeafNode(Node):
         pass
 
     def get_output_class_name(self) -> str:
-        return f'{self.arg}LeafNode'
+        return f'{self.arg.capitalize()}LeafNode'
 
     def get_base_class(self) -> type:
         return str  # TODO: different base class based on encountered type.
@@ -194,7 +194,7 @@ class ModuleNode(Node):
         return FieldInfo(**args)
 
     def get_output_class_name(self) -> str:
-        return f"{self.arg}ContainerNode"
+        return f"{self.arg.capitalize()}ContainerNode"
 
 
 @NodeFactory.register_statement_class(['module'])
@@ -208,4 +208,4 @@ class ModuleNode(Node):
         return None
 
     def get_output_class_name(self) -> str:
-        return f"{self.arg}ModuleNode"
+        return f"{self.arg.capitalize()}ModuleNode"
