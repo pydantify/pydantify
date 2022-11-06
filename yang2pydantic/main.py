@@ -61,8 +61,8 @@ def parse_cli_arguments() -> List[str]:
         '-o',
         '--output-dir',
         dest='output_dir',
-        help='The directory that should be used to store the output model.',
-        default='.',
+        help='The directory that should be used to store the output model. Defaults to "$CWD/out".',
+        default=f'{os.getcwd()}/out/',
     )
     parser.add_argument(
         'input_file',
