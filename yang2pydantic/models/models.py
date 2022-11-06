@@ -1,5 +1,5 @@
 from __future__ import annotations
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
 import logging
 
@@ -28,7 +28,8 @@ class BaseModel(PydanticBaseModel):
         def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:
             for prop in schema.get('properties', {}).values():
                 prop.pop('title', None)
-            schema.pop('title', None)
+            if not schema.get('type', None) == 'object':
+                schema.pop('title', None)
 
 
 # https://network.developer.nokia.com/sr/learn/yang/understanding-yang/
@@ -43,9 +44,20 @@ class NotImplementedException(Exception):
 class GeneratedClass:
     """Holds information about dynamically generated output plasses."""
 
-    class_name: str
-    cls: type
-    field_info: FieldInfo
+    class_name: str = Undefined
+    cls: Type[BaseModel] = Undefined
+    field_info: FieldInfo = Undefined
+    field_annotation: Type | None = Undefined
+
+    def assert_is_valid(self):
+        for prop in self.__dataclass_fields__.keys():
+            value = getattr(self, prop, Undefined)
+            if value == Undefined:
+                raise Exception(f'Member "{prop}" of class "{__class__.__name__}" is undefined.\n{self}')
+
+    def to_field(self) -> Tuple[Type[BaseModel] | Type, FieldInfo]:
+        self.assert_is_valid()
+        return (self.field_annotation if self.field_annotation else self.cls, self.field_info)
 
 
 class Node(ABC):
@@ -59,28 +71,52 @@ class Node(ABC):
         self.description: str | None = __class__.__extract_description(stm)
         self.default = getattr(self.raw_statement, "i_default", Undefined)
 
-        self.__output_class: GeneratedClass = None
+        self.__output_class: GeneratedClass = GeneratedClass()
         YANGSourcesTracker.track_from_pos(stm.pos)
 
-    @abstractmethod
-    def get_output_class_name(self) -> str:
-        """Returns the name of the output class."""
-        pass
+    @property
+    def output_class_name(self):
+        """Name of the output class."""
+        return self.__output_class.class_name
+
+    @output_class_name.setter
+    def output_class_name(self, name: str):
+        assert self.__output_class.class_name == Undefined
+        self.__output_class.class_name = name
+
+    @property
+    def output_class_type(self):
+        """Name of the output class."""
+        return self.__output_class.cls
+
+    @output_class_type.setter
+    def output_class_type(self, cls: Type[BaseModel]):
+        assert self.__output_class.cls == Undefined
+        self.__output_class.cls = cls
+
+    @property
+    def output_field_info(self):
+        """Name of the output class."""
+        return self.__output_class.field_info
+
+    @output_class_name.setter
+    def output_field_info(self, field_info: FieldInfo):
+        assert self.__output_class.field_info == Undefined
+        self.__output_class.field_info = field_info
+
+    @property
+    def output_field_annotation(self):
+        """Name of the output class."""
+        return self.__output_class.field_annotation
+
+    @output_field_annotation.setter
+    def output_field_annotation(self, typ: type):
+        assert self.__output_class.field_annotation == Undefined
+        self.__output_class.field_annotation = typ
 
     def get_base_class(self) -> type:
         """Returns the class the output class should be derived from. Defaults to BaseModel."""
         return BaseModel
-
-    @property
-    def output_class(self) -> GeneratedClass:
-        """Generates or fetches all the data necessary to integrate the node in the output model."""
-        if self.__output_class is None:
-            self.__output_class = GeneratedClass(
-                class_name=self.get_output_class_name(),
-                cls=self.to_pydantic_model(),
-                field_info=self.to_pydantic_field(),
-            )
-        return self.__output_class
 
     @staticmethod
     def __extract_comments(stm: Statement) -> str | None:
@@ -99,18 +135,17 @@ class Node(ABC):
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        class_name = self.get_output_class_name()
         base = self.get_base_class()
-        output_model: Type[BaseModel] = create_model(class_name, __base__=(base,), **fields)
+        output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(base,), **fields)
         output_model.__doc__ = self.description
         return output_model
 
-    @abstractmethod
-    def to_pydantic_field(self) -> FieldInfo:
-        pass
-
     def _children_to_fields(self) -> Dict[str, Tuple[Any]]:
-        return {ch.arg: (ch.output_class.cls, ch.output_class.field_info) for ch in self.children}
+        ret: Dict[str, Tuple[type, FieldInfo]] = dict()
+        for ch in self.children:
+            ch: Node
+            ret[ch.arg] = ch.__output_class.to_field()
+        return ret
 
     @staticmethod
     def extract_statement_list(statement: Statement, attr_name: str) -> List[Node]:
@@ -156,10 +191,11 @@ class LeafNode(Node):
     def __init__(self, stm: LeafLeaflistStatement) -> None:
         logger.debug(f'Parsing {__class__}')
         super().__init__(stm)
-        pass
 
-    def get_output_class_name(self) -> str:
-        return f'{self.arg.capitalize()}LeafNode'
+        self.output_class_name = f'{self.arg.capitalize()}LeafNode'
+        self.output_field_annotation = None
+        self.output_field_info = FieldInfo(self.default if self.default is not None else ...)
+        self.output_class_type = self.to_pydantic_model()
 
     def get_base_class(self) -> type:
         return str  # TODO: different base class based on encountered type.
@@ -167,18 +203,13 @@ class LeafNode(Node):
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        class_name = self.get_output_class_name()
         base = self.get_base_class()
-        output_model: Type[BaseModel] = create_model(class_name, __base__=(BaseModel,), **fields)
+        output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(BaseModel,), **fields)
         output_model.__fields__['__root__'] = ModelField.infer(
-            name='__root__', value=self.default, annotation=base, class_validators={}, config=BaseModel.Config
+            name='__root__', value=Undefined, annotation=base, class_validators={}, config=BaseModel.Config
         )
         output_model.__doc__ = self.description
         return output_model
-
-    def to_pydantic_field(self) -> FieldInfo:
-        args = {}
-        return FieldInfo(**args)
 
 
 @NodeFactory.register_statement_class(['container'])
@@ -188,13 +219,16 @@ class ModuleNode(Node):
         assert isinstance(module, ContainerStatement)
         super().__init__(module)
 
+        self.output_class_name = f'{self.arg.capitalize()}ContainerNode'
+        self.output_field_annotation = None
+        self.output_field_info = FieldInfo(...)
+        self.output_class_type = self.to_pydantic_model()
+
     def to_pydantic_field(self) -> FieldInfo:
         args = {}
         args['description'] = self.description
         return FieldInfo(**args)
 
-    def get_output_class_name(self) -> str:
-        return f"{self.arg.capitalize()}ContainerNode"
 
 
 @NodeFactory.register_statement_class(['module'])
@@ -204,8 +238,8 @@ class ModuleNode(Node):
         assert isinstance(module, ModSubmodStatement)
         super().__init__(module)
 
-    def to_pydantic_field(self) -> FieldInfo:
-        return None
-
-    def get_output_class_name(self) -> str:
-        return f"{self.arg.capitalize()}ModuleNode"
+        self.output_class_name = f'{self.arg.capitalize()}ModuleNode'
+        self.output_field_annotation = None
+        self.output_field_info = FieldInfo(...)
+        self.output_class_type = self.to_pydantic_model()
+        pass
