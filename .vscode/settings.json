@@ -6,10 +6,14 @@
         "__pypackages__/3.10/lib"
     ],
     // Remove ignored files from project sidebar
-    "explorer.excludeGitIgnore": true,
+    //"explorer.excludeGitIgnore": true,
     // Formatting and linting
     "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
     "editor.formatOnSaveMode": "file",
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.renderWhitespace": "boundary",
     "python.formatting.provider": "black",
     "files.insertFinalNewline": true,
     "files.eol": "\n",
