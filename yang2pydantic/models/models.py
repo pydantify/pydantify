@@ -28,6 +28,7 @@ class BaseModel(PydanticBaseModel):
         def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:
             for prop in schema.get('properties', {}).values():
                 prop.pop('title', None)
+            schema.pop('title', None)
 
 
 # https://network.developer.nokia.com/sr/learn/yang/understanding-yang/
