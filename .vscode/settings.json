@@ -30,5 +30,5 @@
         // https://flake8.pycqa.org/en/latest/user/error-codes.html
         // https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
         "--ignore=E501"
-    ]
+    ],
 }

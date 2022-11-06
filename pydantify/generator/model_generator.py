@@ -4,7 +4,7 @@ from pyang.context import Context
 from typing import Callable, List, Type
 
 from pydantic.main import BaseModel
-from yang2pydantic.models.yang_sources_tracker import YANGSourcesTracker
+from pydantify.models.yang_sources_tracker import YANGSourcesTracker
 
 from ..models.models import NodeFactory
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser

@@ -43,12 +43,12 @@
     - dependencies through pdm (`pdm install`)
         - into the local `__pypackages__` folder
             - to run your project as a python module
-                - locally (`python -m yang2pydantic`)
+                - locally (`python -m pydantify`)
                 - in a docker container (see [Dockerfile](./Dockerfile))
             - to be accessed by your IDE for intellisense (see [.vscode/settings.json](./.vscode/settings.json))
             - to be accessed by your debug launch configuration (see [.vscode/launch.json](./.vscode/launch.json))
     - project through pip (`pip install .`)
-        - to be used as a global CLI command (`run-my-project`)
+        - to be used as a global CLI command (`pydantify`)
 - Build
     - through pdm (`pdm build`)
         - into the local `dist` folder

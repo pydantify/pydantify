@@ -21,7 +21,7 @@ RUN apt update && \
 
 # Copy files required for building project.
 COPY pyproject.toml pdm.lock README.md ./
-COPY ./yang2pydantic/ ./yang2pydantic/
+COPY ./pydantify/ ./pydantify/
 
 # Install dependencies and build project.
 # Copy files to /my_pkgs/ for easier access in the production stage.
@@ -44,4 +44,4 @@ ENV PYTHONPATH=./pkgs
 COPY --from=builder /my_pkgs ./pkgs
 
 # Run your project as a module.
-CMD ["python", "-m", "yang2pydantic"]
+CMD ["python", "-m", "pydantify"]

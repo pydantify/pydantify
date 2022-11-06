@@ -1,4 +1,4 @@
-from yang2pydantic.generator import ModelGenerator  # TODO: Get relative import to work. (╯°□°）╯︵ ┻━┻
+from pydantify.generator import ModelGenerator  # TODO: Get relative import to work. (╯°□°）╯︵ ┻━┻
 from io import TextIOWrapper
 from pyang.plugin import PyangPlugin, register_plugin
 from pyang.statements import ModSubmodStatement
@@ -10,14 +10,14 @@ logger = logging.getLogger('pydantify')
 
 
 def pyang_plugin_init():
-    register_plugin(Yang2Pydantic())
+    register_plugin(Pydantify())
     logger.debug('Plugin successfully registered.')
 
 
-class Yang2Pydantic(PyangPlugin):
+class Pydantify(PyangPlugin):
     def __init__(self):
         """Init plugin instance."""
-        super().__init__(name="yang2pydantic")
+        super().__init__(name="pydantify")
 
     def add_output_format(self, fmts: Dict[str, PyangPlugin]):
         """Register self as primary pydantic output generator."""

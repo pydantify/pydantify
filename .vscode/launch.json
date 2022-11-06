@@ -16,7 +16,7 @@
             "name": "Minimal",
             "type": "python",
             "request": "launch",
-            "module": "yang2pydantic",
+            "module": "pydantify",
             "console": "integratedTerminal",
             "args": [
                 "-v",
@@ -34,7 +34,7 @@
             "name": "With Typedef",
             "type": "python",
             "request": "launch",
-            "module": "yang2pydantic",
+            "module": "pydantify",
             "console": "integratedTerminal",
             "args": [
                 "-v",

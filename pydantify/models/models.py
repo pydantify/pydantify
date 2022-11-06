@@ -15,7 +15,7 @@ from pyang.statements import (
 )
 from pydantic import BaseConfig, BaseModel as PydanticBaseModel, create_model
 from pydantic.fields import FieldInfo, ModelField, Undefined
-from yang2pydantic.models.yang_sources_tracker import YANGSourcesTracker
+from pydantify.models.yang_sources_tracker import YANGSourcesTracker
 
 logger = logging.getLogger('pydantify')
 

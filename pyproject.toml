@@ -1,5 +1,5 @@
 [project]
-name = "yang2pydantic"
+name = "pydantify"
 version = "0.1.0"
 description = "Makes network automation pydantic."
 authors = [
@@ -23,7 +23,7 @@ classifiers = [
 ]
 
 [project.scripts]
-pydantify = "yang2pydantic.main:main"
+pydantify = "pydantify.main:main"
 
 [project.urls]
 Repository = "https://gitlab.ost.ch/pydantic-sa/yang2pydantic"
