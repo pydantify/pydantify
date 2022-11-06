@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Tuple, Type
 from pyang.statements import (
     ContainerStatement,
     LeafLeaflistStatement,
+    ListStatement,
     ModSubmodStatement,
     Statement,
 )
@@ -224,11 +225,26 @@ class ModuleNode(Node):
         self.output_field_info = FieldInfo(...)
         self.output_class_type = self.to_pydantic_model()
 
-    def to_pydantic_field(self) -> FieldInfo:
-        args = {}
-        args['description'] = self.description
-        return FieldInfo(**args)
 
+@NodeFactory.register_statement_class(['list'])
+class ListNode(Node):
+    def __init__(self, module: ListStatement) -> None:
+        logger.debug(f'Parsing {__class__}')
+        assert isinstance(module, ListStatement)
+        super().__init__(module)
+
+        self.output_class_name = f'{self.arg.capitalize()}ListNode'
+        self.output_class_type = self.to_pydantic_model()
+        self.output_field_annotation = List[self.output_class_type]
+        self.output_field_info = FieldInfo(...)
+
+    def to_pydantic_model(self) -> Type[BaseModel]:
+        """Generates the output class representing this node."""
+        fields: Dict[str, Any] = self._children_to_fields()
+        class_name = self.output_class_name
+        output_model: Type[BaseModel] = create_model(class_name, __base__=(BaseModel,), **fields)
+        output_model.__doc__ = self.description
+        return output_model
 
 
 @NodeFactory.register_statement_class(['module'])
