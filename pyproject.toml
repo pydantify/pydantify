@@ -31,10 +31,10 @@ Repository = "https://gitlab.ost.ch/pydantic-sa/yang2pydantic"
 [project.optional-dependencies]
 [tool.pdm]
 [tool.pdm.dev-dependencies]
-dev = [
-    "autopep8>=1.7.0",
-    "black>=22.10.0",
-]
+dev = ["autopep8>=1.7.0", "black>=22.10.0", "pylint>=2.15.5"]
+
+[tool.pdm.scripts]
+class_diagram = "pyreverse -o plantuml -d graphs --project pydantify --colorized pydantify"
 
 [build-system]
 requires = ["pdm-pep517>=0.12.0"]
