@@ -16,6 +16,7 @@ from pyang.statements import (
 )
 from pydantic import BaseConfig, BaseModel as PydanticBaseModel, create_model
 from pydantic.fields import FieldInfo, ModelField, Undefined
+from pydantify.models.typeresolver import TypeResolver
 from pydantify.models.yang_sources_tracker import YANGSourcesTracker
 
 logger = logging.getLogger('pydantify')
@@ -181,11 +182,16 @@ class NodeFactory:
     @classmethod
     def generate(cls: Type[Self], stm: Type[Statement]) -> Type[Node]:
         assert isinstance(stm, Statement)
-        if stm.keyword not in cls._implemented_mappings.keys():
-            raise Exception(f'"{stm.keyword}" has not yet been implemented as a type.')
-        mapping = cls._implemented_mappings[stm.keyword]
-        node = mapping.maps_to(stm)
-        return node
+        known_model = TypeResolver.get_model_if_known(stm)
+        if known_model is not None:
+            return known_model
+        else:
+            if stm.keyword not in cls._implemented_mappings.keys():
+                raise Exception(f'"{stm.keyword}" has not yet been implemented as a type.')
+            mapping = cls._implemented_mappings[stm.keyword]
+            node = mapping.maps_to(stm)
+            TypeResolver.register(stm, node)
+            return node
 
 
 @NodeFactory.register_statement_class(['leaf'])
@@ -200,7 +206,8 @@ class LeafNode(Node):
         self.output_class_type = self.to_pydantic_model()
 
     def get_base_class(self) -> type:
-        return str  # TODO: different base class based on encountered type.
+        base = TypeResolver.resolve_statement(self.raw_statement)
+        return base
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
