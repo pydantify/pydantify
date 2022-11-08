@@ -24,10 +24,10 @@ module interfaces {
             "Interface IP address. Example value: 10.10.10.1";
     }
     leaf port {
-        type string;
+        type uint16;
         mandatory "true";
         description
-            "Interface subnet mask. Example value: 255.255.255.0";
+            "Port number. Example value: 8080";
     }
   }
 }

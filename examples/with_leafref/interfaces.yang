@@ -1,0 +1,25 @@
+module interfaces {
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+
+  description 'A simple module to validate comments,'
+    + ' typedefs, and pattern validators.'
+    + ' Source: https://ultraconfig.com.au/blog/learn-yang-full-tutorial-for-beginners/';
+
+  list interface {
+    key "name";
+    leaf test {
+      type string;
+    }
+    leaf name {
+      type string;
+    }
+  }
+  leaf mgmt-interface {
+    type leafref {
+      path "../interface/name";
+    }
+  }
+}

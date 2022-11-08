@@ -47,6 +47,42 @@
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
             },
+        },
+        {
+            "name": "With Using",
+            "type": "python",
+            "request": "launch",
+            "module": "pydantify",
+            "console": "integratedTerminal",
+            "args": [
+                "-v",
+                "--keep-comments",
+                "--canonical",
+                "-i=${workspaceFolder}/examples/with_uses/",
+                "-V",
+                "${workspaceFolder}/examples/with_uses/interfaces.yang",
+            ],
+            "env": {
+                "PYTHONPATH": "__pypackages__/3.10/lib",
+            },
+        },
+        {
+            "name": "With leafref",
+            "type": "python",
+            "request": "launch",
+            "module": "pydantify",
+            "console": "integratedTerminal",
+            "args": [
+                "-v",
+                "--keep-comments",
+                "--canonical",
+                "-i=${workspaceFolder}/examples/with_leafref/",
+                "-V",
+                "${workspaceFolder}/examples/with_leafref/interfaces.yang",
+            ],
+            "env": {
+                "PYTHONPATH": "__pypackages__/3.10/lib",
+            },
         }
     ]
 }
