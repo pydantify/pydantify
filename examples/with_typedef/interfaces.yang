@@ -4,9 +4,7 @@ module interfaces {
 
   prefix if;
 
-  description 'A simple module to validate comments,'
-    + ' typedefs, and pattern validators.'
-    + ' Source: https://ultraconfig.com.au/blog/learn-yang-full-tutorial-for-beginners/';
+  description 'Example demonstrating typedef statements';
 
   typedef dotted-quad {
     // Simple typedef with string pattern validator
