@@ -10,6 +10,7 @@ from ..models.models import NodeFactory
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 import logging
 from pathlib import Path
+from typing_extensions import Self
 
 
 logger = logging.getLogger('pydantify')
@@ -47,7 +48,7 @@ class ModelGenerator:
     output_dir: Path
 
     @classmethod
-    def generate(cls, ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
+    def generate(cls: Type[Self], ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper):
         """Generate and write output model to a given file descriptor."""
         cls.__generate(modules, fd)
         fd.write('\n\n')
@@ -58,10 +59,9 @@ class ModelGenerator:
             YANGSourcesTracker.copy_yang_files(input_root=cls.input_dir, output_dir=cls.output_dir)
 
     @classmethod
-    def __generate(cls, modules: List[Statement], fd: TextIOWrapper):
+    def __generate(cls: Type[Self], modules: List[ModSubmodStatement], fd: TextIOWrapper):
         """Generates and yealds"""
         for module in modules:
-            module: ModSubmodStatement
             mod = NodeFactory.generate(module)
             json = cls.custom_dump(mod.to_pydantic_model())
             parser = JsonSchemaParser(
@@ -78,8 +78,8 @@ class ModelGenerator:
             fd.write(result)
             pass
 
-    @staticmethod
-    def custom_dump(model: Type[BaseModel]) -> str:
+    @classmethod
+    def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> str:
         schema = model.schema(by_alias=True)
 
         import json

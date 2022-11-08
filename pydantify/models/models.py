@@ -2,8 +2,9 @@ from __future__ import annotations
 from abc import ABC
 from dataclasses import dataclass
 import logging
+from typing_extensions import Self
 
-from typing import Any, Dict, List, Tuple, Type
+from typing import Any, Callable, Dict, List, Tuple, Type
 
 
 from pyang.statements import (
@@ -111,7 +112,7 @@ class Node(ABC):
         return self.__output_class.field_annotation
 
     @output_field_annotation.setter
-    def output_field_annotation(self, typ: type):
+    def output_field_annotation(self, typ: type | None):
         assert self.__output_class.field_annotation == Undefined
         self.__output_class.field_annotation = typ
 
@@ -141,7 +142,7 @@ class Node(ABC):
         output_model.__doc__ = self.description
         return output_model
 
-    def _children_to_fields(self) -> Dict[str, Tuple[Any]]:
+    def _children_to_fields(self) -> Dict[str, Tuple[type, FieldInfo]]:
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
         for ch in self.children:
             ch: Node
@@ -149,7 +150,7 @@ class Node(ABC):
         return ret
 
     @staticmethod
-    def extract_statement_list(statement: Statement, attr_name: str) -> List[Node]:
+    def extract_statement_list(statement: Statement, attr_name: str) -> List[Type[Node]]:
         rv = getattr(statement, attr_name, [])
         return [ch for ch in map(NodeFactory.generate, rv) if ch is not None]
 
@@ -158,7 +159,7 @@ class NodeFactory:
     # src: statements.data_definition_keywords
     @dataclass
     class ClassMapping:
-        maps_to: type
+        maps_to: Callable[..., Type[Node]]
 
         def __call__(self, *args: Any, **kwds: Any) -> Any:
             return self.maps_to(*args, **kwds)
@@ -167,7 +168,7 @@ class NodeFactory:
     _implemented_mappings: Dict[str, ClassMapping] = {}
 
     @classmethod
-    def register_statement_class(cls, keywords: List[str]):
+    def register_statement_class(cls: Type[Self], keywords: List[str]):
         for keyword in keywords:
             assert keyword not in cls._implemented_mappings.keys()
 
@@ -178,7 +179,7 @@ class NodeFactory:
         return _register
 
     @classmethod
-    def generate(cls, stm: Statement) -> Node:
+    def generate(cls: Type[Self], stm: Type[Statement]) -> Type[Node]:
         assert isinstance(stm, Statement)
         if stm.keyword not in cls._implemented_mappings.keys():
             raise Exception(f'"{stm.keyword}" has not yet been implemented as a type.')
@@ -214,7 +215,7 @@ class LeafNode(Node):
 
 
 @NodeFactory.register_statement_class(['container'])
-class ModuleNode(Node):
+class ContainerNode(Node):
     def __init__(self, module: ContainerStatement) -> None:
         logger.debug(f'Parsing {__class__}')
         assert isinstance(module, ContainerStatement)
