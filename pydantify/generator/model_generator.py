@@ -6,7 +6,7 @@ from typing import Callable, List, Type
 from pydantic.main import BaseModel
 from pydantify.models.yang_sources_tracker import YANGSourcesTracker
 
-from ..models.models import NodeFactory
+from ..models.models import ModelRoot
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 import logging
 from pathlib import Path
@@ -28,7 +28,7 @@ def dynamically_serialized_helper_function():
 
             data = json.load(fd)
             print(f"Input: {data}")
-            a = InterfacesModuleNode(**data)
+            a = Model(**data)
             print("Instantiation successful!")
             output = a.json(exclude_defaults=True, by_alias=True)
             print(f"Output: {output}")
@@ -62,7 +62,7 @@ class ModelGenerator:
     def __generate(cls: Type[Self], modules: List[ModSubmodStatement], fd: TextIOWrapper):
         """Generates and yealds"""
         for module in modules:
-            mod = NodeFactory.generate(module)
+            mod = ModelRoot(module)
             json = cls.custom_dump(mod.to_pydantic_model())
             parser = JsonSchemaParser(
                 json,

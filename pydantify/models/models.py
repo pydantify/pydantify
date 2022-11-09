@@ -77,6 +77,9 @@ class Node(ABC):
         self.__output_class: GeneratedClass = GeneratedClass()
         YANGSourcesTracker.track_from_pos(stm.pos)
 
+    def get_output_class(self) -> GeneratedClass:
+        return self.__output_class
+
     @property
     def output_class_name(self):
         """Name of the output class."""
@@ -263,7 +266,18 @@ class ModuleNode(Node):
         super().__init__(module)
 
         self.output_class_name = f'{self.arg.capitalize()}ModuleNode'
-        self.output_field_annotation = None
-        self.output_field_info = FieldInfo(...)
         self.output_class_type = self.to_pydantic_model()
+        self.output_field_annotation = self.output_class_type
+        self.output_field_info = FieldInfo(...)
         pass
+
+
+class ModelRoot:
+    def __init__(self, model: ModSubmodStatement):
+        self.model: ModSubmodStatement = model
+        self.module: ModuleNode = NodeFactory.generate(model)
+
+    def to_pydantic_model(self) -> Type[BaseModel]:
+        fields = {self.model.arg: self.module.get_output_class().to_field()}
+        output_model: Type[BaseModel] = create_model('Model', __base__=(BaseModel,), **fields)
+        return output_model
