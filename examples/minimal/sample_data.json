@@ -2,6 +2,6 @@
     "interfaces": {
         "address": "Test",
         "name": "Nice",
-        "port": "25"
+        "port": 25
     }
 }

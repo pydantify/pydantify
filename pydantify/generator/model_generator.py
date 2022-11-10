@@ -55,10 +55,10 @@ class ModelGenerator:
     @classmethod
     def generate(cls: Type[Self], ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper):
         """Generate and write output model to a given file descriptor."""
-        fd.write(cls.__function_content_to_source_code(custom_model_config))
+        cls.__generate(modules, fd)
         fd.write('\n')
 
-        cls.__generate(modules, fd)
+        fd.write(cls.__function_content_to_source_code(custom_model_config))
         fd.write('\n\n')
 
         fd.write(cls.__function_content_to_source_code(dynamically_serialized_helper_function))
