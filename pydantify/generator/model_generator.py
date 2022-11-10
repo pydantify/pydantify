@@ -35,6 +35,11 @@ def dynamically_serialized_helper_function():
             assert json.loads(output) == data
             print("Serialization successful!")
 
+def custom_model_config():
+    from pydantic import BaseConfig
+
+    BaseConfig.allow_population_by_field_name = True
+
 
 def validate():
     pass
@@ -50,8 +55,12 @@ class ModelGenerator:
     @classmethod
     def generate(cls: Type[Self], ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper):
         """Generate and write output model to a given file descriptor."""
+        fd.write(cls.__function_content_to_source_code(custom_model_config))
+        fd.write('\n')
+
         cls.__generate(modules, fd)
         fd.write('\n\n')
+
         fd.write(cls.__function_content_to_source_code(dynamically_serialized_helper_function))
         if cls.include_verification_code:
             fd.write('\n\n')
