@@ -6,18 +6,22 @@ module interfaces {
 
   description 'Example demonstarating leafref nodes';
 
-  list interface {
+  list interfaces {
     key "name";
-    leaf test {
-      type string;
-    }
+    description "List of configured device interfaces";
     leaf name {
       type string;
+      description "Interface name";
+    }
+    leaf ip {
+      type string;
+      description "Interface IP";
     }
   }
   leaf mgmt-interface {
     type leafref {
-      path "../interface/name";
+      path "../interfaces/name";
     }
+    description "Dedicated management interface";
   }
 }

@@ -26,14 +26,17 @@ def dynamically_serialized_helper_function():
         with open(Path(__file__).parent.joinpath("sample_data.json")) as fd:
             import json
 
-            data = json.load(fd)
-            print(f"Input: {data}")
-            a = Model(**data)
+            input = json.load(fd)
+            print(f"{input=}")
+            model = Model(**input)
             print("Instantiation successful!")
-            output = a.json(exclude_defaults=True, by_alias=True)
-            print(f"Output: {output}")
-            assert json.loads(output) == data
+
+            output = model.json(exclude_defaults=True, by_alias=True)
+            print(f"{output=}")
+
+            assert json.loads(output) == input
             print("Serialization successful!")
+
 
 def custom_model_config():
     from pydantic import BaseConfig
@@ -56,16 +59,16 @@ class ModelGenerator:
     def generate(cls: Type[Self], ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper):
         """Generate and write output model to a given file descriptor."""
         cls.__generate(modules, fd)
-        fd.write('\n')
+        fd.write('\n\n')
 
         fd.write(cls.__function_content_to_source_code(custom_model_config))
         fd.write('\n\n')
 
-        fd.write(cls.__function_content_to_source_code(dynamically_serialized_helper_function))
         if cls.include_verification_code:
-            fd.write('\n\n')
-            fd.write(cls.__function_to_source_code(validate))
-            YANGSourcesTracker.copy_yang_files(input_root=cls.input_dir, output_dir=cls.output_dir)
+            fd.write(cls.__function_content_to_source_code(dynamically_serialized_helper_function))
+            # fd.write('\n\n')
+            # fd.write(cls.__function_to_source_code(validate))
+        YANGSourcesTracker.copy_yang_files(input_root=cls.input_dir, output_dir=cls.output_dir)
 
     @classmethod
     def __generate(cls: Type[Self], modules: List[ModSubmodStatement], fd: TextIOWrapper):
