@@ -52,7 +52,7 @@ class ModelGenerator:
     """In charge of generating the output model"""
 
     include_verification_code: bool = False
-    input_dir: Path
+    input_dir: Path = None
     output_dir: Path
 
     @classmethod

@@ -78,7 +78,11 @@ def parse_cli_arguments() -> List[str]:
     logger.setLevel(logging.DEBUG if args.verbose else logging.INFO)
     ModelGenerator.include_verification_code = args.verify
 
-    ModelGenerator.input_dir = Path(args.input_dir).absolute() if args.input_dir is not None else None
+    if args.input_dir is not None:
+        input_dir = Path(args.input_dir).absolute()
+        ModelGenerator.input_dir = input_dir
+        relay_args.append(f'--path={input_dir}')
+
     output_dir = Path(args.output_dir).absolute()
     os.makedirs(output_dir, exist_ok=True)
     ModelGenerator.output_dir = output_dir
