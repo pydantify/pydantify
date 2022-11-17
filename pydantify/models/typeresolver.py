@@ -72,8 +72,9 @@ class TypeResolver:
         match (spec.__class__.__qualname__):
             case PathTypeSpec.__qualname__:
                 target_statement = getattr(spec, 'i_target_node')
-                target = cls.get_model_if_known(target_statement)
-                return target.output_class_type if target is not None else NodeFactory.generate(target_statement)
+                if cls.__mapping.get(target_statement, None) is None:
+                    NodeFactory.generate(target_statement)
+                return cls.__mapping.get(target_statement)
             case IntTypeSpec.__qualname__:
                 return int
             case StringTypeSpec.__qualname__:

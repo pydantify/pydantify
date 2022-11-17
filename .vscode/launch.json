@@ -69,6 +69,25 @@
             },
         },
         {
+            "name": "Leafref Trimmed",
+            "type": "python",
+            "request": "launch",
+            "module": "pydantify",
+            "console": "integratedTerminal",
+            "args": [
+                "-v",
+                "--keep-comments",
+                "--canonical",
+                "-i=${workspaceFolder}/examples/with_leafref/",
+                "-t=\"/interfaces/mgmt-interface\"",
+                "-V",
+                "${workspaceFolder}/examples/with_leafref/interfaces.yang",
+            ],
+            "env": {
+                "PYTHONPATH": "__pypackages__/3.10/lib",
+            },
+        },
+        {
             "name": "With Typedef",
             "type": "python",
             "request": "launch",
