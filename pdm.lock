@@ -78,8 +78,11 @@ summary = "Cross-platform colored terminal text."
 
 [[package]]
 name = "datamodel-code-generator"
-version = "0.13.5"
-requires_python = ">=3.6.1,<4.0.0"
+version = "0.0.0"
+requires_python = ">=3.7,<4.0"
+git = "https://github.com/koxudaxi/datamodel-code-generator.git"
+ref = "master"
+revision = "cc5ce6baf5f89ac108c394d23f57cda15bcf5589"
 summary = "Datamodel Code Generator"
 dependencies = [
     "PySnooper<2.0.0,>=0.4.1",
@@ -91,7 +94,8 @@ dependencies = [
     "jinja2<4.0,>=2.10.1",
     "openapi-spec-validator<0.4,>=0.2.8",
     "prance<1.0,>=0.18.2",
-    "pydantic[email]<2.0,>=1.9.0; python_version >= \"3.10\"",
+    "pydantic[email]<2.0,>=1.10.0; python_version >= \"3.11\"",
+    "pydantic[email]<2.0,>=1.9.0; python_version >= \"3.10\" and python_version < \"3.11\"",
     "toml<1.0.0,>=0.10.0",
     "typed-ast>=1.5.0; python_full_version >= \"3.9.8\"",
 ]
@@ -423,7 +427,7 @@ summary = "Module for decorators, wrappers and monkey patching."
 
 [metadata]
 lock_version = "4.0"
-content_hash = "sha256:98b713b4bf69d21809f00fd811e41fd667931872b6eed376aa2af9210a505fb6"
+content_hash = "sha256:579c585f64c0d1404dc4e50d33f454b8900c1c86d54726fd1ba71c10a8f6659a"
 
 [metadata.files]
 "argcomplete 2.0.0" = [
@@ -484,10 +488,6 @@ content_hash = "sha256:98b713b4bf69d21809f00fd811e41fd667931872b6eed376aa2af9210
 "colorama 0.4.6" = [
     {url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {url = "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
-]
-"datamodel-code-generator 0.13.5" = [
-    {url = "https://files.pythonhosted.org/packages/30/f4/a99cae23e6c1077dc3d46778dae649ce001252e8a5a04bc033ec319cdff8/datamodel_code_generator-0.13.5-py3-none-any.whl", hash = "sha256:32d50923f3e1f7e35c52a960c3bc828c6e96e832a871102dbe5d2099bfbf8c4b"},
-    {url = "https://files.pythonhosted.org/packages/48/23/d2e82c9c1ad802c5b06bcc9c7aa79678a1ebf93accec3594a27a042da21c/datamodel_code_generator-0.13.5.tar.gz", hash = "sha256:6987e2383adf12221a9de9b55914e81b0a5cae052e2a00f2c7f0c0d7c91de37b"},
 ]
 "dill 0.3.6" = [
     {url = "https://files.pythonhosted.org/packages/7c/e7/364a09134e1062d4d5ff69b853a56cf61c223e0afcc6906b6832bcd51ea8/dill-0.3.6.tar.gz", hash = "sha256:e5db55f3687856d8fbdab002ed78544e1c4559a130302693d839dfe8f93f2373"},

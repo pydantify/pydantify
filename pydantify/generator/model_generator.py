@@ -83,6 +83,7 @@ class ModelGenerator:
                 use_annotated=True,
                 field_constraints=True,
                 use_schema_description=True,
+                use_field_description=True,
                 reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
                 strict_nullable=True,
             )

@@ -205,7 +205,10 @@ class LeafNode(Node):
 
         self.output_class_name = f'{self.arg.capitalize()}Leaf'
         self.output_field_annotation = None
-        self.output_field_info = FieldInfo(self.default if self.default is not None else ...)
+        self.output_field_info = FieldInfo(
+            self.default if self.default is not None else ...,
+            description=self.description,
+        )
         self.output_class_type = self.to_pydantic_model()
 
     def get_base_class(self) -> type:
