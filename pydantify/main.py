@@ -39,7 +39,12 @@ def parse_cli_arguments() -> List[str]:
         epilog='NOTE: All unknown arguments will be passed to Pyang as-is and without guarantees.',
     )
     parser.add_argument(
-        '-v', '--verbose', action='store_true', dest='verbose', help='Enables debug output', default=False
+        '-v',
+        '--verbose',
+        action='store_true',
+        dest='verbose',
+        help='Enables debug output',
+        default=False,
     )
     parser.add_argument(
         '-V',
@@ -69,6 +74,13 @@ def parse_cli_arguments() -> List[str]:
         action='store',
         help='The YANG file containing the entrypoint to the model to evaluate.',
     )
+    parser.add_argument(
+        '-t',
+        '--trim-path',
+        dest='trim_path',
+        help='Get only the specified branch of the whole tree.',
+        default=None,
+    )
     relay_args: List[str] = []
 
     # Parse
@@ -82,6 +94,8 @@ def parse_cli_arguments() -> List[str]:
         input_dir = Path(args.input_dir).absolute()
         ModelGenerator.input_dir = input_dir
         relay_args.append(f'--path={input_dir}')
+
+    ModelGenerator.trim_path = args.trim_path
 
     output_dir = Path(args.output_dir).absolute()
     os.makedirs(output_dir, exist_ok=True)

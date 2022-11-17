@@ -273,11 +273,11 @@ class ModuleNode(Node):
 
 
 class ModelRoot:
-    def __init__(self, model: ModSubmodStatement):
-        self.model: ModSubmodStatement = model
-        self.module: ModuleNode = NodeFactory.generate(model)
+    def __init__(self, model: Type[Statement]):
+        self.model: Type[Statement] = model
+        self.root_node: ModuleNode = NodeFactory.generate(model)
 
     def to_pydantic_model(self) -> Type[BaseModel]:
-        fields = {self.model.arg: self.module.get_output_class().to_field()}
+        fields = {self.model.arg: self.root_node.get_output_class().to_field()}
         output_model: Type[BaseModel] = create_model('Model', __base__=(BaseModel,), **fields)
         return output_model
