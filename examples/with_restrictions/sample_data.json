@@ -1,0 +1,10 @@
+{
+    "interfaces": {
+        "interfaces": {
+            "complex-address": "255.128.1.1",
+            "name": "Nice",
+            "simple-port": 25,
+            "complex-port": 25
+        }
+    }
+}

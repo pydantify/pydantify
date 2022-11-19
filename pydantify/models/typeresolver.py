@@ -1,8 +1,8 @@
-from typing import Dict, Type, TYPE_CHECKING
+from typing import Dict, List, Type, TYPE_CHECKING
 from pyang.statements import Statement
-from pyang.types import TypeSpec
+from pyang.types import TypeSpec, XSDPattern
 from typing_extensions import Self
-from pydantic.types import ConstrainedInt, conint
+from pydantic.types import ConstrainedInt, conint, constr
 
 if TYPE_CHECKING:
     from pydantify.models.models import Node
@@ -88,5 +88,19 @@ class TypeResolver:
             case BooleanTypeSpec.__qualname__:
                 return bool
             case PatternTypeSpec.__qualname__:
-                return str  # TODO: constr()?
+                pattern = cls.__resolve_pattern(patterns=spec.res)
+                return constr(regex=pattern)
         assert False, 'Spec not yet implemented.'
+
+    @classmethod
+    def __resolve_pattern(cls, patterns: List[XSDPattern]):
+        comnbined_pattern: str = '^'
+        for pattern in patterns:
+            pattern: str = pattern.spec
+            if not pattern.startswith('^'):
+                pattern = '^' + pattern
+            if not pattern.endswith('$'):
+                pattern += '$'
+            pattern = f'(?={pattern})'
+            comnbined_pattern += pattern
+        return comnbined_pattern + '.*$'  # Capture everything if all lookaheads suceed
