@@ -101,6 +101,5 @@ class TypeResolver:
                 pattern = '^' + pattern
             if not pattern.endswith('$'):
                 pattern += '$'
-            pattern = f'(?={pattern})'
-            comnbined_pattern += pattern
+            comnbined_pattern += f'(?={pattern})'
         return comnbined_pattern + '.*$'  # Capture everything if all lookaheads suceed
