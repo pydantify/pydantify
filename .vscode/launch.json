@@ -22,9 +22,9 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/minimal/",
+                "-i=${workspaceFolder}/tests/examples/minimal/",
                 "-V",
-                "${workspaceFolder}/examples/minimal/interfaces.yang",
+                "${workspaceFolder}/tests/examples/minimal/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",

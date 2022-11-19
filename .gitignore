@@ -7,6 +7,6 @@ out.py
 *.jsonschema
 *.png
 *.tmp
-examples/cisco
+tests/examples/cisco
 .idea
 out
