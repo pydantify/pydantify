@@ -74,7 +74,7 @@ class TypeResolver:
                 target_statement = getattr(spec, 'i_target_node')
                 if cls.__mapping.get(target_statement, None) is None:
                     NodeFactory.generate(target_statement)
-                return cls.__mapping.get(target_statement)
+                return cls.__mapping.get(target_statement).output_class_type
             case IntTypeSpec.__qualname__:
                 return int
             case StringTypeSpec.__qualname__:
