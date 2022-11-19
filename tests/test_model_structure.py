@@ -51,3 +51,13 @@ def test_minimal(tmp_path: Path):
         args=[],
     )
     assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
+
+
+def test_minimal_trimmed(tmp_path: Path):
+    input_folder = Path(f'{__package__}/examples/minimal').absolute()
+    run_pydantify(
+        input_folder=input_folder,
+        output_folder=tmp_path,
+        args=['-t=/interfaces/interfaces/address'],
+    )
+    assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected_trimmed.py')
