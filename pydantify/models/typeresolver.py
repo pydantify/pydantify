@@ -2,6 +2,7 @@ from typing import Dict, Type, TYPE_CHECKING
 from pyang.statements import Statement
 from pyang.types import TypeSpec
 from typing_extensions import Self
+from pydantic.types import ConstrainedInt, conint
 
 if TYPE_CHECKING:
     from pydantify.models.models import Node
@@ -51,13 +52,13 @@ class TypeResolver:
             StringTypeSpec,
             PatternTypeSpec,
             PathTypeSpec,
+            RangeTypeSpec,
             # TODO: Implement the following:
             TypeSpec,
             BitTypeSpec,
             BitsTypeSpec,
             EnumTypeSpec,
             EmptyTypeSpec,
-            RangeTypeSpec,
             UnionTypeSpec,
             BinaryTypeSpec,
             LengthTypeSpec,
@@ -70,13 +71,18 @@ class TypeResolver:
         from pydantify.models.models import NodeFactory
 
         match (spec.__class__.__qualname__):
+            case RangeTypeSpec.__qualname__:
+                base: ConstrainedInt = cls.__resolve_type_spec(spec.base)
+                base.ge = spec.min
+                base.le = spec.max
+                return base
             case PathTypeSpec.__qualname__:
                 target_statement = getattr(spec, 'i_target_node')
                 if cls.__mapping.get(target_statement, None) is None:
                     NodeFactory.generate(target_statement)
                 return cls.__mapping.get(target_statement).output_class_type
             case IntTypeSpec.__qualname__:
-                return int
+                return conint(ge=spec.min, le=spec.max)
             case StringTypeSpec.__qualname__:
                 return str
             case BooleanTypeSpec.__qualname__:
