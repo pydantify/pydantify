@@ -54,6 +54,7 @@ class ModelGenerator:
     include_verification_code: bool = False
     input_dir: Path = None
     output_dir: Path
+    trim_path: str = None
 
     @classmethod
     def generate(cls: Type[Self], ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper):
@@ -72,8 +73,13 @@ class ModelGenerator:
 
     @classmethod
     def __generate(cls: Type[Self], modules: List[ModSubmodStatement], fd: TextIOWrapper):
-        """Generates and yealds"""
+        """Generates and yields"""
+
         for module in modules:
+            if cls.trim_path is not None:
+                split_path = cls.split_path(cls.trim_path)
+                module = cls.trim(module, split_path)
+            assert module is not None
             mod = ModelRoot(module)
             json = cls.custom_dump(mod.to_pydantic_model())
             parser = JsonSchemaParser(
@@ -90,6 +96,28 @@ class ModelGenerator:
             result = parser.parse()
             fd.write(result)
             pass
+
+    @classmethod
+    def split_path(cls: Type[Self], path: str) -> List[str]:
+        ret = path.split('/')
+        if ret[0] == '':
+            ret = ret[1:]
+        return ret
+
+    @classmethod
+    def trim(cls: Type[Self], statement: Type[Statement], path: List[str]) -> Type[Statement]:
+        if path:
+            arg, path = path[0], path[1:]
+            if arg == statement.arg:
+                if path:
+                    for child in statement.i_children:
+                        child: Type[Statement]
+                        child_statement = cls.trim(child, path)
+                        if child_statement is not None:
+                            return child_statement
+                else:
+                    return statement
+        return None
 
     @classmethod
     def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> str:
