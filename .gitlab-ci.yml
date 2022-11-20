@@ -16,13 +16,28 @@ run_pytests:
   script:
     # Run unit tests
     - pdm run coverage run --source=pydantify -m pytest tests -v
-    - pdm run coverage report --precision=2
+    - pdm run coverage report -m --precision=2 --omit="*/run.py"
     - pdm run coverage xml
+    - pdm run coverage html
   coverage: '/TOTAL.+?(\d+.\d+\%)/'
   artifacts:
       paths:
           - coverage.xml
+          - htmlcov/
       reports:
         coverage_report:
           coverage_format: cobertura
           path: coverage.xml
+
+pages:
+  stage: deploy
+  dependencies:
+    - run_pytests
+  script:
+    - mv htmlcov/ public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  # only:
+  #   - master
