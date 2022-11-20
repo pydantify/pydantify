@@ -13,6 +13,7 @@ from pyang.statements import (
     ListStatement,
     ModSubmodStatement,
     Statement,
+    TypedefStatement,
 )
 from pydantic import BaseConfig, BaseModel as PydanticBaseModel, create_model
 from pydantic.fields import FieldInfo, ModelField, Undefined
@@ -197,6 +198,32 @@ class NodeFactory:
             return node
 
 
+class TypeDef(Node):
+    def __init__(self, stm: TypedefStatement) -> None:
+        super().__init__(stm)
+
+        self.output_class_name = f'{self.arg.capitalize()}Type'
+        self.output_field_annotation = None
+        self.output_field_info = FieldInfo(
+            self.default if self.default is not None else ...,
+            description=self.description,
+        )
+        self.output_class_type = self.to_pydantic_model()
+
+    def get_base_class(self) -> type:
+        base = TypeResolver.resolve_statement(self.raw_statement)
+        return base
+
+    def to_pydantic_model(self) -> Type[BaseModel]:
+        """Generates the output class representing this Typedef."""
+        base_type = TypeResolver.resolve_statement(self.raw_statement)
+        output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(BaseModel,), **{})
+        output_model.__fields__['__root__'] = ModelField.infer(
+            name='__root__', value=Undefined, annotation=base_type, class_validators={}, config=BaseModel.Config
+        )
+        return output_model
+
+
 @NodeFactory.register_statement_class(['leaf'])
 class LeafNode(Node):
     def __init__(self, stm: LeafLeaflistStatement) -> None:
@@ -221,7 +248,7 @@ class LeafNode(Node):
         base = self.get_base_class()
         if isinstance(base, Node):
             base: Node
-            base = base.output_field_annotation
+            base = base.output_class_type
         output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(BaseModel,), **fields)
         output_model.__fields__['__root__'] = ModelField.infer(
             name='__root__', value=Undefined, annotation=base, class_validators={}, config=BaseModel.Config

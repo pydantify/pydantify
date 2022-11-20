@@ -32,17 +32,22 @@ class TypeResolver:
         # If not known, check type definition
         type = stm.search_one(keyword='type')
         typespec = getattr(type, 'i_type_spec', None)
-        if typespec is not None:
-            return cls.__resolve_type_spec(typespec)
-        # If type is a typedef
         typedef = getattr(type, 'i_typedef', None)
 
-        assert False  ## Not yet implemented
+        if typedef is not None:  # Type is a typedef
+            ret = cls.__mapping.get(typedef, None)
+            if ret is None:
+                from pydantify.models.models import TypeDef
 
-        base_type = None
-        if typedef is not None:
-            base_type = cls.resolve_statement(typedef)
-            # TODO: Register type
+                ret = TypeDef(typedef)
+                cls.register(typedef, ret)
+            return ret
+
+        if typespec is not None:  # Type is a base type
+            resolved = cls.__resolve_type_spec(typespec)
+            return resolved
+
+        assert False  ## Not yet implemented
 
     @classmethod
     def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> Type:
