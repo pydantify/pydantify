@@ -8,9 +8,7 @@ authors = [
 ]
 dependencies = [
     "pydantic>=1.10.2",
-    "requests>=2.28.1",
-    "datamodel-code-generator>=0.13.1",
-    "genson>=1.2.2",
+    "datamodel-code-generator>=0.14.0",
     "pyang>=2.5.3",
 ]
 requires-python = ">=3.10"

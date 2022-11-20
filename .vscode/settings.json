@@ -6,7 +6,15 @@
         "__pypackages__/3.10/lib"
     ],
     // Remove ignored files from project sidebar
-    //"explorer.excludeGitIgnore": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "__pypackages__": true
+    },
     // Formatting and linting
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,

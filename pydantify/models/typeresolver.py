@@ -1,7 +1,8 @@
-from typing import Dict, Type, TYPE_CHECKING
+from typing import Dict, List, Type, TYPE_CHECKING
 from pyang.statements import Statement
-from pyang.types import TypeSpec
+from pyang.types import TypeSpec, XSDPattern
 from typing_extensions import Self
+from pydantic.types import ConstrainedInt, conint, constr
 
 if TYPE_CHECKING:
     from pydantify.models.models import Node
@@ -51,13 +52,13 @@ class TypeResolver:
             StringTypeSpec,
             PatternTypeSpec,
             PathTypeSpec,
+            RangeTypeSpec,
             # TODO: Implement the following:
             TypeSpec,
             BitTypeSpec,
             BitsTypeSpec,
             EnumTypeSpec,
             EmptyTypeSpec,
-            RangeTypeSpec,
             UnionTypeSpec,
             BinaryTypeSpec,
             LengthTypeSpec,
@@ -70,16 +71,35 @@ class TypeResolver:
         from pydantify.models.models import NodeFactory
 
         match (spec.__class__.__qualname__):
+            case RangeTypeSpec.__qualname__:
+                base: ConstrainedInt = cls.__resolve_type_spec(spec.base)
+                base.ge = spec.min
+                base.le = spec.max
+                return base
             case PathTypeSpec.__qualname__:
                 target_statement = getattr(spec, 'i_target_node')
-                target = cls.get_model_if_known(target_statement)
-                return target.output_class_type if target is not None else NodeFactory.generate(target_statement)
+                if cls.__mapping.get(target_statement, None) is None:
+                    NodeFactory.generate(target_statement)
+                return cls.__mapping.get(target_statement).output_class_type
             case IntTypeSpec.__qualname__:
-                return int
+                return conint(ge=spec.min, le=spec.max)
             case StringTypeSpec.__qualname__:
                 return str
             case BooleanTypeSpec.__qualname__:
                 return bool
             case PatternTypeSpec.__qualname__:
-                return str  # TODO: constr()?
+                pattern = cls.__resolve_pattern(patterns=spec.res)
+                return constr(regex=pattern)
         assert False, 'Spec not yet implemented.'
+
+    @classmethod
+    def __resolve_pattern(cls, patterns: List[XSDPattern]):
+        comnbined_pattern: str = '^'
+        for pattern in patterns:
+            pattern: str = pattern.spec
+            if not pattern.startswith('^'):
+                pattern = '^' + pattern
+            if not pattern.endswith('$'):
+                pattern += '$'
+            comnbined_pattern += f'(?={pattern})'
+        return comnbined_pattern + '.*$'  # Capture everything if all lookaheads suceed
