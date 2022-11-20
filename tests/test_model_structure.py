@@ -12,18 +12,21 @@ class ParsedAST:
         with file.open() as f:
             self.ast = ast.parse(f.read())
         self.body: list[ast.stmt] = self.ast.body
-        self.classes: list[str] = [c.name for c in self.body if isinstance(c, ast.ClassDef)].sort()
-
-    def __eq__(self, __o: Self) -> bool:
-        assert self.__class__ == __o.__class__
-        return len(self.body) == len(__o.body) and self.classes == __o.classes
+        self.classes: list[str] = []
+        for c in self.body:
+            if isinstance(c, ast.ClassDef):
+                bases = ", ".join([b.id for b in c.bases])
+                self.classes.append(f'{c.name}({bases})')
+        self.classes.sort()
 
 
 @validate_arguments
-def assert_python_sources_equal(f1: Path, f2: Path):
-    ast1 = ParsedAST(f1)
-    ast2 = ParsedAST(f2)
-    assert ast1 == ast2
+def assert_python_sources_equal(generated: Path, expected: Path):
+    ast1 = ParsedAST(generated)
+    ast2 = ParsedAST(expected)
+    for a, b in zip(ast1.classes, ast2.classes):
+        assert a == b, f'Missmatch {a} vs {b}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
+    assert len(ast1.body) == len(ast2.body), f'Got: "{ast1.body}"\nExpected: "{ast2.body}"'
 
 
 def run_pydantify(input_folder: Path, output_folder: Path, args: List[str] = []):
@@ -61,3 +64,13 @@ def test_minimal_trimmed(tmp_path: Path):
         args=['-t=/interfaces/interfaces/address'],
     )
     assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected_trimmed.py')
+
+
+def test_with_typedef(tmp_path: Path):
+    input_folder = Path(f'{__package__}/examples/with_typedef').absolute()
+    run_pydantify(
+        input_folder=input_folder,
+        output_folder=tmp_path,
+        args=[],
+    )
+    assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
