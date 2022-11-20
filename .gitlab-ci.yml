@@ -17,8 +17,8 @@ run_pytests:
     # Run unit tests
     - pdm run coverage run --source=pydantify -m pytest tests -v
     - pdm run coverage report -m --precision=2 --omit="*/run.py"
-    - pdm run coverage xml
-    - pdm run coverage html
+    - pdm run coverage xml --omit="*/run.py"
+    - pdm run coverage html --omit="*/run.py"
   coverage: '/TOTAL.+?(\d+.\d+\%)/'
   artifacts:
       paths:
