@@ -30,6 +30,7 @@ class ParsedAST:
 def assert_python_sources_equal(generated: Path, expected: Path):
     ast1 = ParsedAST(generated)
     ast2 = ParsedAST(expected)
+    LOGGER.info(f'"Comparing:\n{"Expected":9}: {ast2.classes}\n{"Got":9}: {ast1.classes}')
     for a, b in zip(ast1.classes, ast2.classes):
         assert a == b, f'Missmatch {a} vs {b}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
     assert len(ast1.body) == len(ast2.body), f'Got: "{ast1.body}"\nExpected: "{ast2.body}"'
