@@ -37,3 +37,9 @@ class_diagram = "pyreverse -o plantuml -d graphs --project pydantify --colorized
 [build-system]
 requires = ["pdm-pep517>=0.12.0"]
 build-backend = "pdm.pep517.api"
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "[%(levelname)8s] (%(filename)s:%(lineno)s): %(message)s "
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"

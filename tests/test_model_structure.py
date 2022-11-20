@@ -4,6 +4,12 @@ from typing import List
 from pydantic import validate_arguments
 from pathlib import Path
 import sys
+import logging
+from unittest.mock import patch
+
+import pytest
+
+LOGGER = logging.getLogger(__name__)
 
 
 class ParsedAST:
@@ -32,18 +38,27 @@ def assert_python_sources_equal(generated: Path, expected: Path):
 def run_pydantify(input_folder: Path, output_folder: Path, args: List[str] = []):
     model = input_folder / 'interfaces.yang'
     args = [
+        sys.argv[0],
         *args,
         f'-i={input_folder}',
         f'-o={output_folder}',
         str(model),
     ]
-    sys.argv[1:] = args
-    from pydantify.main import main
+    with patch.object(sys, 'argv', args):
+        from pydantify.main import main
 
-    try:
-        main()
-    except SystemExit:
-        pass
+        try:
+            main()
+        except SystemExit:
+            pass
+
+
+@pytest.fixture(autouse=True)
+def reset_optparse():
+    from pyang import plugin
+
+    # Reset plugins. Otherwise pyang creates cross-test side-effects. TODO: Better way?
+    plugin.plugins = []
 
 
 def test_minimal(tmp_path: Path):
