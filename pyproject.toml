@@ -10,7 +10,6 @@ dependencies = [
     "pydantic>=1.10.2",
     "datamodel-code-generator>=0.14.0",
     "pyang>=2.5.3",
-    "pytest>=7.2.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -30,7 +29,7 @@ Repository = "https://gitlab.ost.ch/pydantic-sa/yang2pydantic"
 [project.optional-dependencies]
 [tool.pdm]
 [tool.pdm.dev-dependencies]
-dev = ["autopep8>=1.7.0", "black>=22.10.0", "pylint>=2.15.5"]
+dev = ["autopep8>=1.7.0", "black>=22.10.0", "pylint>=2.15.5", "pytest>=7.2.0"]
 
 [tool.pdm.scripts]
 class_diagram = "pyreverse -o plantuml -d graphs --project pydantify --colorized pydantify"
