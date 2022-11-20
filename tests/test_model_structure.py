@@ -18,22 +18,33 @@ class ParsedAST:
         with file.open() as f:
             self.ast = ast.parse(f.read())
         self.body: list[ast.stmt] = self.ast.body
-        self.classes: list[str] = []
+        self.classes: dict[str, ast.ClassDef] = dict()
         for c in self.body:
             if isinstance(c, ast.ClassDef):
                 bases = ", ".join([b.id for b in c.bases])
-                self.classes.append(f'{c.name}({bases})')
-        self.classes.sort()
+                self.classes[f'{c.name}({bases})'] = c
 
-
-@validate_arguments
-def assert_python_sources_equal(generated: Path, expected: Path):
-    ast1 = ParsedAST(generated)
-    ast2 = ParsedAST(expected)
-    LOGGER.info(f'"Comparing:\n{"Expected":9}: {ast2.classes}\n{"Got":9}: {ast1.classes}')
-    for a, b in zip(ast1.classes, ast2.classes):
-        assert a == b, f'Missmatch {a} vs {b}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
-    assert len(ast1.body) == len(ast2.body), f'Got: "{ast1.body}"\nExpected: "{ast2.body}"'
+    @validate_arguments
+    @staticmethod
+    def assert_python_sources_equal(generated: Path, expected: Path):
+        ast1 = ParsedAST(generated)
+        ast2 = ParsedAST(expected)
+        LOGGER.info(f'"Comparing:\n{"Expected":9}: {ast2.classes.keys()}\n{"Got":9}: {ast1.classes.keys()}')
+        for a, b in zip(ast1.classes.keys(), ast2.classes.keys()):
+            assert a == b, f'Missmatch {a} vs {b}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
+        for a, b in zip(ast1.classes.values(), ast2.classes.values()):
+            # Compare classes
+            assert len(a.body) == len(b.body)
+            for a2, b2 in zip(a.body, b.body):
+                # Compare class members
+                annotation_a: ast.Name = getattr(a2, 'annotation', None)
+                annotation_b: ast.Name = getattr(b2, 'annotation', None)
+                # Compare annotation
+                assert (annotation_a is None) == (annotation_b is None)
+                if annotation_a is not None:
+                    # Compare annotated type
+                    assert getattr(annotation_a, 'id', None) == getattr(annotation_b, 'id', None)
+        assert len(ast1.body) == len(ast2.body)
 
 
 def run_pydantify(input_folder: Path, output_folder: Path, args: List[str] = []):
@@ -69,7 +80,7 @@ def test_minimal(tmp_path: Path):
         output_folder=tmp_path,
         args=[],
     )
-    assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
+    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
 
 
 def test_minimal_trimmed(tmp_path: Path):
@@ -79,7 +90,7 @@ def test_minimal_trimmed(tmp_path: Path):
         output_folder=tmp_path,
         args=['-t=/interfaces/interfaces/address'],
     )
-    assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected_trimmed.py')
+    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected_trimmed.py')
 
 
 def test_with_typedef(tmp_path: Path):
@@ -89,7 +100,7 @@ def test_with_typedef(tmp_path: Path):
         output_folder=tmp_path,
         args=[],
     )
-    assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
+    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
 
 
 def test_with_leafref(tmp_path: Path):
@@ -99,7 +110,7 @@ def test_with_leafref(tmp_path: Path):
         output_folder=tmp_path,
         args=[],
     )
-    assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
+    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
 
 
 def test_with_restrictions(tmp_path: Path):
@@ -109,7 +120,7 @@ def test_with_restrictions(tmp_path: Path):
         output_folder=tmp_path,
         args=[],
     )
-    assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
+    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
 
 
 def test_with_uses(tmp_path: Path):
@@ -119,4 +130,4 @@ def test_with_uses(tmp_path: Path):
         output_folder=tmp_path,
         args=[],
     )
-    assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
+    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
