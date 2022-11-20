@@ -150,9 +150,9 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/with_restrictions/",
+                "-i=${workspaceFolder}/tests/examples/with_restrictions/",
                 "-V",
-                "${workspaceFolder}/examples/with_restrictions/interfaces.yang",
+                "${workspaceFolder}/tests/examples/with_restrictions/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
