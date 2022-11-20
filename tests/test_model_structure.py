@@ -74,7 +74,7 @@ def reset_optparse():
 
 
 @pytest.mark.parametrize(
-    'input_dir,expected_file,args',
+    ('input_dir', 'expected_file', 'args'),
     [
         pytest.param('examples/minimal', 'examples/minimal/expected.py', [], id='minimal'),
         pytest.param(
@@ -82,6 +82,12 @@ def reset_optparse():
             'examples/minimal/expected_trimmed.py',
             ['-t=/interfaces/interfaces/address'],
             id='minimal_trimmed',
+        ),
+        pytest.param(
+            'examples/minimal',
+            'examples/minimal/expected_trimmed.py',
+            ['-t=interfaces/interfaces/address'],
+            id='minimal_trimmed without leading /',
         ),
         pytest.param('examples/with_typedef', 'examples/with_typedef/expected.py', [], id='typedef'),
         pytest.param('examples/with_leafref', 'examples/with_leafref/expected.py', [], id='leafref'),

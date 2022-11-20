@@ -1,0 +1,28 @@
+image: python:3.10
+
+cache:
+  paths:
+    - __pypackages__
+
+before_script:
+  - python --version  # For debugging
+  - mkdir __pypackages__ -p  # Ensures folder is used by pdm, speeding up install step
+  - python -m pip install pdm
+  - pdm install
+
+run_pytests:
+  stage: test
+  image: python:latest
+  script:
+    # Run unit tests
+    - pdm run coverage run --source=pydantify -m pytest tests -v
+    - pdm run coverage report --precision=2
+    - pdm run coverage xml
+  coverage: '/TOTAL.+?(\d+.\d+\%)/'
+  artifacts:
+      paths:
+          - coverage.xml
+      reports:
+        coverage_report:
+          coverage_format: cobertura
+          path: coverage.xml
