@@ -73,61 +73,28 @@ def reset_optparse():
     plugin.plugins = []
 
 
-def test_minimal(tmp_path: Path):
-    input_folder = Path(f'{__package__}/examples/minimal').absolute()
+@pytest.mark.parametrize(
+    'input_dir,expected_file,args',
+    [
+        pytest.param('examples/minimal', 'examples/minimal/expected.py', [], id='minimal'),
+        pytest.param(
+            'examples/minimal',
+            'examples/minimal/expected_trimmed.py',
+            ['-t=/interfaces/interfaces/address'],
+            id='minimal_trimmed',
+        ),
+        pytest.param('examples/with_typedef', 'examples/with_typedef/expected.py', [], id='typedef'),
+        pytest.param('examples/with_leafref', 'examples/with_leafref/expected.py', [], id='leafref'),
+        pytest.param('examples/with_restrictions', 'examples/with_restrictions/expected.py', [], id='restrictions'),
+        pytest.param('examples/with_uses', 'examples/with_uses/expected.py', [], id='uses'),
+    ],
+)
+def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
+    input_folder = Path(__package__) / input_dir
+    expected = Path(__package__) / expected_file
     run_pydantify(
         input_folder=input_folder,
         output_folder=tmp_path,
-        args=[],
+        args=args,
     )
-    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
-
-
-def test_minimal_trimmed(tmp_path: Path):
-    input_folder = Path(f'{__package__}/examples/minimal').absolute()
-    run_pydantify(
-        input_folder=input_folder,
-        output_folder=tmp_path,
-        args=['-t=/interfaces/interfaces/address'],
-    )
-    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected_trimmed.py')
-
-
-def test_with_typedef(tmp_path: Path):
-    input_folder = Path(f'{__package__}/examples/with_typedef').absolute()
-    run_pydantify(
-        input_folder=input_folder,
-        output_folder=tmp_path,
-        args=[],
-    )
-    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
-
-
-def test_with_leafref(tmp_path: Path):
-    input_folder = Path(f'{__package__}/examples/with_leafref').absolute()
-    run_pydantify(
-        input_folder=input_folder,
-        output_folder=tmp_path,
-        args=[],
-    )
-    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
-
-
-def test_with_restrictions(tmp_path: Path):
-    input_folder = Path(f'{__package__}/examples/with_restrictions').absolute()
-    run_pydantify(
-        input_folder=input_folder,
-        output_folder=tmp_path,
-        args=[],
-    )
-    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
-
-
-def test_with_uses(tmp_path: Path):
-    input_folder = Path(f'{__package__}/examples/with_uses').absolute()
-    run_pydantify(
-        input_folder=input_folder,
-        output_folder=tmp_path,
-        args=[],
-    )
-    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
+    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', expected)
