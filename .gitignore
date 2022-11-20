@@ -10,3 +10,5 @@ out.py
 tests/examples/cisco
 .idea
 out
+.coverage
+htmlcov
