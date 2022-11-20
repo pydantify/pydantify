@@ -90,3 +90,13 @@ def test_with_typedef(tmp_path: Path):
         args=[],
     )
     assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
+
+
+def test_with_leafref(tmp_path: Path):
+    input_folder = Path(f'{__package__}/examples/with_leafref').absolute()
+    run_pydantify(
+        input_folder=input_folder,
+        output_folder=tmp_path,
+        args=[],
+    )
+    assert_python_sources_equal(tmp_path / 'out.py', input_folder / 'expected.py')
