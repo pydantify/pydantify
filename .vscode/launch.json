@@ -132,9 +132,9 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/with_uses/",
+                "-i=${workspaceFolder}/tests/examples/with_uses/",
                 "-V",
-                "${workspaceFolder}/examples/with_uses/interfaces.yang",
+                "${workspaceFolder}/tests/examples/with_uses/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
