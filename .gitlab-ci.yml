@@ -4,15 +4,14 @@ cache:
   paths:
     - __pypackages__
 
-before_script:
-  - python --version  # For debugging
-  - mkdir __pypackages__ -p  # Ensures folder is used by pdm, speeding up install step
-  - python -m pip install pdm
-  - pdm install --dev
-
 run_pytests:
   stage: test
   image: python:latest
+  before_script:
+    - python --version  # For debugging
+    - mkdir __pypackages__ -p  # Ensures folder is used by pdm, speeding up install step
+    - python -m pip install pdm
+    - pdm install --dev
   script:
     # Run unit tests
     - pdm run coverage run --source=pydantify -m pytest tests -v
