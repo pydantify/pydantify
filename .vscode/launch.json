@@ -2,6 +2,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Pytest",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PY_COLORS": "1",
+                "_PYTEST_RAISE": "1"
+            },
+            "args": [
+                "--rootdir=.",
+                "--capture=tee-sys",
+                "tests"
+            ]
+        },
+        {
             "name": "Test output",
             "type": "python",
             "request": "launch",
@@ -22,9 +39,9 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/minimal/",
+                "-i=${workspaceFolder}/tests/examples/minimal/",
                 "-V",
-                "${workspaceFolder}/examples/minimal/interfaces.yang",
+                "${workspaceFolder}/tests/examples/minimal/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
@@ -40,10 +57,10 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/minimal/",
+                "-i=${workspaceFolder}/tests/examples/minimal/",
                 "-t=\"/interfaces/interfaces/address\"",
                 "-V",
-                "${workspaceFolder}/examples/minimal/interfaces.yang",
+                "${workspaceFolder}/tests/examples/minimal/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
@@ -59,10 +76,10 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/with_typedef/",
+                "-i=${workspaceFolder}/tests/examples/with_typedef/",
                 "-t=\"/interfaces/interfaces/interface/subnet-mask\"",
                 "-V",
-                "${workspaceFolder}/examples/with_typedef/interfaces.yang",
+                "${workspaceFolder}/tests/examples/with_typedef/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
@@ -78,10 +95,10 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/with_leafref/",
+                "-i=${workspaceFolder}/tests/examples/with_leafref/",
                 "-t=\"/interfaces/mgmt-interface\"",
                 "-V",
-                "${workspaceFolder}/examples/with_leafref/interfaces.yang",
+                "${workspaceFolder}/tests/examples/with_leafref/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
@@ -97,9 +114,9 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/with_typedef/",
+                "-i=${workspaceFolder}/tests/examples/with_typedef/",
                 "-V",
-                "${workspaceFolder}/examples/with_typedef/interfaces.yang",
+                "${workspaceFolder}/tests/examples/with_typedef/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
@@ -115,9 +132,9 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/with_uses/",
+                "-i=${workspaceFolder}/tests/examples/with_uses/",
                 "-V",
-                "${workspaceFolder}/examples/with_uses/interfaces.yang",
+                "${workspaceFolder}/tests/examples/with_uses/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
@@ -133,9 +150,9 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/with_restrictions/",
+                "-i=${workspaceFolder}/tests/examples/with_restrictions/",
                 "-V",
-                "${workspaceFolder}/examples/with_restrictions/interfaces.yang",
+                "${workspaceFolder}/tests/examples/with_restrictions/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
@@ -151,9 +168,9 @@
                 "-v",
                 "--keep-comments",
                 "--canonical",
-                "-i=${workspaceFolder}/examples/with_leafref/",
+                "-i=${workspaceFolder}/tests/examples/with_leafref/",
                 "-V",
-                "${workspaceFolder}/examples/with_leafref/interfaces.yang",
+                "${workspaceFolder}/tests/examples/with_leafref/interfaces.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",

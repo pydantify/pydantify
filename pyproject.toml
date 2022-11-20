@@ -8,7 +8,7 @@ authors = [
 ]
 dependencies = [
     "pydantic>=1.10.2",
-    "datamodel-code-generator>=0.14.0",
+    "datamodel-code-generator @ git+https://github.com/Dominic-Walther/datamodel-code-generator.git@fix_deprecation_warnings",
     "pyang>=2.5.3",
 ]
 requires-python = ">=3.10"
@@ -29,7 +29,13 @@ Repository = "https://gitlab.ost.ch/pydantic-sa/yang2pydantic"
 [project.optional-dependencies]
 [tool.pdm]
 [tool.pdm.dev-dependencies]
-dev = ["autopep8>=1.7.0", "black>=22.10.0", "pylint>=2.15.5"]
+dev = [
+    "autopep8>=1.7.0",
+    "black>=22.10.0",
+    "pylint>=2.15.5",
+    "pytest>=7.2.0",
+    "coverage>=6.5.0",
+]
 
 [tool.pdm.scripts]
 class_diagram = "pyreverse -o plantuml -d graphs --project pydantify --colorized pydantify"
@@ -37,3 +43,9 @@ class_diagram = "pyreverse -o plantuml -d graphs --project pydantify --colorized
 [build-system]
 requires = ["pdm-pep517>=0.12.0"]
 build-backend = "pdm.pep517.api"
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "[%(levelname)8s] (%(filename)s:%(lineno)s): %(message)s "
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"

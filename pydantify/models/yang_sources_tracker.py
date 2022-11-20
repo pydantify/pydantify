@@ -9,12 +9,19 @@ logger = logging.getLogger('pydantify')
 
 
 class YANGSourcesTracker:
-    _relevant_files: Set[str] = set()
-
     @classmethod
     def track_from_pos(cls: Type[Self], pos: Position):
         path = str(Path(pos.ref).absolute())
         cls._relevant_files.add(path)
+
+    # TODO: Is this necessary?
+    # Pytest does not reset static class variable otherwise.
+    @classmethod
+    @property
+    def _relevant_files(cls):
+        if not hasattr(cls, "__relevant_files"):
+            cls.__relevant_files: Set[str] = set()
+        return cls.__relevant_files
 
     @classmethod
     def copy_yang_files(cls: Type[Self], input_root: Path, output_dir: Path):

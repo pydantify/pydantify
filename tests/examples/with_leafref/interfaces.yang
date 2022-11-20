@@ -9,6 +9,12 @@ module interfaces {
   list interfaces {
     key "name";
     description "List of configured device interfaces";
+
+    leaf test {
+      type uint8;
+      description "Test node";
+    }
+
     leaf name {
       type string;
       description "Interface name";

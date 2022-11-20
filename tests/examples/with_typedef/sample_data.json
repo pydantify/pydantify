@@ -1,0 +1,18 @@
+{
+    "interfaces": {
+        "interfaces": {
+            "interface": [
+                {
+                    "name": "GigabitEthernet 0/0/0",
+                    "address": "10.10.10.1",
+                    "subnet-mask": "255.255.255.0"
+                },
+                {
+                    "name": "GigabitEthernet 0/0/1",
+                    "address": "192.168.1.1",
+                    "subnet-mask": "255.255.255.0"
+                }
+            ]
+        }
+    }
+}

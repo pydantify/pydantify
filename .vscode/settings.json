@@ -39,4 +39,9 @@
         // https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
         "--ignore=E501"
     ],
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
 }
