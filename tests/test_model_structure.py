@@ -95,6 +95,7 @@ def reset_optparse():
         pytest.param('examples/with_restrictions', 'examples/with_restrictions/expected.py', [], id='restrictions'),
         pytest.param('examples/with_uses', 'examples/with_uses/expected.py', [], id='uses'),
         pytest.param('examples/with_case', 'examples/with_case/expected.py', [], id='case'),
+        pytest.param('examples/with_complex_case', 'examples/with_complex_case/expected.py', [], id='complex case'),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):

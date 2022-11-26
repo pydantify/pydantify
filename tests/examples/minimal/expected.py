@@ -60,3 +60,4 @@ class Model(BaseModel):
 from pydantic import BaseConfig
 
 BaseConfig.allow_population_by_field_name = True
+BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
