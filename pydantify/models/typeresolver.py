@@ -81,6 +81,8 @@ class TypeResolver:
                 base.ge = spec.min
                 base.le = spec.max
                 return base
+            case LengthTypeSpec.__qualname__:
+                return constr(min_length=spec.min, max_length=spec.max)
             case PathTypeSpec.__qualname__:
                 target_statement = getattr(spec, 'i_target_node')
                 if cls.__mapping.get(target_statement, None) is None:
