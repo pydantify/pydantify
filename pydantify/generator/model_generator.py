@@ -39,10 +39,12 @@ def dynamically_serialized_helper_function():
 
 
 def custom_model_config():
-    from pydantic import BaseConfig
+    from pydantic import BaseConfig, Extra
 
     BaseConfig.allow_population_by_field_name = True
     BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
+    # BaseConfig.validate_assignment = True
+    BaseConfig.extra = Extra.forbid
 
 
 def validate():
