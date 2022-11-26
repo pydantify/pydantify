@@ -95,6 +95,10 @@ class TypeResolver:
             case PatternTypeSpec.__qualname__:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
                 return constr(regex=pattern)
+            case EmptyTypeSpec.__qualname__:
+                from pydantify.models.models import Empty
+
+                return Empty
         assert False, f'Spec "{spec.__class__.__qualname__}" not yet implemented.'
 
     @classmethod

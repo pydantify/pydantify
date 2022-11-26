@@ -23,6 +23,10 @@ from pydantify.models.nodefactory import NodeFactory
 logger = logging.getLogger('pydantify')
 
 
+class Empty:
+    pass
+
+
 class TypeDef(Node):
     def __init__(self, stm: TypedefStatement) -> None:
         super().__init__(stm)
@@ -73,9 +77,14 @@ class LeafNode(Node):
             base: Node
             base = base.output_class_type
         output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(BaseModel,), **fields)
-        output_model.__fields__['__root__'] = ModelField.infer(
-            name='__root__', value=Undefined, annotation=base, class_validators={}, config=BaseModel.Config
-        )
+        if base is not None:
+            default = Undefined
+            if base is Empty:  # TODO: ugly way of doing things
+                base = str
+                default = ''
+            output_model.__fields__['__root__'] = ModelField.infer(
+                name='__root__', value=default, annotation=base, class_validators={}, config=BaseModel.Config
+            )
         output_model.__doc__ = self.description
         return output_model
 
