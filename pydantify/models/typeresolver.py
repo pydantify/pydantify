@@ -95,7 +95,7 @@ class TypeResolver:
             case PatternTypeSpec.__qualname__:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
                 return constr(regex=pattern)
-        assert False, 'Spec not yet implemented.'
+        assert False, f'Spec "{spec.__class__.__qualname__}" not yet implemented.'
 
     @classmethod
     def __resolve_pattern(cls, patterns: List[XSDPattern]):

@@ -10,7 +10,8 @@
             "justMyCode": true,
             "env": {
                 "PY_COLORS": "1",
-                "_PYTEST_RAISE": "1"
+                "_PYTEST_RAISE": "1",
+                "PYTHONPATH": "__pypackages__/3.10/lib",
             },
             "args": [
                 "--rootdir=.",
