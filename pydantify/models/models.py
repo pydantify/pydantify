@@ -80,6 +80,49 @@ class LeafNode(Node):
         return output_model
 
 
+@NodeFactory.register_statement_class(['case'])
+class ContainerNode(Node):
+    def __init__(self, stm: Statement) -> None:
+        logger.debug(f'Parsing {__class__}')
+        assert isinstance(stm, Statement)
+        super().__init__(stm)
+
+        self.output_class_name = f'{self.arg.capitalize()}Case'
+        self.output_field_annotation = None
+        self.output_field_info = FieldInfo(...)
+        self.output_class_type = self.to_pydantic_model()
+        pass
+
+    def to_pydantic_model(self) -> Type[BaseModel]:
+        """Generates the output class representing this node."""
+        fields: Dict[str, Any] = self._children_to_fields()
+        output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(BaseModel,), **fields)
+        output_model.__doc__ = self.description
+        return output_model
+
+
+@NodeFactory.register_statement_class(['choice'])
+class ContainerNode(Node):
+    def __init__(self, stm: ChoiceStatement) -> None:
+        logger.debug(f'Parsing {__class__}')
+        assert isinstance(stm, ChoiceStatement)
+        super().__init__(stm)
+
+        self.output_class_name = f'{self.arg.capitalize()}Choice'
+        self.output_field_annotation = None
+        self.output_field_info = FieldInfo(...)
+        self.output_class_type = self.to_pydantic_model()
+        pass
+
+    def to_pydantic_model(self) -> Type[BaseModel]:
+        """Generates the output class representing this node."""
+        fields: Dict[str, Any] = self._children_to_fields()
+        base: type = self.get_base_class()
+        bases = tuple(x[0] for x in fields.values())
+        output_model: Type[BaseModel] = Union[bases]
+        return output_model
+
+
 @NodeFactory.register_statement_class(['container'])
 class ContainerNode(Node):
     def __init__(self, module: ContainerStatement) -> None:
