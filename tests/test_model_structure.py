@@ -29,6 +29,7 @@ class ParsedAST:
     def assert_python_sources_equal(generated: Path, expected: Path):
         ast1 = ParsedAST(generated)
         ast2 = ParsedAST(expected)
+        LOGGER.info(f'Output path: {generated}')
         LOGGER.info(f'"Comparing:\n{"Expected":9}: {ast2.classes.keys()}\n{"Got":9}: {ast1.classes.keys()}')
         for a, b in zip(ast1.classes.keys(), ast2.classes.keys()):
             assert a == b, f'Missmatch {a} vs {b}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
@@ -93,6 +94,7 @@ def reset_optparse():
         pytest.param('examples/with_leafref', 'examples/with_leafref/expected.py', [], id='leafref'),
         pytest.param('examples/with_restrictions', 'examples/with_restrictions/expected.py', [], id='restrictions'),
         pytest.param('examples/with_uses', 'examples/with_uses/expected.py', [], id='uses'),
+        pytest.param('examples/with_case', 'examples/with_case/expected.py', [], id='case'),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):

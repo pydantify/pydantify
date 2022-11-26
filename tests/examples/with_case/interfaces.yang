@@ -1,0 +1,23 @@
+module interfaces {
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+
+  description 'Example demonstarating leafref nodes';
+
+  choice interface-type {
+    container ethernet {
+      description 'Option A';
+      leaf name {
+        type string;
+      }
+    }
+    case ethernet2 {
+      description 'Option B';
+      leaf name2 {
+        type string;
+      }
+    }
+  }
+}
