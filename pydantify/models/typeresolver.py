@@ -3,6 +3,7 @@ from pyang.statements import Statement
 from pyang.types import TypeSpec, XSDPattern
 from typing_extensions import Self
 from pydantic.types import ConstrainedInt, conint, constr
+from enum import Enum
 
 if TYPE_CHECKING:
     from pydantify.models.models import Node
@@ -52,24 +53,24 @@ class TypeResolver:
     @classmethod
     def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> Type:
         from pyang.types import (
-            IntTypeSpec,
             BooleanTypeSpec,
-            StringTypeSpec,
-            PatternTypeSpec,
+            EmptyTypeSpec,
+            EnumTypeSpec,
+            IntTypeSpec,
+            LengthTypeSpec,
             PathTypeSpec,
+            PatternTypeSpec,
             RangeTypeSpec,
+            StringTypeSpec,
             # TODO: Implement the following:
             TypeSpec,
             BitTypeSpec,
             BitsTypeSpec,
-            EnumTypeSpec,
-            EmptyTypeSpec,
+            EnumerationTypeSpec,
             UnionTypeSpec,
             BinaryTypeSpec,
-            LengthTypeSpec,
             LeafrefTypeSpec,
             IdentityrefTypeSpec,
-            EnumerationTypeSpec,
             InstanceIdentifierTypeSpec,
         )
 
@@ -83,6 +84,9 @@ class TypeResolver:
                 return base
             case LengthTypeSpec.__qualname__:
                 return constr(min_length=spec.min, max_length=spec.max)
+            case EnumTypeSpec.__qualname__:
+                base = Enum(spec.name, dict(spec.enums))
+                return base
             case PathTypeSpec.__qualname__:
                 target_statement = getattr(spec, 'i_target_node')
                 if cls.__mapping.get(target_statement, None) is None:
