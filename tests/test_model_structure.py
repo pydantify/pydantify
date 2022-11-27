@@ -4,6 +4,7 @@ from typing import List
 from pydantic import validate_arguments
 from pathlib import Path
 import sys
+import os
 import logging
 from unittest.mock import patch
 
@@ -27,9 +28,9 @@ class ParsedAST:
     @validate_arguments
     @staticmethod
     def assert_python_sources_equal(generated: Path, expected: Path):
+        LOGGER.info(f'Output path: {generated}')
         ast1 = ParsedAST(generated)
         ast2 = ParsedAST(expected)
-        LOGGER.info(f'Output path: {generated}')
         LOGGER.info(f'"Comparing:\n{"Expected":9}: {ast2.classes.keys()}\n{"Got":9}: {ast1.classes.keys()}')
         for a, b in zip(ast1.classes.keys(), ast2.classes.keys()):
             assert a == b, f'Missmatch {a} vs {b}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
@@ -48,22 +49,21 @@ class ParsedAST:
         assert len(ast1.body) == len(ast2.body)
 
 
-def run_pydantify(input_folder: Path, output_folder: Path, args: List[str] = []):
-    model = input_folder / 'interfaces.yang'
+def run_pydantify(input_file: Path, output_folder: Path, args: List[str] = []):
     args = [
         sys.argv[0],
         *args,
-        f'-i={input_folder}',
+        f'-i={input_file.parent}',
         f'-o={output_folder}',
-        str(model),
+        str(input_file),
     ]
     with patch.object(sys, 'argv', args):
         from pydantify.main import main
 
         try:
             main()
-        except SystemExit:
-            pass
+        except SystemExit as e:
+            assert e.code == os.EX_OK, f"Pyang exited with errors:\n{e}"
 
 
 @pytest.fixture(autouse=True)
@@ -77,32 +77,48 @@ def reset_optparse():
 @pytest.mark.parametrize(
     ('input_dir', 'expected_file', 'args'),
     [
-        pytest.param('examples/minimal', 'examples/minimal/expected.py', [], id='minimal'),
+        pytest.param('examples/minimal/interfaces.yang', 'examples/minimal/expected.py', [], id='minimal'),
         pytest.param(
-            'examples/minimal',
+            'examples/minimal/interfaces.yang',
             'examples/minimal/expected_trimmed.py',
             ['-t=/interfaces/interfaces/address'],
             id='minimal_trimmed',
         ),
         pytest.param(
-            'examples/minimal',
+            'examples/minimal/interfaces.yang',
             'examples/minimal/expected_trimmed.py',
             ['-t=interfaces/interfaces/address'],
             id='minimal_trimmed without leading /',
         ),
-        pytest.param('examples/with_typedef', 'examples/with_typedef/expected.py', [], id='typedef'),
-        pytest.param('examples/with_leafref', 'examples/with_leafref/expected.py', [], id='leafref'),
-        pytest.param('examples/with_restrictions', 'examples/with_restrictions/expected.py', [], id='restrictions'),
-        pytest.param('examples/with_uses', 'examples/with_uses/expected.py', [], id='uses'),
-        pytest.param('examples/with_case', 'examples/with_case/expected.py', [], id='case'),
-        pytest.param('examples/with_complex_case', 'examples/with_complex_case/expected.py', [], id='complex case'),
+        pytest.param('examples/with_typedef/interfaces.yang', 'examples/with_typedef/expected.py', [], id='typedef'),
+        pytest.param('examples/with_leafref/interfaces.yang', 'examples/with_leafref/expected.py', [], id='leafref'),
+        pytest.param(
+            'examples/with_restrictions/interfaces.yang',
+            'examples/with_restrictions/expected.py',
+            [],
+            id='restrictions',
+        ),
+        pytest.param('examples/with_uses/interfaces.yang', 'examples/with_uses/expected.py', [], id='uses'),
+        pytest.param('examples/with_case/interfaces.yang', 'examples/with_case/expected.py', [], id='case'),
+        pytest.param(
+            'examples/with_complex_case/interfaces.yang',
+            'examples/with_complex_case/expected.py',
+            [],
+            id='complex case',
+        ),
+        pytest.param(
+            'examples/turing-machine/turing-machine.yang',
+            'examples/turing-machine/expected.py',
+            [],
+            id='turing machine',
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
     input_folder = Path(__package__) / input_dir
     expected = Path(__package__) / expected_file
     run_pydantify(
-        input_folder=input_folder,
+        input_file=input_folder,
         output_folder=tmp_path,
         args=args,
     )
