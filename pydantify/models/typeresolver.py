@@ -1,9 +1,31 @@
-from typing import Dict, List, Type, TYPE_CHECKING
-from pyang.statements import Statement
-from pyang.types import TypeSpec, XSDPattern
-from typing_extensions import Self
-from pydantic.types import ConstrainedInt, conint, constr
 from enum import Enum
+from typing import TYPE_CHECKING, Dict, List, Type
+
+from pyang.statements import Statement
+from pyang.types import (
+    BooleanTypeSpec,
+    EmptyTypeSpec,
+    EnumTypeSpec,
+    IntTypeSpec,
+    LengthTypeSpec,
+    PathTypeSpec,
+    PatternTypeSpec,
+    RangeTypeSpec,
+    StringTypeSpec,
+    TypeSpec,
+    XSDPattern,
+    # TODO: Implement the following:
+    BinaryTypeSpec,
+    BitsTypeSpec,
+    BitTypeSpec,
+    EnumerationTypeSpec,
+    IdentityrefTypeSpec,
+    InstanceIdentifierTypeSpec,
+    LeafrefTypeSpec,
+    UnionTypeSpec,
+)
+from pydantic.types import ConstrainedInt, conint, constr
+from typing_extensions import Self
 
 if TYPE_CHECKING:
     from pydantify.models.models import Node
@@ -52,29 +74,7 @@ class TypeResolver:
 
     @classmethod
     def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> Type:
-        from pyang.types import (
-            BooleanTypeSpec,
-            EmptyTypeSpec,
-            EnumTypeSpec,
-            IntTypeSpec,
-            LengthTypeSpec,
-            PathTypeSpec,
-            PatternTypeSpec,
-            RangeTypeSpec,
-            StringTypeSpec,
-            # TODO: Implement the following:
-            TypeSpec,
-            BitTypeSpec,
-            BitsTypeSpec,
-            EnumerationTypeSpec,
-            UnionTypeSpec,
-            BinaryTypeSpec,
-            LeafrefTypeSpec,
-            IdentityrefTypeSpec,
-            InstanceIdentifierTypeSpec,
-        )
-
-        from pydantify.models.models import NodeFactory, Node
+        from pydantify.models.models import Node, NodeFactory, Empty
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
@@ -104,8 +104,6 @@ class TypeResolver:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
                 return constr(regex=pattern)
             case EmptyTypeSpec.__qualname__:
-                from pydantify.models.models import Empty
-
                 return Empty
         assert False, f'Spec "{spec.__class__.__qualname__}" not yet implemented.'
 

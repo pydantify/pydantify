@@ -1,8 +1,10 @@
 import logging
 import os
-from typing import Set, Type
-from pyang.error import Position
+import shutil
 from pathlib import Path
+from typing import Set, Type
+
+from pyang.error import Position
 from typing_extensions import Self
 
 logger = logging.getLogger('pydantify')
@@ -26,8 +28,6 @@ class YANGSourcesTracker:
     @classmethod
     def copy_yang_files(cls: Type[Self], input_root: Path, output_dir: Path):
         """Copy only the relevant YANG model files to the output directory."""
-        import shutil
-
         for f in cls._relevant_files:
             out_path = output_dir
             if input_root is not None:

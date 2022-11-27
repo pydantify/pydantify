@@ -1,8 +1,7 @@
 from __future__ import annotations
+
 import logging
-
 from typing import Any, Dict, List, Type, Union
-
 
 from pyang.statements import (
     ChoiceStatement,
@@ -15,10 +14,10 @@ from pyang.statements import (
 )
 from pydantic import create_model
 from pydantic.fields import FieldInfo, ModelField, Undefined
-from pydantify.models.typeresolver import TypeResolver
 
-from pydantify.models.base import Node, BaseModel, GeneratedClass
+from pydantify.models.base import BaseModel, GeneratedClass, Node
 from pydantify.models.nodefactory import NodeFactory
+from pydantify.models.typeresolver import TypeResolver
 
 logger = logging.getLogger('pydantify')
 

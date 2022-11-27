@@ -1,10 +1,12 @@
-from pydantify.generator import ModelGenerator  # TODO: Get relative import to work. (╯°□°）╯︵ ┻━┻
+import logging
 from io import TextIOWrapper
+from typing import Dict
+
+from pyang.context import Context
 from pyang.plugin import PyangPlugin, register_plugin
 from pyang.statements import ModSubmodStatement
-from pyang.context import Context
-from typing import Dict
-import logging
+
+from pydantify.generator import ModelGenerator  # TODO: Get relative import to work. (╯°□°）╯︵ ┻━┻
 
 logger = logging.getLogger('pydantify')
 

@@ -1,17 +1,20 @@
+import inspect
+import json
+import logging
+import re
 from io import TextIOWrapper
-from pyang.statements import ModSubmodStatement, Statement
-from pyang.context import Context
+from pathlib import Path
 from typing import Callable, List, Type
 
+from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
+from pyang.context import Context
+from pyang.statements import ModSubmodStatement, Statement
 from pydantic.main import BaseModel
+from typing_extensions import Self
+
 from pydantify.models.yang_sources_tracker import YANGSourcesTracker
 
 from ..models.models import ModelRoot
-from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
-import logging
-from pathlib import Path
-from typing_extensions import Self
-
 
 logger = logging.getLogger('pydantify')
 
@@ -124,23 +127,14 @@ class ModelGenerator:
     @classmethod
     def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> str:
         schema = model.schema(by_alias=True)
-
-        import json
-
         return json.dumps(schema)
 
     @staticmethod
     def __function_to_source_code(f: Callable):
-        import inspect
-
         return inspect.getsource(f)
 
     @staticmethod
     def __function_content_to_source_code(f: Callable):
-        import inspect
-
         src = inspect.getsourcelines(f)[0]
-        import re
-
         indentation = re.compile('^([\t ]+)').findall(src[1])[0]
         return "".join(line.replace(indentation, '', 1) for line in src[1:])

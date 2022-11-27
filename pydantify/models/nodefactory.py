@@ -1,17 +1,14 @@
 from __future__ import annotations
-from dataclasses import dataclass
-import logging
-from typing_extensions import Self
 
+import logging
+from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Type
 
-
-from pyang.statements import (
-    Statement,
-)
-from pydantify.models.typeresolver import TypeResolver
+from pyang.statements import Statement
+from typing_extensions import Self
 
 from pydantify.models.base import Node
+from pydantify.models.typeresolver import TypeResolver
 
 logger = logging.getLogger('pydantify')
 
