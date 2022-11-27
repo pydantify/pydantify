@@ -147,8 +147,7 @@ class ContainerNode(Node):
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        base: type = self.get_base_class()
-        bases = tuple(x[0] for x in fields.values())
+        bases: tuple = tuple(x[0] for x in fields.values())
         output_model: Type[BaseModel] = Union[bases]
         return output_model
 

@@ -6,6 +6,7 @@ from typing import Any, Callable, Dict, List, Type
 
 from pyang.statements import Statement
 from typing_extensions import Self
+from pydantify.exceptions import NotImplementedException
 
 from pydantify.models.base import Node
 from pydantify.models.typeresolver import TypeResolver
@@ -46,7 +47,7 @@ class NodeFactory:
             if stm.keyword in cls._ignored_types:
                 return None
             if stm.keyword not in cls._implemented_mappings.keys():
-                raise Exception(f'"{stm.keyword}" has not yet been implemented as a type.')
+                raise NotImplementedException(f'"{stm.keyword}" has not yet been implemented as a type.')
             mapping = cls._implemented_mappings[stm.keyword]
             node = mapping.maps_to(stm)
             TypeResolver.register(stm, node)

@@ -20,11 +20,9 @@ logger = logging.getLogger('pydantify')
 
 class BaseModel(PydanticBaseModel):
     class Config(BaseConfig):
-        # arbitrary_types_allowed = True
-        pass
-
         @staticmethod
         def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:
+            # Remove "title" property to avoid redundant annotation
             for prop in schema.get('properties', {}).values():
                 prop.pop('title', None)
             if not schema.get('type', None) == 'object':
