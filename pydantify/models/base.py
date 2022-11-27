@@ -56,6 +56,8 @@ class GeneratedClass:
 
 
 class Node(ABC):
+    _name_count: Dict[str, int] = dict()  # keeps track of the number of models with the same name
+
     def __init__(self, stm: Statement):
         self.children: List[Type[Node]] = __class__.extract_statement_list(stm, 'i_children')
         self.arg: str = stm.arg
@@ -71,6 +73,15 @@ class Node(ABC):
 
     def get_output_class(self) -> GeneratedClass:
         return self.__output_class
+
+    @classmethod
+    def ensure_unique_name(cls, name: str) -> str:
+        count: int = Node._name_count.setdefault(name, 0)
+        ret: str = name
+        if count > 0:
+            ret = f'{name}{count+1}'
+        Node._name_count[name] += 1
+        return ret
 
     @property
     def output_class_name(self):

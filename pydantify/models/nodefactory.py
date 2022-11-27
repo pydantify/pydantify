@@ -25,7 +25,6 @@ class NodeFactory:
         def __call__(self, *args: Any, **kwds: Any) -> Any:
             return self.maps_to(*args, **kwds)
 
-    known_types: Dict[str, Type[Node]] = dict()
     _implemented_mappings: Dict[str, ClassMapping] = {}
 
     @classmethod

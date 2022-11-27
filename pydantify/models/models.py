@@ -31,7 +31,7 @@ class TypeDef(Node):
     def __init__(self, stm: TypedefStatement) -> None:
         super().__init__(stm)
 
-        self.output_class_name = f'{self.arg.capitalize()}Type'
+        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Type')
         self.output_field_annotation = None
         self.output_field_info = FieldInfo(self.default if self.default is not None else ...)
         self.output_class_type = self.to_pydantic_model()
@@ -57,7 +57,7 @@ class LeafNode(Node):
         logger.debug(f'Parsing {__class__}')
         super().__init__(stm)
 
-        self.output_class_name = f'{self.arg.capitalize()}Leaf'
+        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Leaf')
         self.output_field_annotation = None
         self.output_field_info = FieldInfo(
             self.default if self.default is not None else ...,
@@ -96,7 +96,7 @@ class ContainerNode(Node):
         assert isinstance(stm, Statement)
         super().__init__(stm)
 
-        self.output_class_name = f'{self.arg.capitalize()}Case'
+        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Case')
         self.output_field_annotation = None
         self.output_field_info = FieldInfo(...)
         self.output_class_type = self.to_pydantic_model()
@@ -117,7 +117,7 @@ class ContainerNode(Node):
         assert isinstance(stm, ChoiceStatement)
         super().__init__(stm)
 
-        self.output_class_name = f'{self.arg.capitalize()}Choice'
+        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Choice')
         self.output_field_annotation = None
         self.output_field_info = FieldInfo(...)
         self.output_class_type = self.to_pydantic_model()
@@ -139,7 +139,7 @@ class ContainerNode(Node):
         assert isinstance(module, ContainerStatement)
         super().__init__(module)
 
-        self.output_class_name = f'{self.arg.capitalize()}Container'
+        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Container')
         self.output_field_annotation = None
         self.output_field_info = FieldInfo(...)
         self.output_class_type = self.to_pydantic_model()
@@ -152,7 +152,7 @@ class ListNode(Node):
         assert isinstance(module, ListStatement)
         super().__init__(module)
 
-        self.output_class_name = f'{self.arg.capitalize()}ListEntry'
+        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}ListEntry')
         self.output_class_type = self.to_pydantic_model()
         self.output_field_annotation = List[self.output_class_type]
         self.output_field_info = FieldInfo(...)
@@ -173,7 +173,7 @@ class ModuleNode(Node):
         assert isinstance(module, ModSubmodStatement)
         super().__init__(module)
 
-        self.output_class_name = f'{self.arg.capitalize()}Module'
+        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Module')
         self.output_class_type = self.to_pydantic_model()
         self.output_field_annotation = self.output_class_type
         self.output_field_info = FieldInfo(...)
