@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple, Type
 
@@ -41,7 +41,7 @@ class GeneratedClass:
     """Ouput model class"""
     field_info: FieldInfo = Undefined
     """Field info to add to field annotation"""
-    field_annotation: Type | None = Undefined
+    field_annotation: Type | None = None
     """Annotated type when used """
 
     def assert_is_valid(self):
@@ -67,12 +67,17 @@ class Node(ABC):
         self.comments: str | None = __class__.__extract_comments(stm)
         self.description: str | None = __class__.__extract_description(stm)
         self.default = getattr(self.raw_statement, "i_default", Undefined)
+        self._name: str = None
 
-        self.__output_class: GeneratedClass = GeneratedClass()
+        self._output_model: GeneratedClass = GeneratedClass()
         YANGSourcesTracker.track_from_pos(stm.pos)
 
     def get_output_class(self) -> GeneratedClass:
-        return self.__output_class
+        return self._output_model
+
+    @abstractmethod
+    def name(self) -> str:
+        pass
 
     @classmethod
     def ensure_unique_name(cls, name: str) -> str:
@@ -82,46 +87,6 @@ class Node(ABC):
             ret = f'{name}{count+1}'
         Node._name_count[name] += 1
         return ret
-
-    @property
-    def output_class_name(self):
-        """Name of the output class."""
-        return self.__output_class.class_name
-
-    @output_class_name.setter
-    def output_class_name(self, name: str):
-        assert self.__output_class.class_name == Undefined
-        self.__output_class.class_name = name
-
-    @property
-    def output_class_type(self):
-        """Name of the output class."""
-        return self.__output_class.cls
-
-    @output_class_type.setter
-    def output_class_type(self, cls: Type[BaseModel]):
-        assert self.__output_class.cls == Undefined
-        self.__output_class.cls = cls
-
-    @property
-    def output_field_info(self):
-        """Name of the output class."""
-        return self.__output_class.field_info
-
-    @output_class_name.setter
-    def output_field_info(self, field_info: FieldInfo):
-        assert self.__output_class.field_info == Undefined
-        self.__output_class.field_info = field_info
-
-    @property
-    def output_field_annotation(self):
-        """Name of the output class."""
-        return self.__output_class.field_annotation
-
-    @output_field_annotation.setter
-    def output_field_annotation(self, typ: type | None):
-        assert self.__output_class.field_annotation == Undefined
-        self.__output_class.field_annotation = typ
 
     def get_base_class(self) -> type:
         """Returns the class the output class should be derived from. Defaults to BaseModel."""
@@ -145,7 +110,7 @@ class Node(ABC):
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
         base = self.get_base_class()
-        output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(base,), **fields)
+        output_model: Type[BaseModel] = create_model(self.name(), __base__=(base,), **fields)
         output_model.__doc__ = self.description
         return output_model
 
@@ -153,7 +118,7 @@ class Node(ABC):
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
         for ch in self.children:
             ch: Node
-            ret[ch.arg] = ch.__output_class.to_field()
+            ret[ch.arg] = ch._output_model.to_field()
         return ret
 
     @staticmethod

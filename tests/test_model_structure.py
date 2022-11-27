@@ -118,7 +118,7 @@ def reset_optparse():
         param(
             'examples/turing-machine/turing-machine.yang',
             'examples/turing-machine/expected.py',
-            ['-V'],
+            [],
             id='turing machine 2',
         ),
     ],

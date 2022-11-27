@@ -17,7 +17,7 @@ from pydantic import create_model
 from pydantic.fields import FieldInfo, ModelField, Undefined
 from pydantify.models.typeresolver import TypeResolver
 
-from pydantify.models.base import Node, BaseModel
+from pydantify.models.base import Node, BaseModel, GeneratedClass
 from pydantify.models.nodefactory import NodeFactory
 
 logger = logging.getLogger('pydantify')
@@ -31,19 +31,25 @@ class TypeDef(Node):
     def __init__(self, stm: TypedefStatement) -> None:
         super().__init__(stm)
 
-        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Type')
-        self.output_field_annotation = None
-        self.output_field_info = FieldInfo(self.default if self.default is not None else ...)
-        self.output_class_type = self.to_pydantic_model()
+        self._output_model = GeneratedClass(
+            class_name=self.name(),
+            field_info=FieldInfo(self.default if self.default is not None else ...),
+            cls=self.to_pydantic_model(),
+        )
 
     def get_base_class(self) -> type:
         base = TypeResolver.resolve_statement(self.raw_statement)
         return base
 
+    def name(self) -> str:
+        if self._name is None:
+            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Type')
+        return self._name
+
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this Typedef."""
         base_type = TypeResolver.resolve_statement(self.raw_statement)
-        output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(BaseModel,), **{})
+        output_model: Type[BaseModel] = create_model(self.name(), __base__=(BaseModel,), **{})
         output_model.__fields__['__root__'] = ModelField.infer(
             name='__root__', value=Undefined, annotation=base_type, class_validators={}, config=BaseModel.Config
         )
@@ -57,13 +63,19 @@ class LeafNode(Node):
         logger.debug(f'Parsing {__class__}')
         super().__init__(stm)
 
-        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Leaf')
-        self.output_field_annotation = None
-        self.output_field_info = FieldInfo(
-            self.default if self.default is not None else ...,
-            description=self.description,
+        self._output_model = GeneratedClass(
+            class_name=self.name(),
+            field_info=FieldInfo(
+                self.default if self.default is not None else ...,
+                description=self.description,
+            ),
+            cls=self.to_pydantic_model(),
         )
-        self.output_class_type = self.to_pydantic_model()
+
+    def name(self) -> str:
+        if self._name is None:
+            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Leaf')
+        return self._name
 
     def get_base_class(self) -> type:
         base = TypeResolver.resolve_statement(self.raw_statement)
@@ -75,8 +87,8 @@ class LeafNode(Node):
         base = self.get_base_class()
         if isinstance(base, Node):
             base: Node
-            base = base.output_class_type
-        output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(BaseModel,), **fields)
+            base = base._output_model.cls
+        output_model: Type[BaseModel] = create_model(self.name(), __base__=(BaseModel,), **fields)
         if base is not None:
             default = Undefined
             if base is Empty:  # TODO: ugly way of doing things
@@ -96,16 +108,21 @@ class ContainerNode(Node):
         assert isinstance(stm, Statement)
         super().__init__(stm)
 
-        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Case')
-        self.output_field_annotation = None
-        self.output_field_info = FieldInfo(...)
-        self.output_class_type = self.to_pydantic_model()
-        pass
+        self._output_model = GeneratedClass(
+            class_name=self.name(),
+            field_info=FieldInfo(...),
+            cls=self.to_pydantic_model(),
+        )
+
+    def name(self) -> str:
+        if self._name is None:
+            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Case')
+        return self._name
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        output_model: Type[BaseModel] = create_model(self.output_class_name, __base__=(BaseModel,), **fields)
+        output_model: Type[BaseModel] = create_model(self.name(), __base__=(BaseModel,), **fields)
         output_model.__doc__ = self.description
         return output_model
 
@@ -117,11 +134,16 @@ class ContainerNode(Node):
         assert isinstance(stm, ChoiceStatement)
         super().__init__(stm)
 
-        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Choice')
-        self.output_field_annotation = None
-        self.output_field_info = FieldInfo(...)
-        self.output_class_type = self.to_pydantic_model()
-        pass
+        self._output_model = GeneratedClass(
+            class_name=self.name(),
+            field_info=FieldInfo(...),
+            cls=self.to_pydantic_model(),
+        )
+
+    def name(self) -> str:
+        if self._name is None:
+            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Choice')
+        return self._name
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
@@ -135,14 +157,20 @@ class ContainerNode(Node):
 @NodeFactory.register_statement_class(['container'])
 class ContainerNode(Node):
     def __init__(self, module: ContainerStatement) -> None:
-        logger.debug(f'Parsing {__class__}')
+        logger.debug(f'Parsing {__class__.__name__}')
         assert isinstance(module, ContainerStatement)
         super().__init__(module)
 
-        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Container')
-        self.output_field_annotation = None
-        self.output_field_info = FieldInfo(...)
-        self.output_class_type = self.to_pydantic_model()
+        self._output_model = GeneratedClass(
+            class_name=self.name(),
+            field_info=FieldInfo(...),
+            cls=self.to_pydantic_model(),
+        )
+
+    def name(self) -> str:
+        if self._name is None:
+            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Container')
+        return self._name
 
 
 @NodeFactory.register_statement_class(['list'])
@@ -152,16 +180,23 @@ class ListNode(Node):
         assert isinstance(module, ListStatement)
         super().__init__(module)
 
-        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}ListEntry')
-        self.output_class_type = self.to_pydantic_model()
-        self.output_field_annotation = List[self.output_class_type]
-        self.output_field_info = FieldInfo(...)
+        output_class = self.to_pydantic_model()
+        self._output_model = GeneratedClass(
+            class_name=self.name(),
+            cls=output_class,
+            field_annotation=List[output_class],
+            field_info=FieldInfo(...),
+        )
+
+    def name(self) -> str:
+        if self._name is None:
+            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}ListEntry')
+        return self._name
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        class_name = self.output_class_name
-        output_model: Type[BaseModel] = create_model(class_name, __base__=(BaseModel,), **fields)
+        output_model: Type[BaseModel] = create_model(self.name(), __base__=(BaseModel,), **fields)
         output_model.__doc__ = self.description
         return output_model
 
@@ -173,11 +208,18 @@ class ModuleNode(Node):
         assert isinstance(module, ModSubmodStatement)
         super().__init__(module)
 
-        self.output_class_name = Node.ensure_unique_name(f'{self.arg.capitalize()}Module')
-        self.output_class_type = self.to_pydantic_model()
-        self.output_field_annotation = self.output_class_type
-        self.output_field_info = FieldInfo(...)
-        pass
+        output_class = self.to_pydantic_model()
+        self._output_model = GeneratedClass(
+            class_name=self.name(),
+            cls=output_class,
+            field_annotation=output_class,
+            field_info=FieldInfo(...),
+        )
+
+    def name(self) -> str:
+        if self._name is None:
+            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Module')
+        return self._name
 
 
 class ModelRoot:
