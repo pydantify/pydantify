@@ -1,0 +1,32 @@
+{
+    "turing_machine": {
+        "turing_machine": {
+            "state": 0,
+            "head_position": 0,
+            "tape": {
+                "cell": [
+                    {
+                        "coord": 3,
+                        "symbol": "1"
+                    }
+                ]
+            },
+            "transition_function": {
+                "delta": [
+                    {
+                        "label": "asdf",
+                        "input": {
+                            "state": 1,
+                            "symbol": "0"
+                        },
+                        "output": {
+                            "state": 1,
+                            "symbol": "1",
+                            "head_move": 0
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -74,7 +74,7 @@ class TypeResolver:
             InstanceIdentifierTypeSpec,
         )
 
-        from pydantify.models.models import NodeFactory
+        from pydantify.models.models import NodeFactory, Node
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
@@ -85,7 +85,9 @@ class TypeResolver:
             case LengthTypeSpec.__qualname__:
                 return constr(min_length=spec.min, max_length=spec.max)
             case EnumTypeSpec.__qualname__:
-                base = Enum(spec.name, dict(spec.enums))
+                base = Enum(
+                    Node.ensure_unique_name(f'{spec.name}Enum'), dict(spec.enums)
+                )  # TODO: make separate node type
                 return base
             case PathTypeSpec.__qualname__:
                 target_statement = getattr(spec, 'i_target_node')

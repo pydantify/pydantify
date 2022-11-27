@@ -115,12 +115,6 @@ def reset_optparse():
             [],
             id='turing machine',
         ),
-        param(
-            'examples/turing-machine/turing-machine.yang',
-            'examples/turing-machine/expected.py',
-            [],
-            id='turing machine 2',
-        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):

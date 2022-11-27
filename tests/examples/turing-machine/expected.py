@@ -17,7 +17,6 @@ class StateLeaf(BaseModel):
     __root__: StateIndexType
     """
     Current state of the control unit.
-
     The initial state is 0.
     """
 
@@ -47,7 +46,6 @@ class TapeSymbolType(BaseModel):
     __root__: Annotated[str, Field(max_length=1, min_length=0)]
     """
     Type of symbols appearing in tape cells.
-
     A blank is represented as an empty string where necessary.
     """
 
@@ -56,7 +54,6 @@ class SymbolLeaf(BaseModel):
     __root__: TapeSymbolType
     """
     Symbol appearing in the tape cell.
-
     Blank (empty string) is not allowed here because the
     'cell' list only contains non-blank cells.
     """
@@ -74,7 +71,6 @@ class CellListEntry(BaseModel):
     symbol: SymbolLeaf
     """
     Symbol appearing in the tape cell.
-
     Blank (empty string) is not allowed here because the
     'cell' list only contains non-blank cells.
     """
@@ -140,7 +136,7 @@ class SymbolLeaf3(BaseModel):
     """
 
 
-class Enumeration(Enum):
+class EnumerationEnum(Enum):
     """
     An enumeration.
     """
@@ -150,7 +146,7 @@ class Enumeration(Enum):
 
 
 class HeadDirType(BaseModel):
-    __root__: Enumeration
+    __root__: EnumerationEnum
     """
     Possible directions for moving the read/write head, one cell
     to the left or right (default).
@@ -215,7 +211,6 @@ class TuringMachineContainer(BaseModel):
     state: StateLeaf
     """
     Current state of the control unit.
-
     The initial state is 0.
     """
     head_position: Annotated[HeadPositionLeaf, Field(alias='head-position')]
@@ -243,45 +238,3 @@ from pydantic import BaseConfig, Extra
 BaseConfig.allow_population_by_field_name = True
 BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
 BaseConfig.extra = Extra.forbid
-
-try:
-    a = Model(
-        turing_machine=TuringMachineModule(
-            turing_machine=TuringMachineContainer(
-                state=StateLeaf(__root__=StateIndexType(__root__=0)),
-                head_position=HeadPositionLeaf(__root__=CellIndexType(__root__=0)),
-                tape=TapeContainer(
-                    cell=[
-                        CellListEntry(
-                            coord=CoordLeaf(__root__=CellIndexType(__root__=3)),
-                            symbol=SymbolLeaf(__root__=TapeSymbolType(__root__='1')),
-                        )
-                    ]
-                ),
-                transition_function=TransitionFunctionContainer(
-                    [
-                        DeltaListEntry(
-                            label='asdf',
-                            input=InputContainer(
-                                state=StateLeaf2(__root__=StateIndexType(__root__=2)),
-                                symbol=SymbolLeaf2(__root__=TapeSymbolType(__root__='0')),
-                            ),
-                            output=OutputContainer(
-                                state=StateLeaf3(__root__=StateIndexType(__root__=1)),
-                                symbol=SymbolLeaf3(__root__=TapeSymbolType(__root__='1')),
-                            ),
-                        )
-                    ]
-                ),
-            )
-        )
-    )
-
-    b = a.json()
-except TypeError as e:
-    import traceback
-
-    raise TypeError(
-        f'{traceback.format_exc()}'
-    ) from e
-pass
