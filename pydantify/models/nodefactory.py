@@ -26,6 +26,7 @@ class NodeFactory:
             return self.maps_to(*args, **kwds)
 
     _implemented_mappings: Dict[str, ClassMapping] = {}
+    _ignored_types: List[str] = ['rpc', 'notification']  #  TODO: potential extension to project?
 
     @classmethod
     def register_statement_class(cls: Type[Self], keywords: List[str]):
@@ -45,6 +46,8 @@ class NodeFactory:
         if known_model is not None:
             return known_model
         else:
+            if stm.keyword in cls._ignored_types:
+                return None
             if stm.keyword not in cls._implemented_mappings.keys():
                 raise Exception(f'"{stm.keyword}" has not yet been implemented as a type.')
             mapping = cls._implemented_mappings[stm.keyword]

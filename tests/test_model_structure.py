@@ -9,6 +9,7 @@ import logging
 from unittest.mock import patch
 
 import pytest
+from pytest import param
 
 LOGGER = logging.getLogger(__name__)
 
@@ -69,48 +70,56 @@ def run_pydantify(input_file: Path, output_folder: Path, args: List[str] = []):
 @pytest.fixture(autouse=True)
 def reset_optparse():
     from pyang import plugin
+    from pydantify.models.base import Node
 
     # Reset plugins. Otherwise pyang creates cross-test side-effects. TODO: Better way?
     plugin.plugins = []
+    Node._name_count = dict()
 
 
 @pytest.mark.parametrize(
     ('input_dir', 'expected_file', 'args'),
     [
-        pytest.param('examples/minimal/interfaces.yang', 'examples/minimal/expected.py', [], id='minimal'),
-        pytest.param(
+        param('examples/minimal/interfaces.yang', 'examples/minimal/expected.py', [], id='minimal'),
+        param(
             'examples/minimal/interfaces.yang',
             'examples/minimal/expected_trimmed.py',
             ['-t=/interfaces/interfaces/address'],
             id='minimal_trimmed',
         ),
-        pytest.param(
+        param(
             'examples/minimal/interfaces.yang',
             'examples/minimal/expected_trimmed.py',
             ['-t=interfaces/interfaces/address'],
             id='minimal_trimmed without leading /',
         ),
-        pytest.param('examples/with_typedef/interfaces.yang', 'examples/with_typedef/expected.py', [], id='typedef'),
-        pytest.param('examples/with_leafref/interfaces.yang', 'examples/with_leafref/expected.py', [], id='leafref'),
-        pytest.param(
+        param('examples/with_typedef/interfaces.yang', 'examples/with_typedef/expected.py', [], id='typedef'),
+        param('examples/with_leafref/interfaces.yang', 'examples/with_leafref/expected.py', [], id='leafref'),
+        param(
             'examples/with_restrictions/interfaces.yang',
             'examples/with_restrictions/expected.py',
             [],
             id='restrictions',
         ),
-        pytest.param('examples/with_uses/interfaces.yang', 'examples/with_uses/expected.py', [], id='uses'),
-        pytest.param('examples/with_case/interfaces.yang', 'examples/with_case/expected.py', [], id='case'),
-        pytest.param(
+        param('examples/with_uses/interfaces.yang', 'examples/with_uses/expected.py', [], id='uses'),
+        param('examples/with_case/interfaces.yang', 'examples/with_case/expected.py', [], id='case'),
+        param(
             'examples/with_complex_case/interfaces.yang',
             'examples/with_complex_case/expected.py',
             [],
             id='complex case',
         ),
-        pytest.param(
+        param(
             'examples/turing-machine/turing-machine.yang',
             'examples/turing-machine/expected.py',
             [],
             id='turing machine',
+        ),
+        param(
+            'examples/turing-machine/turing-machine.yang',
+            'examples/turing-machine/expected.py',
+            ['-V'],
+            id='turing machine 2',
         ),
     ],
 )

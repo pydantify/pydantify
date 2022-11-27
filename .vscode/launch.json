@@ -176,6 +176,25 @@
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",
             },
+        },
+        {
+            "name": "turing-machine",
+            "type": "python",
+            "request": "launch",
+            "module": "pydantify",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-v",
+                "--keep-comments",
+                "--canonical",
+                "-i=${workspaceFolder}/tests/examples/turing-machine/",
+                "-V",
+                "${workspaceFolder}/tests/examples/turing-machine/turing-machine.yang",
+            ],
+            "env": {
+                "PYTHONPATH": "__pypackages__/3.10/lib",
+            },
         }
     ]
 }
