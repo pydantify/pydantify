@@ -64,7 +64,7 @@ def run_pydantify(input_file: Path, output_folder: Path, args: List[str] = []):
         try:
             main()
         except SystemExit as e:
-            assert e.code == os.EX_OK, f"Pyang exited with errors:\n{e}"
+            assert e.code == 0, f"Pyang exited with errors:\n{e}"
 
 
 @pytest.fixture(autouse=True)
