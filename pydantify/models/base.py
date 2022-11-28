@@ -77,6 +77,11 @@ class Node(ABC):
     def name(self) -> str:
         pass
 
+    def make_unique_name(self, suffix: str):
+        if self._name is None:
+            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}{suffix}')
+        return self._name
+
     @classmethod
     def ensure_unique_name(cls, name: str) -> str:
         count: int = Node._name_count.setdefault(name, 0)

@@ -41,9 +41,7 @@ class TypeDef(Node):
         return base
 
     def name(self) -> str:
-        if self._name is None:
-            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Type')
-        return self._name
+        return self.make_unique_name(suffix='Type')
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this Typedef."""
@@ -72,9 +70,7 @@ class LeafNode(Node):
         )
 
     def name(self) -> str:
-        if self._name is None:
-            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Leaf')
-        return self._name
+        return self.make_unique_name(suffix='Leaf')
 
     def get_base_class(self) -> type:
         base = TypeResolver.resolve_statement(self.raw_statement)
@@ -114,9 +110,7 @@ class ContainerNode(Node):
         )
 
     def name(self) -> str:
-        if self._name is None:
-            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Case')
-        return self._name
+        return self.make_unique_name(suffix='Case')
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
@@ -140,9 +134,7 @@ class ContainerNode(Node):
         )
 
     def name(self) -> str:
-        if self._name is None:
-            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Choice')
-        return self._name
+        return self.make_unique_name(suffix='Choice')
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
@@ -166,9 +158,7 @@ class ContainerNode(Node):
         )
 
     def name(self) -> str:
-        if self._name is None:
-            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Container')
-        return self._name
+        return self.make_unique_name(suffix='Container')
 
 
 @NodeFactory.register_statement_class(['list'])
@@ -187,9 +177,7 @@ class ListNode(Node):
         )
 
     def name(self) -> str:
-        if self._name is None:
-            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}ListEntry')
-        return self._name
+        return self.make_unique_name(suffix='ListEntry')
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
@@ -214,16 +202,17 @@ class ModuleNode(Node):
             field_info=FieldInfo(...),
         )
 
+    def to_pydantic_model(self) -> Type[BaseModel]:
+        return super().to_pydantic_model()
+
     def name(self) -> str:
-        if self._name is None:
-            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}Module')
-        return self._name
+        return self.make_unique_name(suffix='Module')
 
 
 class ModelRoot:
     def __init__(self, model: Type[Statement]):
         self.model: Type[Statement] = model
-        self.root_node: ModuleNode = NodeFactory.generate(model)
+        self.root_node: Type[Node] = NodeFactory.generate(model)
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         fields = {self.model.arg: self.root_node.get_output_class().to_field()}
