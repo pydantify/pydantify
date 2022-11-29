@@ -13,7 +13,7 @@ from pydantic import BaseModel as PydanticBaseModel
 from pydantic import create_model
 from pydantic.fields import FieldInfo, Undefined
 
-from pydantify.models.yang_sources_tracker import YANGSourcesTracker
+from . import YANGSourcesTracker
 
 logger = logging.getLogger('pydantify')
 
@@ -126,7 +126,7 @@ class Node(ABC):
 
     @staticmethod
     def extract_statement_list(statement: Statement, attr_name: str) -> List[Type[Node]]:
-        from pydantify.models.nodefactory import NodeFactory
+        from .nodefactory import NodeFactory
 
         rv = getattr(statement, attr_name, [])
         return [ch for ch in map(NodeFactory.generate, rv) if ch is not None]

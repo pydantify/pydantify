@@ -28,7 +28,7 @@ from pydantic.types import ConstrainedInt, conint, constr
 from typing_extensions import Self
 
 if TYPE_CHECKING:
-    from pydantify.models.models import Node
+    from . import Node
 
 
 class TypeResolver:
@@ -40,7 +40,7 @@ class TypeResolver:
 
     @classmethod
     def register(cls: Type[Self], stm: Type[Statement], model: Type['Node']):
-        from pydantify.models.models import Node
+        from . import Node
 
         assert isinstance(model, Node) and isinstance(stm, Statement)
         cls.__mapping[stm] = model
@@ -60,7 +60,7 @@ class TypeResolver:
         if typedef is not None:  # Type is a typedef
             ret = cls.__mapping.get(typedef, None)
             if ret is None:
-                from pydantify.models.models import TypeDef
+                from . import TypeDef
 
                 ret = TypeDef(typedef)
                 cls.register(typedef, ret)
@@ -74,7 +74,7 @@ class TypeResolver:
 
     @classmethod
     def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> Type:
-        from pydantify.models.models import Node, NodeFactory, Empty
+        from . import Node, NodeFactory, Empty
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:

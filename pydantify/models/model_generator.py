@@ -12,9 +12,8 @@ from pyang.statements import ModSubmodStatement, Statement
 from pydantic.main import BaseModel
 from typing_extensions import Self
 
-from pydantify.models.yang_sources_tracker import YANGSourcesTracker
-
-from .models import ModelRoot
+from . import ModelRoot
+from . import YANGSourcesTracker
 
 logger = logging.getLogger('pydantify')
 

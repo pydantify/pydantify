@@ -6,7 +6,7 @@ from pyang.context import Context
 from pyang.plugin import PyangPlugin, register_plugin
 from pyang.statements import ModSubmodStatement
 
-from pydantify.generator import ModelGenerator  # TODO: Get relative import to work. (╯°□°）╯︵ ┻━┻
+from pydantify.models import ModelGenerator
 
 logger = logging.getLogger('pydantify')
 

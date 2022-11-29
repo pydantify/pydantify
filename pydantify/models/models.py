@@ -15,9 +15,9 @@ from pyang.statements import (
 from pydantic import create_model
 from pydantic.fields import FieldInfo, ModelField, Undefined
 
-from pydantify.models.base import BaseModel, GeneratedClass, Node
-from pydantify.models.nodefactory import NodeFactory
-from pydantify.models.typeresolver import TypeResolver
+from . import BaseModel, GeneratedClass, Node
+from . import NodeFactory
+from . import TypeResolver
 
 logger = logging.getLogger('pydantify')
 

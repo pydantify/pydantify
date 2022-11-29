@@ -8,8 +8,8 @@ from pyang.statements import Statement
 from typing_extensions import Self
 from pydantify.exceptions import NotImplementedException
 
-from pydantify.models.base import Node
-from pydantify.models.typeresolver import TypeResolver
+from . import Node
+from . import TypeResolver
 
 logger = logging.getLogger('pydantify')
 
