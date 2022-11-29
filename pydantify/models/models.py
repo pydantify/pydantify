@@ -26,7 +26,7 @@ class Empty:
     pass
 
 
-class TypeDef(Node):
+class TypeDefNode(Node):
     def __init__(self, stm: TypedefStatement) -> None:
         super().__init__(stm)
 

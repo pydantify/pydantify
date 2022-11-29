@@ -60,9 +60,9 @@ class TypeResolver:
         if typedef is not None:  # Type is a typedef
             ret = cls.__mapping.get(typedef, None)
             if ret is None:
-                from . import TypeDef
+                from . import TypeDefNode
 
-                ret = TypeDef(typedef)
+                ret = TypeDefNode(typedef)
                 cls.register(typedef, ret)
             return ret
 
