@@ -14,7 +14,7 @@ from typing_extensions import Self
 
 from pydantify.models.yang_sources_tracker import YANGSourcesTracker
 
-from ..models.models import ModelRoot
+from .models import ModelRoot
 
 logger = logging.getLogger('pydantify')
 

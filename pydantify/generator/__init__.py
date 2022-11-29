@@ -1,1 +1,1 @@
-from .model_generator import ModelGenerator
+from ..models.model_generator import ModelGenerator
