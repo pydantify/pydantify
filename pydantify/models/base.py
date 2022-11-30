@@ -13,7 +13,7 @@ from pydantic import BaseModel as PydanticBaseModel
 from pydantic import create_model
 from pydantic.fields import FieldInfo, Undefined
 
-from . import YANGSourcesTracker
+from ..utility.yang_sources_tracker import YANGSourcesTracker
 
 logger = logging.getLogger('pydantify')
 

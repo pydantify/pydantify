@@ -12,7 +12,7 @@ from pyang.statements import ModSubmodStatement, Statement
 from pydantic.main import BaseModel
 from typing_extensions import Self
 
-from . import ModelRoot
+from ..models import ModelRoot
 from . import YANGSourcesTracker
 
 logger = logging.getLogger('pydantify')
@@ -129,11 +129,11 @@ class ModelGenerator:
         return json.dumps(schema)
 
     @staticmethod
-    def __function_to_source_code(f: Callable):
+    def __function_to_source_code(f: Callable) -> str:
         return inspect.getsource(f)
 
     @staticmethod
-    def __function_content_to_source_code(f: Callable):
+    def __function_content_to_source_code(f: Callable) -> str:
         src = inspect.getsourcelines(f)[0]
         indentation = re.compile('^([\t ]+)').findall(src[1])[0]
         return "".join(line.replace(indentation, '', 1) for line in src[1:])

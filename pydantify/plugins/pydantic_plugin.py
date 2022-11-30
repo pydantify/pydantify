@@ -6,7 +6,7 @@ from pyang.context import Context
 from pyang.plugin import PyangPlugin, register_plugin
 from pyang.statements import ModSubmodStatement
 
-from pydantify.models import ModelGenerator
+from pydantify.utility.model_generator import ModelGenerator
 
 logger = logging.getLogger('pydantify')
 
