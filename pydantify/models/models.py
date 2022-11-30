@@ -146,10 +146,10 @@ class ContainerNode(Node):
 
 @NodeFactory.register_statement_class(['container'])
 class ContainerNode(Node):
-    def __init__(self, module: ContainerStatement) -> None:
+    def __init__(self, stm: ContainerStatement) -> None:
         logger.debug(f'Parsing {__class__.__name__}')
-        assert isinstance(module, ContainerStatement)
-        super().__init__(module)
+        assert isinstance(stm, ContainerStatement)
+        super().__init__(stm)
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
@@ -163,10 +163,10 @@ class ContainerNode(Node):
 
 @NodeFactory.register_statement_class(['list'])
 class ListNode(Node):
-    def __init__(self, module: ListStatement) -> None:
+    def __init__(self, stm: ListStatement) -> None:
         logger.debug(f'Parsing {__class__}')
-        assert isinstance(module, ListStatement)
-        super().__init__(module)
+        assert isinstance(stm, ListStatement)
+        super().__init__(stm)
 
         output_class = self.to_pydantic_model()
         self._output_model = GeneratedClass(
@@ -189,10 +189,10 @@ class ListNode(Node):
 
 @NodeFactory.register_statement_class(['module'])
 class ModuleNode(Node):
-    def __init__(self, module: ModSubmodStatement) -> None:
+    def __init__(self, stm: ModSubmodStatement) -> None:
         logger.debug(f'Parsing {__class__}')
-        assert isinstance(module, ModSubmodStatement)
-        super().__init__(module)
+        assert isinstance(stm, ModSubmodStatement)
+        super().__init__(stm)
 
         output_class = self.to_pydantic_model()
         self._output_model = GeneratedClass(
@@ -210,11 +210,10 @@ class ModuleNode(Node):
 
 
 class ModelRoot:
-    def __init__(self, model: Type[Statement]):
-        self.model: Type[Statement] = model
-        self.root_node: Type[Node] = NodeFactory.generate(model)
+    def __init__(self, stm: Type[Statement]):
+        self.root_node: Type[Node] = NodeFactory.generate(stm)
 
     def to_pydantic_model(self) -> Type[BaseModel]:
-        fields = {self.model.arg: self.root_node.get_output_class().to_field()}
+        fields = {self.root_node.arg: self.root_node.get_output_class().to_field()}
         output_model: Type[BaseModel] = create_model('Model', __base__=(BaseModel,), **fields)
         return output_model
