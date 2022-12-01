@@ -10,7 +10,8 @@
             "justMyCode": true,
             "env": {
                 "PY_COLORS": "1",
-                "_PYTEST_RAISE": "1"
+                "_PYTEST_RAISE": "1",
+                "PYTHONPATH": "__pypackages__/3.10/lib",
             },
             "args": [
                 "--rootdir=.",
@@ -171,6 +172,25 @@
                 "-i=${workspaceFolder}/tests/examples/with_leafref/",
                 "-V",
                 "${workspaceFolder}/tests/examples/with_leafref/interfaces.yang",
+            ],
+            "env": {
+                "PYTHONPATH": "__pypackages__/3.10/lib",
+            },
+        },
+        {
+            "name": "turing-machine",
+            "type": "python",
+            "request": "launch",
+            "module": "pydantify",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "-v",
+                "--keep-comments",
+                "--canonical",
+                "-i=${workspaceFolder}/tests/examples/turing-machine/",
+                "-V",
+                "${workspaceFolder}/tests/examples/turing-machine/turing-machine.yang",
             ],
             "env": {
                 "PYTHONPATH": "__pypackages__/3.10/lib",

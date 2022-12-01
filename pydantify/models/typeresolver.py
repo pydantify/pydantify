@@ -1,11 +1,34 @@
-from typing import Dict, List, Type, TYPE_CHECKING
+from enum import Enum
+from typing import TYPE_CHECKING, Dict, List, Type
+
 from pyang.statements import Statement
-from pyang.types import TypeSpec, XSDPattern
-from typing_extensions import Self
+from pyang.types import (
+    BooleanTypeSpec,
+    EmptyTypeSpec,
+    EnumTypeSpec,
+    IntTypeSpec,
+    LengthTypeSpec,
+    PathTypeSpec,
+    PatternTypeSpec,
+    RangeTypeSpec,
+    StringTypeSpec,
+    TypeSpec,
+    XSDPattern,
+    # TODO: Implement the following:
+    BinaryTypeSpec,
+    BitsTypeSpec,
+    BitTypeSpec,
+    EnumerationTypeSpec,
+    IdentityrefTypeSpec,
+    InstanceIdentifierTypeSpec,
+    LeafrefTypeSpec,
+    UnionTypeSpec,
+)
 from pydantic.types import ConstrainedInt, conint, constr
+from typing_extensions import Self
 
 if TYPE_CHECKING:
-    from pydantify.models.models import Node
+    from . import Node
 
 
 class TypeResolver:
@@ -17,7 +40,7 @@ class TypeResolver:
 
     @classmethod
     def register(cls: Type[Self], stm: Type[Statement], model: Type['Node']):
-        from pydantify.models.models import Node
+        from . import Node
 
         assert isinstance(model, Node) and isinstance(stm, Statement)
         cls.__mapping[stm] = model
@@ -37,9 +60,9 @@ class TypeResolver:
         if typedef is not None:  # Type is a typedef
             ret = cls.__mapping.get(typedef, None)
             if ret is None:
-                from pydantify.models.models import TypeDef
+                from . import TypeDefNode
 
-                ret = TypeDef(typedef)
+                ret = TypeDefNode(typedef)
                 cls.register(typedef, ret)
             return ret
 
@@ -51,29 +74,7 @@ class TypeResolver:
 
     @classmethod
     def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> Type:
-        from pyang.types import (
-            IntTypeSpec,
-            BooleanTypeSpec,
-            StringTypeSpec,
-            PatternTypeSpec,
-            PathTypeSpec,
-            RangeTypeSpec,
-            # TODO: Implement the following:
-            TypeSpec,
-            BitTypeSpec,
-            BitsTypeSpec,
-            EnumTypeSpec,
-            EmptyTypeSpec,
-            UnionTypeSpec,
-            BinaryTypeSpec,
-            LengthTypeSpec,
-            LeafrefTypeSpec,
-            IdentityrefTypeSpec,
-            EnumerationTypeSpec,
-            InstanceIdentifierTypeSpec,
-        )
-
-        from pydantify.models.models import NodeFactory
+        from . import Node, NodeFactory, Empty
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
@@ -81,11 +82,18 @@ class TypeResolver:
                 base.ge = spec.min
                 base.le = spec.max
                 return base
+            case LengthTypeSpec.__qualname__:
+                return constr(min_length=spec.min, max_length=spec.max)
+            case EnumTypeSpec.__qualname__:
+                base = Enum(
+                    Node.ensure_unique_name(f'{spec.name}Enum'), dict(spec.enums)
+                )  # TODO: make separate node type
+                return base
             case PathTypeSpec.__qualname__:
                 target_statement = getattr(spec, 'i_target_node')
                 if cls.__mapping.get(target_statement, None) is None:
                     NodeFactory.generate(target_statement)
-                return cls.__mapping.get(target_statement).output_class_type
+                return cls.__mapping.get(target_statement)._output_model.cls
             case IntTypeSpec.__qualname__:
                 return conint(ge=spec.min, le=spec.max)
             case StringTypeSpec.__qualname__:
@@ -95,7 +103,9 @@ class TypeResolver:
             case PatternTypeSpec.__qualname__:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
                 return constr(regex=pattern)
-        assert False, 'Spec not yet implemented.'
+            case EmptyTypeSpec.__qualname__:
+                return Empty
+        assert False, f'Spec "{spec.__class__.__qualname__}" not yet implemented.'
 
     @classmethod
     def __resolve_pattern(cls, patterns: List[XSDPattern]):

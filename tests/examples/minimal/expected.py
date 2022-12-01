@@ -57,6 +57,8 @@ class Model(BaseModel):
     interfaces: InterfacesModule
 
 
-from pydantic import BaseConfig
+from pydantic import BaseConfig, Extra
 
 BaseConfig.allow_population_by_field_name = True
+BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
+BaseConfig.extra = Extra.forbid

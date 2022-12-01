@@ -1,0 +1,33 @@
+module interfaces {
+    namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+
+  description 'Example demonstarating leafref nodes';
+  choice how {
+      default interval;
+      case interval {
+          leaf interval {
+              type uint16;
+              default 30;
+              units minutes;
+          }
+      }
+      case daily {
+          leaf daily {
+              type empty;
+          }
+          leaf time-of-day {
+              type string;
+              units 24-hour-clock;
+              default 1am;
+          }
+      }
+      case manual {
+          leaf manual {
+              type empty;
+          }
+      }
+  }
+}

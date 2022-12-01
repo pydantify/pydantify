@@ -28,7 +28,7 @@ def parse_cli_arguments() -> List[str]:
     # Import locally to not clutter scope of caller
     import logging
     from argparse import ArgumentParser
-    from .generator.model_generator import ModelGenerator
+    from .utility.model_generator import ModelGenerator
     from pathlib import Path
     import os
 
