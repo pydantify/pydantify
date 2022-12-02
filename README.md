@@ -47,8 +47,8 @@
                 - in a docker container (see [Dockerfile](./Dockerfile))
             - to be accessed by your IDE for intellisense (see [.vscode/settings.json](./.vscode/settings.json))
             - to be accessed by your debug launch configuration (see [.vscode/launch.json](./.vscode/launch.json))
-    - project through pip (`pip install .`)
-        - to be used as a global CLI command (`pydantify`)
+    - project through pip (`pip install git+https://gitlab.ost.ch/pydantic-sa/pydantify`)
+        - to be used as a global CLI command (`pydantify ...`)
 - Build
     - through pdm (`pdm build`)
         - into the local `dist` folder
