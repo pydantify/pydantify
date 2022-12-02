@@ -1,7 +1,10 @@
 import logging
+import os
+import time
 from io import TextIOWrapper
 from typing import Dict
 
+import psutil
 from pyang.context import Context
 from pyang.plugin import PyangPlugin, register_plugin
 from pyang.statements import ModSubmodStatement
@@ -30,5 +33,9 @@ class Pydantify(PyangPlugin):
 
     def emit(self, ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper):
         """Convert yang model."""
-        logger.debug('Pyang parsing complete. Beginning output creation.')
+        start = psutil.Process(os.getpid()).create_time()
+        logger.debug(f'Pyang completed parsing in {time.time() - start:.3f}s.')
+
+        start = time.time()
         ModelGenerator.generate(ctx=ctx, modules=modules, fd=fd)
+        logger.info(f'Output model generated in {time.time() - start:.3f}s.')
