@@ -97,7 +97,7 @@ class LeafNode(Node):
 
 
 @NodeFactory.register_statement_class(['case'])
-class ContainerNode(Node):
+class CaseNode(Node):
     def __init__(self, stm: Statement) -> None:
         logger.debug(f'Parsing {__class__}')
         assert isinstance(stm, Statement)
@@ -121,7 +121,7 @@ class ContainerNode(Node):
 
 
 @NodeFactory.register_statement_class(['choice'])
-class ContainerNode(Node):
+class ChoiceNode(Node):
     def __init__(self, stm: ChoiceStatement) -> None:
         logger.debug(f'Parsing {__class__}')
         assert isinstance(stm, ChoiceStatement)
