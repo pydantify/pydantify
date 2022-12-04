@@ -44,4 +44,4 @@ ENV PYTHONPATH=./pkgs
 COPY --from=builder /my_pkgs ./pkgs
 
 # Run your project as a module.
-CMD ["python", "-m", "pydantify"]
+CMD ["python", "-m", "pydantify", "--help"]
