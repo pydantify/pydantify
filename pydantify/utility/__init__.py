@@ -1,1 +1,2 @@
 from .yang_sources_tracker import YANGSourcesTracker
+from .function_tools import function_content_to_source_code, function_to_source_code

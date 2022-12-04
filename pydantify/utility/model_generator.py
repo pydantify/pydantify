@@ -1,10 +1,8 @@
-import inspect
 import json
 import logging
-import re
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Callable, List, Type
+from typing import List, Type
 
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 from pyang.context import Context
@@ -14,6 +12,7 @@ from typing_extensions import Self
 
 from ..models import ModelRoot
 from . import YANGSourcesTracker
+from . import function_content_to_source_code
 
 logger = logging.getLogger('pydantify')
 
@@ -66,13 +65,13 @@ class ModelGenerator:
         cls.__generate(modules, fd)
         fd.write('\n\n')
 
-        fd.write(cls.__function_content_to_source_code(custom_model_config))
+        fd.write(function_content_to_source_code(custom_model_config))
         fd.write('\n\n')
 
         if cls.include_verification_code:
-            fd.write(cls.__function_content_to_source_code(dynamically_serialized_helper_function))
+            fd.write(function_content_to_source_code(dynamically_serialized_helper_function))
             # fd.write('\n\n')
-            # fd.write(cls.__function_to_source_code(validate))
+            # fd.write(function_to_source_code(validate))
         YANGSourcesTracker.copy_yang_files(input_root=cls.input_dir, output_dir=cls.output_dir)
 
     @classmethod
@@ -127,13 +126,3 @@ class ModelGenerator:
     def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> str:
         schema = model.schema(by_alias=True)
         return json.dumps(schema)
-
-    @staticmethod
-    def __function_to_source_code(f: Callable) -> str:
-        return inspect.getsource(f)
-
-    @staticmethod
-    def __function_content_to_source_code(f: Callable) -> str:
-        src = inspect.getsourcelines(f)[0]
-        indentation = re.compile('^([\t ]+)').findall(src[1])[0]
-        return "".join(line.replace(indentation, '', 1) for line in src[1:])
