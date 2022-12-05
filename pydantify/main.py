@@ -107,8 +107,10 @@ def parse_cli_arguments() -> List[str]:
     ModelGenerator.trim_path = args.trim_path
 
     output_dir = Path(args.output_dir).absolute()
-    os.makedirs(output_dir, exist_ok=True)
     ModelGenerator.output_dir = output_dir
+    os.makedirs(output_dir, exist_ok=True)  # Create output directory if not exists
+    with open(output_dir / '__init__.py', 'a'):  # Create init file if not exists
+        pass
     relay_args.append(f'--output={output_dir}/out.py')
 
     relay_args.append(f'--plugindir={Path(__file__).parent}/plugins')
