@@ -13,7 +13,7 @@ from typing_extensions import Self
 from ..models import ModelRoot
 from . import YANGSourcesTracker
 from . import function_content_to_source_code, function_to_source_code
-from ..utility import restconf_put_request
+from ..utility import restconf_patch_request
 
 logger = logging.getLogger('pydantify')
 
@@ -80,7 +80,7 @@ class ModelGenerator:
 
         # Add initialization helper-code
         if cls.standalone:
-            fd.write(function_to_source_code(restconf_put_request))
+            fd.write(function_to_source_code(restconf_patch_request))
             fd.write('\n\n')
 
         if cls.include_verification_code:
@@ -92,8 +92,8 @@ class ModelGenerator:
                 '\n'.join(
                     [
                         '    # Send config to network device:',
-                        '    # from pydantify.utility import restconf_put_request' if not cls.standalone else '',
-                        "    # restconf_put_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)",
+                        '    # from pydantify.utility import restconf_patch_request' if not cls.standalone else '',
+                        "    # restconf_patch_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)",
                     ]
                 )
             )

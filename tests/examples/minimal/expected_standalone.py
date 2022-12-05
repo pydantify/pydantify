@@ -64,7 +64,7 @@ BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
 BaseConfig.extra = Extra.forbid
 
 
-def restconf_put_request(url: str, user_pw_auth: tuple[str, str], data: str) -> str:
+def restconf_patch_request(url: str, user_pw_auth: tuple[str, str], data: str) -> str:
     r'''Sends a restconf "PUT" request to a network device
 
     :param url: e.g. `'https://sandbox.cisco.com/restconf/data/Cisco-IOS-XE-native:native/interface'`
@@ -97,4 +97,4 @@ if __name__ == "__main__":
 
     # Send config to network device:
 
-    # restconf_put_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)
+    # restconf_patch_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)

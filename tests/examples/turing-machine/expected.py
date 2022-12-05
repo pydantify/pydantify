@@ -250,5 +250,5 @@ if __name__ == "__main__":
     print(f'Generated output: {restconf_payload}')
 
     # Send config to network device:
-    # from pydantify.utility import restconf_put_request
-    # restconf_put_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)
+    # from pydantify.utility import restconf_patch_request
+    # restconf_patch_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)
