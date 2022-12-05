@@ -118,7 +118,3 @@ def parse_cli_arguments() -> List[str]:
 
     # Order of arguments matters.
     return relay_args + unknown_args + [args.input_file]
-
-
-if __name__ == "__main__":
-    main()
