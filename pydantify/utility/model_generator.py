@@ -19,7 +19,7 @@ logger = logging.getLogger('pydantify')
 
 
 # Helper function
-def dynamically_serialized_helper_function():
+def dynamically_serialized_helper_function():  # pragma: no cover
     if __name__ == "__main__":
         # Demonstration purposes only. Not included in actual output.
         # To run: pdm run python out/out.py
@@ -40,7 +40,7 @@ def dynamically_serialized_helper_function():
             print("Serialization successful!")
 
 
-def model_init_code():
+def model_init_code():  # pragma: no cover
     if __name__ == "__main__":
         model = Model(
             # <Initialize model here>
@@ -51,16 +51,12 @@ def model_init_code():
         print(f'Generated output: {restconf_payload}')
 
 
-def custom_model_config():
+def custom_model_config():  # pragma: no cover
     from pydantic import BaseConfig, Extra
 
     BaseConfig.allow_population_by_field_name = True
     BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
     BaseConfig.extra = Extra.forbid
-
-
-def validate():
-    pass
 
 
 class ModelGenerator:
@@ -75,12 +71,14 @@ class ModelGenerator:
     @classmethod
     def generate(cls: Type[Self], ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper):
         """Generate and write output model to a given file descriptor."""
+        # Generate actual model
         cls.__generate(modules, fd)
         fd.write('\n\n')
 
         fd.write(function_content_to_source_code(custom_model_config))
         fd.write('\n\n')
 
+        # Add initialization helper-code
         if cls.standalone:
             fd.write(function_to_source_code(restconf_put_request))
             fd.write('\n\n')
