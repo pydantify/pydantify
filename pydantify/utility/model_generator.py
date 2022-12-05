@@ -12,7 +12,8 @@ from typing_extensions import Self
 
 from ..models import ModelRoot
 from . import YANGSourcesTracker
-from . import function_content_to_source_code
+from . import function_content_to_source_code, function_to_source_code
+from ..utility import restconf_put_request
 
 logger = logging.getLogger('pydantify')
 
@@ -39,6 +40,17 @@ def dynamically_serialized_helper_function():
             print("Serialization successful!")
 
 
+def model_init_code():
+    if __name__ == "__main__":
+        model = Model(
+            # <Initialize model here>
+        )
+
+        restconf_payload = model.json(exclude_defaults=True, by_alias=True)
+
+        print(f'Generated output: {restconf_payload}')
+
+
 def custom_model_config():
     from pydantic import BaseConfig, Extra
 
@@ -57,6 +69,7 @@ class ModelGenerator:
     include_verification_code: bool = False
     input_dir: Path = None
     output_dir: Path
+    standalone: bool = False
     trim_path: str = None
 
     @classmethod
@@ -68,10 +81,24 @@ class ModelGenerator:
         fd.write(function_content_to_source_code(custom_model_config))
         fd.write('\n\n')
 
+        if cls.standalone:
+            fd.write(function_to_source_code(restconf_put_request))
+            fd.write('\n\n')
+
         if cls.include_verification_code:
             fd.write(function_content_to_source_code(dynamically_serialized_helper_function))
-            # fd.write('\n\n')
-            # fd.write(function_to_source_code(validate))
+        else:
+            fd.write(function_content_to_source_code(model_init_code))
+            fd.write('\n')
+            fd.write(
+                '\n'.join(
+                    [
+                        '    # Send config to network device:',
+                        '    # from pydantify.utility import restconf_put_request' if not cls.standalone else '',
+                        "    # restconf_put_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)",
+                    ]
+                )
+            )
         YANGSourcesTracker.copy_yang_files(input_root=cls.input_dir, output_dir=cls.output_dir)
 
     @classmethod

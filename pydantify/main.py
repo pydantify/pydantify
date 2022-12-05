@@ -55,6 +55,14 @@ def parse_cli_arguments() -> List[str]:
         default=False,
     )
     parser.add_argument(
+        '-S',
+        '--standalone',
+        action='store_true',
+        dest='standalone',
+        help='Generated output model has no dependency on Pydantify.',
+        default=False,
+    )
+    parser.add_argument(
         '-i',
         '--input-dir',
         '--path',
@@ -89,6 +97,7 @@ def parse_cli_arguments() -> List[str]:
     # Apply known settings accordingly
     logger.setLevel(logging.DEBUG if args.verbose else logging.INFO)
     ModelGenerator.include_verification_code = args.verify
+    ModelGenerator.standalone = args.standalone
 
     if args.input_dir is not None:
         input_dir = Path(args.input_dir).absolute()
