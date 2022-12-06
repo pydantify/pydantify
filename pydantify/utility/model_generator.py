@@ -12,13 +12,14 @@ from typing_extensions import Self
 
 from ..models import ModelRoot
 from . import YANGSourcesTracker
-from . import function_content_to_source_code
+from . import function_content_to_source_code, function_to_source_code
+from ..utility import restconf_put_request
 
 logger = logging.getLogger('pydantify')
 
 
 # Helper function
-def dynamically_serialized_helper_function():
+def dynamically_serialized_helper_function():  # pragma: no cover
     if __name__ == "__main__":
         # Demonstration purposes only. Not included in actual output.
         # To run: pdm run python out/out.py
@@ -39,16 +40,23 @@ def dynamically_serialized_helper_function():
             print("Serialization successful!")
 
 
-def custom_model_config():
+def model_init_code():  # pragma: no cover
+    if __name__ == "__main__":
+        model = Model(
+            # <Initialize model here>
+        )
+
+        restconf_payload = model.json(exclude_defaults=True, by_alias=True)
+
+        print(f'Generated output: {restconf_payload}')
+
+
+def custom_model_config():  # pragma: no cover
     from pydantic import BaseConfig, Extra
 
     BaseConfig.allow_population_by_field_name = True
     BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
     BaseConfig.extra = Extra.forbid
-
-
-def validate():
-    pass
 
 
 class ModelGenerator:
@@ -57,21 +65,38 @@ class ModelGenerator:
     include_verification_code: bool = False
     input_dir: Path = None
     output_dir: Path
+    standalone: bool = False
     trim_path: str = None
 
     @classmethod
     def generate(cls: Type[Self], ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper):
         """Generate and write output model to a given file descriptor."""
+        # Generate actual model
         cls.__generate(modules, fd)
         fd.write('\n\n')
 
         fd.write(function_content_to_source_code(custom_model_config))
         fd.write('\n\n')
 
+        # Add initialization helper-code
+        if cls.standalone:
+            fd.write(function_to_source_code(restconf_put_request))
+            fd.write('\n\n')
+
         if cls.include_verification_code:
             fd.write(function_content_to_source_code(dynamically_serialized_helper_function))
-            # fd.write('\n\n')
-            # fd.write(function_to_source_code(validate))
+        else:
+            fd.write(function_content_to_source_code(model_init_code))
+            fd.write('\n')
+            fd.write(
+                '\n'.join(
+                    [
+                        '    # Send config to network device:',
+                        '    # from pydantify.utility import restconf_put_request' if not cls.standalone else '',
+                        "    # restconf_put_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)",
+                    ]
+                )
+            )
         YANGSourcesTracker.copy_yang_files(input_root=cls.input_dir, output_dir=cls.output_dir)
 
     @classmethod

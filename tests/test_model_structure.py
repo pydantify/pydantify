@@ -89,6 +89,12 @@ def reset_optparse():
         ),
         param(
             'examples/minimal/interfaces.yang',
+            'examples/minimal/expected_standalone.py',
+            ['--standalone'],
+            id='minimal_standalone',
+        ),
+        param(
+            'examples/minimal/interfaces.yang',
             'examples/minimal/expected_trimmed.py',
             ['-t=interfaces/interfaces/address'],
             id='minimal_trimmed without leading /',
