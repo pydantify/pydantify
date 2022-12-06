@@ -217,4 +217,18 @@ class ModelRoot:
     def to_pydantic_model(self) -> Type[BaseModel]:
         fields = {self.root_node.arg: self.root_node.get_output_class().to_field()}
         output_model: Type[BaseModel] = create_model('Model', __base__=(BaseModel,), **fields)
+        output_model.__doc__ = '''
+Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+## Tips
+Initialization:
+- all values have to be set via keyword arguments
+- if a class contains only a `__root__` field, it can be initialized as follows:
+    - `member=MyNode(__root__=<value>)`
+    - `member=<value>`
+
+Serialziation:
+- use `exclude_defaults=True` to
+- use `by_alias=True` to ensure qualified names are used ()
+'''
         return output_model
