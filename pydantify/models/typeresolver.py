@@ -105,6 +105,8 @@ class TypeResolver:
                 return constr(regex=pattern)
             case EmptyTypeSpec.__qualname__:
                 return Empty
+            case IdentityrefTypeSpec.__qualname__:  # TODO: abort before entering this stage?
+                return Empty
         assert False, f'Spec "{spec.__class__.__qualname__}" not yet implemented.'
 
     @classmethod
