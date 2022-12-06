@@ -32,7 +32,7 @@ class TypeDefNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(self.default if self.default is not None else ...),
+            field_info=FieldInfo(self.default if self.default is not None else ..., alias=self.get_qualified_name()),
             cls=self.to_pydantic_model(),
         )
 
@@ -65,6 +65,7 @@ class LeafNode(Node):
             field_info=FieldInfo(
                 self.default if self.default is not None else ...,
                 description=self.description,
+                alias=self.get_qualified_name(),
             ),
             cls=self.to_pydantic_model(),
         )
@@ -105,7 +106,7 @@ class CaseNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(...),
+            field_info=FieldInfo(..., alias=self.get_qualified_name()),
             cls=self.to_pydantic_model(),
         )
 
@@ -129,7 +130,7 @@ class ChoiceNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(...),
+            field_info=FieldInfo(..., alias=self.get_qualified_name()),
             cls=self.to_pydantic_model(),
         )
 
@@ -153,7 +154,7 @@ class ContainerNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(...),
+            field_info=FieldInfo(..., alias=self.get_qualified_name()),
             cls=self.to_pydantic_model(),
         )
 
@@ -173,7 +174,7 @@ class ListNode(Node):
             class_name=self.name(),
             cls=output_class,
             field_annotation=List[output_class],
-            field_info=FieldInfo(...),
+            field_info=FieldInfo(..., alias=self.get_qualified_name()),
         )
 
     def name(self) -> str:

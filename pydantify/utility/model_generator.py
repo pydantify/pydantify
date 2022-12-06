@@ -10,7 +10,7 @@ from pyang.statements import ModSubmodStatement, Statement
 from pydantic.main import BaseModel
 from typing_extensions import Self
 
-from ..models import ModelRoot
+from ..models import ModelRoot, Node
 from . import YANGSourcesTracker
 from . import function_content_to_source_code, function_to_source_code
 from ..utility import restconf_patch_request
@@ -118,6 +118,7 @@ class ModelGenerator:
                 field_constraints=True,
                 use_schema_description=True,
                 use_field_description=True,
+                aliases=Node.alias_mapping,
                 reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
                 strict_nullable=True,
             )
