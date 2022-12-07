@@ -31,15 +31,15 @@ class InterfacesContainer(BaseModel):
     Just a simple example of a container.
     """
 
-    name: NameLeaf
+    name: Annotated[NameLeaf, Field(alias='interfaces:name')]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    address: AddressLeaf
+    address: Annotated[AddressLeaf, Field(alias='interfaces:address')]
     """
     Interface IP address. Example value: 10.10.10.1
     """
-    port: PortLeaf
+    port: Annotated[PortLeaf, Field(alias='interfaces:port')]
     """
     Port number. Example value: 8080
     """

@@ -60,6 +60,9 @@ class Node(ABC):
 
     def __init__(self, stm: Statement):
         self.children: List[Type[Node]] = __class__.extract_statement_list(stm, 'i_children')
+        self.mandatory = stm.search_one('mandatory', 'true') or any(
+            (ch for ch in self.children if ch.mandatory == True)
+        )
         self.arg: str = stm.arg
         self.keyword: str = stm.keyword
         self.raw_statement: Type[Statement] = stm
