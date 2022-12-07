@@ -221,7 +221,12 @@ class ModelRoot:
         self.root_node: Type[Node] = NodeFactory.generate(stm)
 
     def to_pydantic_model(self) -> Type[BaseModel]:
-        fields = {self.root_node.arg: self.root_node.get_output_class().to_field()}
+        fields: Dict
+        if isinstance(self.root_node, ModuleNode):
+            # Take only children, as
+            fields = self.root_node._children_to_fields()
+        else:
+            fields = {self.root_node.arg: self.root_node.get_output_class().to_field()}
         output_model: Type[BaseModel] = create_model('Model', __base__=(BaseModel,), **fields)
         output_model.__doc__ = '''
 Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.

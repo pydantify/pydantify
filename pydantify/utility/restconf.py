@@ -1,4 +1,4 @@
-def restconf_patch_request(url: str, user_pw_auth: tuple[str, str], data: str) -> str:
+def restconf_patch_request(url: str, user_pw_auth: tuple[str, str], data: str):
     r'''Sends a restconf "PATCH" request to a network device
 
     :param url: e.g. `'https://sandbox.cisco.com/restconf/data/Cisco-IOS-XE-native:native/interface'`
