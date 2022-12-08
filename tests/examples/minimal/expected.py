@@ -61,9 +61,7 @@ class Model(BaseModel):
     - use `by_alias=True` to ensure qualified names are used ()
     """
 
-    interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias='interfaces:interfaces')
-    ] = None
+    interfaces: Annotated[Optional[InterfacesContainer], Field(alias='interfaces:interfaces')] = None
 
 
 from pydantic import BaseConfig, Extra

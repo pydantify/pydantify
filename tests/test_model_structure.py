@@ -121,6 +121,15 @@ def reset_optparse():
             [],
             id='turing machine',
         ),
+        param(
+            'examples/openconfig/openconfig-interfaces.yang',
+            'examples/openconfig/expected.py',
+            [
+                '-t=openconfig-interfaces/interfaces/interface/config',
+                '-i=examples/cisco',
+            ],
+            id='openconfig',
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
