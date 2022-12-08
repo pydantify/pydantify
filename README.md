@@ -26,7 +26,7 @@ Transforms the `/interfaces/ethernet` node and its children (located in `model.y
 
 **Command syntax:**
 ```ps
-pydantify [-h] [-v] [-V] [-i INPUT_DIR] [-o OUTPUT_DIR] [-t TRIM_PATH] input_file
+pydantify [-h] [-v] [-V] [-S] [-i INPUT_DIR] [-o OUTPUT_DIR] [-t TRIM_PATH] input_file
 
 positional arguments:
   input_file            The YANG file containing the entrypoint to the model to evaluate.
@@ -36,6 +36,7 @@ options:
   -v, --verbose         Enables debug output
   -V, --include-verification
                         Adds validation code, as well as the relevant YANG files, to the output model.
+  -S, --standalone      Generated output model has no dependency on Pydantify.
   -i INPUT_DIR, --input-dir INPUT_DIR, --path INPUT_DIR
                         The directory that contains the YANG input model.
   -o OUTPUT_DIR, --output-dir OUTPUT_DIR
