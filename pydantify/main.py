@@ -99,10 +99,9 @@ def parse_cli_arguments() -> List[str]:
     ModelGenerator.include_verification_code = args.verify
     ModelGenerator.standalone = args.standalone
 
-    if args.input_dir is not None:
-        input_dir = Path(args.input_dir).absolute()
-        ModelGenerator.input_dir = input_dir
-        relay_args.append(f'--path={input_dir}')
+    input_dir = Path(args.input_file).absolute().parent if args.input_dir is None else Path(args.input_dir).absolute()
+    ModelGenerator.input_dir = input_dir
+    relay_args.append(f'--path={input_dir}')
 
     ModelGenerator.trim_path = args.trim_path
 
