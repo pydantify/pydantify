@@ -32,7 +32,10 @@ class TypeDefNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(self.default if self.default is not None else ...),
+            field_info=FieldInfo(
+                self.default if self.default is not None or not self.mandatory else ...,
+                alias=self.get_qualified_name(),
+            ),
             cls=self.to_pydantic_model(),
         )
 
@@ -63,8 +66,9 @@ class LeafNode(Node):
         self._output_model = GeneratedClass(
             class_name=self.name(),
             field_info=FieldInfo(
-                self.default if self.default is not None else ...,
+                self.default if self.default is not None or not self.mandatory else ...,
                 description=self.description,
+                alias=self.get_qualified_name(),
             ),
             cls=self.to_pydantic_model(),
         )
@@ -105,7 +109,7 @@ class CaseNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(...),
+            field_info=FieldInfo(..., alias=self.get_qualified_name()),
             cls=self.to_pydantic_model(),
         )
 
@@ -129,7 +133,7 @@ class ChoiceNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(...),
+            field_info=FieldInfo(... if self.mandatory else None, alias=self.get_qualified_name()),
             cls=self.to_pydantic_model(),
         )
 
@@ -153,7 +157,10 @@ class ContainerNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(...),
+            field_info=FieldInfo(
+                ... if self.mandatory else None,
+                alias=self.get_qualified_name(),
+            ),
             cls=self.to_pydantic_model(),
         )
 
@@ -173,7 +180,7 @@ class ListNode(Node):
             class_name=self.name(),
             cls=output_class,
             field_annotation=List[output_class],
-            field_info=FieldInfo(...),
+            field_info=FieldInfo(..., alias=self.get_qualified_name()),
         )
 
     def name(self) -> str:
@@ -214,6 +221,25 @@ class ModelRoot:
         self.root_node: Type[Node] = NodeFactory.generate(stm)
 
     def to_pydantic_model(self) -> Type[BaseModel]:
-        fields = {self.root_node.arg: self.root_node.get_output_class().to_field()}
+        fields: Dict
+        if isinstance(self.root_node, ModuleNode):
+            # Take only children, as
+            fields = self.root_node._children_to_fields()
+        else:
+            fields = {self.root_node.arg: self.root_node.get_output_class().to_field()}
         output_model: Type[BaseModel] = create_model('Model', __base__=(BaseModel,), **fields)
+        output_model.__doc__ = '''
+Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+## Tips
+Initialization:
+- all values have to be set via keyword arguments
+- if a class contains only a `__root__` field, it can be initialized as follows:
+    - `member=MyNode(__root__=<value>)`
+    - `member=<value>`
+
+Serialziation:
+- use `exclude_defaults=True` to
+- use `by_alias=True` to ensure qualified names are used ()
+'''
         return output_model

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Optional
 
 from pydantic import BaseModel, Field
 
@@ -31,30 +31,37 @@ class InterfacesContainer(BaseModel):
     Just a simple example of a container.
     """
 
-    name: NameLeaf
+    name: Annotated[NameLeaf, Field(alias='interfaces:name')]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    address: AddressLeaf
+    address: Annotated[AddressLeaf, Field(alias='interfaces:address')]
     """
     Interface IP address. Example value: 10.10.10.1
     """
-    port: PortLeaf
+    port: Annotated[PortLeaf, Field(alias='interfaces:port')]
     """
     Port number. Example value: 8080
     """
 
 
-class InterfacesModule(BaseModel):
-    """
-    Example using just leafs, containers and modules
-    """
-
-    interfaces: InterfacesContainer
-
-
 class Model(BaseModel):
-    interfaces: InterfacesModule
+    """
+    Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+    ## Tips
+    Initialization:
+    - all values have to be set via keyword arguments
+    - if a class contains only a `__root__` field, it can be initialized as follows:
+        - `member=MyNode(__root__=<value>)`
+        - `member=<value>`
+
+    Serialziation:
+    - use `exclude_defaults=True` to
+    - use `by_alias=True` to ensure qualified names are used ()
+    """
+
+    interfaces: Annotated[Optional[InterfacesContainer], Field(alias='interfaces:interfaces')] = None
 
 
 from pydantic import BaseConfig, Extra
@@ -74,5 +81,5 @@ if __name__ == "__main__":
     print(f'Generated output: {restconf_payload}')
 
     # Send config to network device:
-    # from pydantify.utility import restconf_put_request
-    # restconf_put_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)
+    # from pydantify.utility import restconf_patch_request
+    # restconf_patch_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)

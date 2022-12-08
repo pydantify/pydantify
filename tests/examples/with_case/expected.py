@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Union
+from typing import Annotated, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -14,11 +14,13 @@ class EthernetContainer(BaseModel):
     Option A
     """
 
-    name: NameLeaf
+    name: Annotated[Optional[NameLeaf], Field(alias='interfaces:name')] = None
 
 
 class EthernetCase(BaseModel):
-    ethernet: EthernetContainer
+    ethernet: Annotated[
+        Optional[EthernetContainer], Field(alias='interfaces:ethernet')
+    ] = None
 
 
 class Name2Leaf(BaseModel):
@@ -30,19 +32,29 @@ class Ethernet2Case(BaseModel):
     Option B
     """
 
-    name2: Name2Leaf
-
-
-class InterfacesModule(BaseModel):
-    """
-    Example demonstarating leafref nodes
-    """
-
-    interface_type: Annotated[Union[EthernetCase, Ethernet2Case], Field(alias='interface-type')]
+    name2: Annotated[Optional[Name2Leaf], Field(alias='interfaces:name2')] = None
 
 
 class Model(BaseModel):
-    interfaces: InterfacesModule
+    """
+    Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+    ## Tips
+    Initialization:
+    - all values have to be set via keyword arguments
+    - if a class contains only a `__root__` field, it can be initialized as follows:
+        - `member=MyNode(__root__=<value>)`
+        - `member=<value>`
+
+    Serialziation:
+    - use `exclude_defaults=True` to
+    - use `by_alias=True` to ensure qualified names are used ()
+    """
+
+    interface_type: Annotated[
+        Optional[Union[EthernetCase, Ethernet2Case]],
+        Field(alias='interfaces:interface-type'),
+    ] = None
 
 
 from pydantic import BaseConfig, Extra
@@ -62,5 +74,5 @@ if __name__ == "__main__":
     print(f'Generated output: {restconf_payload}')
 
     # Send config to network device:
-    # from pydantify.utility import restconf_put_request
-    # restconf_put_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)
+    # from pydantify.utility import restconf_patch_request
+    # restconf_patch_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -50,38 +50,45 @@ class InterfaceListEntry(BaseModel):
     Regular IPv4 address with subnet
     """
 
-    name: NameLeaf
+    name: Annotated[NameLeaf, Field(alias='interfaces:name')]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    address: AddressLeaf
+    address: Annotated[AddressLeaf, Field(alias='interfaces:address')]
     """
     Interface IP address. Example value: 10.10.10.1
     """
-    subnet_mask: Annotated[SubnetMaskLeaf, Field(alias='subnet-mask')]
+    subnet_mask: Annotated[SubnetMaskLeaf, Field(alias='interfaces:subnet-mask')]
     """
     Interface subnet mask. Example value: 255.255.255.0
     """
-    enabled: EnabledLeaf = False
+    enabled: Annotated[EnabledLeaf, Field(alias='interfaces:enabled')] = False
     """
     Enable or disable the interface. Example value: true
     """
 
 
 class InterfacesContainer(BaseModel):
-    interface: List[InterfaceListEntry]
-
-
-class InterfacesModule(BaseModel):
-    """
-    Example demonstrating typedef statements
-    """
-
-    interfaces: InterfacesContainer
+    interface: Annotated[List[InterfaceListEntry], Field(alias='interfaces:interface')]
 
 
 class Model(BaseModel):
-    interfaces: InterfacesModule
+    """
+    Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+    ## Tips
+    Initialization:
+    - all values have to be set via keyword arguments
+    - if a class contains only a `__root__` field, it can be initialized as follows:
+        - `member=MyNode(__root__=<value>)`
+        - `member=<value>`
+
+    Serialziation:
+    - use `exclude_defaults=True` to
+    - use `by_alias=True` to ensure qualified names are used ()
+    """
+
+    interfaces: Annotated[Optional[InterfacesContainer], Field(alias='interfaces:interfaces')] = None
 
 
 from pydantic import BaseConfig, Extra
@@ -101,5 +108,5 @@ if __name__ == "__main__":
     print(f'Generated output: {restconf_payload}')
 
     # Send config to network device:
-    # from pydantify.utility import restconf_put_request
-    # restconf_put_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)
+    # from pydantify.utility import restconf_patch_request
+    # restconf_patch_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)

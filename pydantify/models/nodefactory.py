@@ -34,6 +34,7 @@ class NodeFactory:
         def _register(type: type):
             for keyword in keywords:
                 cls._implemented_mappings[keyword] = cls.ClassMapping(maps_to=type)
+            return type
 
         return _register
 

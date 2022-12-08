@@ -4,6 +4,7 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple, Type
+from datamodel_code_generator.reference import FieldNameResolver
 
 from pyang.statements import (
     Statement,
@@ -55,9 +56,13 @@ class GeneratedClass:
 
 class Node(ABC):
     _name_count: Dict[str, int] = dict()  # keeps track of the number of models with the same name
+    alias_mapping: Dict[str, str] = dict()
 
     def __init__(self, stm: Statement):
         self.children: List[Type[Node]] = __class__.extract_statement_list(stm, 'i_children')
+        self.mandatory = stm.search_one('mandatory', 'true') or any(
+            (ch for ch in self.children if ch.mandatory == True)
+        )
         self.arg: str = stm.arg
         self.keyword: str = stm.keyword
         self.raw_statement: Type[Statement] = stm
@@ -72,6 +77,11 @@ class Node(ABC):
 
     def get_output_class(self) -> GeneratedClass:
         return self._output_model
+
+    def get_qualified_name(self) -> str:
+        qualified_name = f'{self.raw_statement.i_module.arg}:{self.arg}'
+        self.alias_mapping[qualified_name] = FieldNameResolver(snake_case_field=True).get_valid_name(self.arg)
+        return qualified_name
 
     @abstractmethod
     def name(self) -> str:
