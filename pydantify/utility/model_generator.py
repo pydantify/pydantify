@@ -2,6 +2,7 @@ import json
 import logging
 from io import TextIOWrapper
 from pathlib import Path
+import sys
 from typing import List, Type
 
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
@@ -107,7 +108,9 @@ class ModelGenerator:
             if cls.trim_path is not None:
                 split_path = cls.split_path(cls.trim_path)
                 module = cls.trim(module, split_path)
-            assert module is not None
+            if module is None:
+                logger.error('Invalid module. Exiting.')
+                sys.exit(0)
             mod = ModelRoot(module)
             json = cls.custom_dump(mod.to_pydantic_model())
             parser = JsonSchemaParser(
@@ -131,19 +134,22 @@ class ModelGenerator:
         return [p for p in path.split('/') if p != '']
 
     @classmethod
-    def trim(cls: Type[Self], statement: Type[Statement], path: List[str]) -> Type[Statement]:
-        if path:
-            arg, path = path[0], path[1:]
-            if arg == statement.arg:
-                if path:
-                    for child in statement.i_children:
-                        child: Type[Statement]
-                        child_statement = cls.trim(child, path)
-                        if child_statement is not None:
-                            return child_statement
+    def trim(cls: Type[Self], statement: Type[Statement], path: List[str]) -> Type[Statement] | None:
+        arg, path = path[0], path[1:]
+        if arg == statement.arg:
+            while len(path) > 0:
+                for child in statement.i_children:
+                    if child.arg == path[0]:
+                        statement = child
+                        path = path[1:]
+                        break
                 else:
-                    return statement
-        return None
+                    logger.warn(
+                        f'Path element "{path[0]}" not found in "{statement.arg}\n'
+                        f'Available: [{", ".join(ch.arg for ch in statement.i_children)}]'
+                    )
+                    return None
+            return statement
 
     @classmethod
     def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> str:

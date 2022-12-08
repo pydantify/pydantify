@@ -140,4 +140,5 @@ def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Pa
         output_folder=tmp_path,
         args=args,
     )
+    print("Temp file: " + str(tmp_path / 'out.py'))
     ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', expected)
