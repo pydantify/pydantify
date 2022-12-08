@@ -239,7 +239,7 @@ Initialization:
     - `member=<value>`
 
 Serialziation:
-- use `exclude_defaults=True` to
-- use `by_alias=True` to ensure qualified names are used ()
+- `exclude_defaults=True` omits fields set to their default value (recommended)
+- `by_alias=True` ensures qualified names are used (necessary)
 '''
         return output_model

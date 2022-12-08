@@ -47,7 +47,7 @@ def model_init_code():  # pragma: no cover
             # <Initialize model here>
         )
 
-        restconf_payload = model.json(exclude_defaults=True, by_alias=True)
+        restconf_payload = model.json(exclude_defaults=True, by_alias=True, indent=2)
 
         print(f'Generated output: {restconf_payload}')
 
