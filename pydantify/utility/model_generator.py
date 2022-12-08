@@ -128,10 +128,7 @@ class ModelGenerator:
 
     @classmethod
     def split_path(cls: Type[Self], path: str) -> List[str]:
-        ret = path.split('/')
-        if ret[0] == '':
-            ret = ret[1:]
-        return ret
+        return [p for p in path.split('/') if p != '']
 
     @classmethod
     def trim(cls: Type[Self], statement: Type[Statement], path: List[str]) -> Type[Statement]:
