@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -64,11 +64,11 @@ class CellListEntry(BaseModel):
     List of non-blank cells.
     """
 
-    coord: CoordLeaf
+    coord: Annotated[Optional[CoordLeaf], Field(alias='turing-machine:coord')] = None
     """
     Coordinate (index) of the tape cell.
     """
-    symbol: SymbolLeaf
+    symbol: Annotated[Optional[SymbolLeaf], Field(alias='turing-machine:symbol')] = None
     """
     Symbol appearing in the tape cell.
     Blank (empty string) is not allowed here because the
@@ -81,7 +81,7 @@ class TapeContainer(BaseModel):
     The contents of the tape.
     """
 
-    cell: List[CellListEntry]
+    cell: Annotated[List[CellListEntry], Field(alias='turing-machine:cell')]
 
 
 class LabelLeaf(BaseModel):
@@ -110,11 +110,11 @@ class InputContainer(BaseModel):
     Input parameters (arguments) of the transition rule.
     """
 
-    state: StateLeaf2
+    state: Annotated[StateLeaf2, Field(alias='turing-machine:state')]
     """
     Current state of the control unit.
     """
-    symbol: SymbolLeaf2
+    symbol: Annotated[SymbolLeaf2, Field(alias='turing-machine:symbol')]
     """
     Symbol read from the tape cell.
     """
@@ -165,17 +165,17 @@ class OutputContainer(BaseModel):
     Output values of the transition rule.
     """
 
-    state: StateLeaf3
+    state: Annotated[Optional[StateLeaf3], Field(alias='turing-machine:state')] = None
     """
     New state of the control unit. If this leaf is not
     present, the state doesn't change.
     """
-    symbol: SymbolLeaf3
+    symbol: Annotated[Optional[SymbolLeaf3], Field(alias='turing-machine:symbol')] = None
     """
     Symbol to be written to the tape cell. If this leaf is
     not present, the symbol doesn't change.
     """
-    head_move: Annotated[HeadMoveLeaf, Field(alias='head-move')] = 'right'
+    head_move: Annotated[HeadMoveLeaf, Field(alias='turing-machine:head-move')] = 'right'
     """
     Move the head one cell to the left or right
     """
@@ -186,12 +186,12 @@ class DeltaListEntry(BaseModel):
     The list of transition rules.
     """
 
-    label: LabelLeaf
+    label: Annotated[Optional[LabelLeaf], Field(alias='turing-machine:label')] = None
     """
     An arbitrary label of the transition rule.
     """
-    input: InputContainer
-    output: OutputContainer
+    input: Annotated[Optional[InputContainer], Field(alias='turing-machine:input')] = None
+    output: Annotated[Optional[OutputContainer], Field(alias='turing-machine:output')] = None
 
 
 class TransitionFunctionContainer(BaseModel):
@@ -200,7 +200,7 @@ class TransitionFunctionContainer(BaseModel):
     transition function.
     """
 
-    delta: List[DeltaListEntry]
+    delta: Annotated[List[DeltaListEntry], Field(alias='turing-machine:delta')]
 
 
 class TuringMachineContainer(BaseModel):
@@ -208,29 +208,39 @@ class TuringMachineContainer(BaseModel):
     State data and configuration of a Turing Machine.
     """
 
-    state: StateLeaf
+    state: Annotated[StateLeaf, Field(alias='turing-machine:state')]
     """
     Current state of the control unit.
     The initial state is 0.
     """
-    head_position: Annotated[HeadPositionLeaf, Field(alias='head-position')]
+    head_position: Annotated[HeadPositionLeaf, Field(alias='turing-machine:head-position')]
     """
     Position of tape read/write head.
     """
-    tape: TapeContainer
-    transition_function: Annotated[TransitionFunctionContainer, Field(alias='transition-function')]
-
-
-class TuringMachineModule(BaseModel):
-    """
-    Data model for the Turing Machine.
-    """
-
-    turing_machine: Annotated[TuringMachineContainer, Field(alias='turing-machine')]
+    tape: Annotated[Optional[TapeContainer], Field(alias='turing-machine:tape')] = None
+    transition_function: Annotated[
+        Optional[TransitionFunctionContainer],
+        Field(alias='turing-machine:transition-function'),
+    ] = None
 
 
 class Model(BaseModel):
-    turing_machine: Annotated[TuringMachineModule, Field(alias='turing-machine')]
+    """
+    Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+    ## Tips
+    Initialization:
+    - all values have to be set via keyword arguments
+    - if a class contains only a `__root__` field, it can be initialized as follows:
+        - `member=MyNode(__root__=<value>)`
+        - `member=<value>`
+
+    Serialziation:
+    - use `exclude_defaults=True` to
+    - use `by_alias=True` to ensure qualified names are used ()
+    """
+
+    turing_machine: Annotated[Optional[TuringMachineContainer], Field(alias='turing-machine:turing-machine')] = None
 
 
 from pydantic import BaseConfig, Extra

@@ -79,7 +79,7 @@ class Node(ABC):
         return self._output_model
 
     def get_qualified_name(self) -> str:
-        qualified_name = f'{self.raw_statement.i_orig_module.arg}:{self.arg}'
+        qualified_name = f'{self.raw_statement.i_module.arg}:{self.arg}'
         self.alias_mapping[qualified_name] = FieldNameResolver(snake_case_field=True).get_valid_name(self.arg)
         return qualified_name
 

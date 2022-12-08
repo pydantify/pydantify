@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class AddressLeaf(BaseModel):
@@ -20,30 +20,37 @@ class PortLeaf(BaseModel):
 
 
 class DestinationContainer(BaseModel):
-    address: AddressLeaf
+    address: Annotated[Optional[AddressLeaf], Field(alias='interfaces:address')] = None
     """
     Target IP address
     """
-    port: PortLeaf
+    port: Annotated[Optional[PortLeaf], Field(alias='interfaces:port')] = None
     """
     Target port number
     """
 
 
 class PeerContainer(BaseModel):
-    destination: DestinationContainer
-
-
-class InterfacesModule(BaseModel):
-    """
-    Example demonstrating "uses" keyword
-    """
-
-    peer: PeerContainer
+    destination: Annotated[Optional[DestinationContainer], Field(alias='interfaces:destination')] = None
 
 
 class Model(BaseModel):
-    interfaces: InterfacesModule
+    """
+    Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+    ## Tips
+    Initialization:
+    - all values have to be set via keyword arguments
+    - if a class contains only a `__root__` field, it can be initialized as follows:
+        - `member=MyNode(__root__=<value>)`
+        - `member=<value>`
+
+    Serialziation:
+    - use `exclude_defaults=True` to
+    - use `by_alias=True` to ensure qualified names are used ()
+    """
+
+    peer: Annotated[Optional[PeerContainer], Field(alias='interfaces:peer')] = None
 
 
 from pydantic import BaseConfig, Extra

@@ -14,7 +14,7 @@ class AddressLeaf(BaseModel):
 
 class Model(BaseModel):
     """
-        Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+    Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
 
     ## Tips
     Initialization:

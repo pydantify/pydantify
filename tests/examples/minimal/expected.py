@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Optional
 
 from pydantic import BaseModel, Field
 
@@ -45,16 +45,25 @@ class InterfacesContainer(BaseModel):
     """
 
 
-class InterfacesModule(BaseModel):
-    """
-    Example using just leafs, containers and modules
-    """
-
-    interfaces: InterfacesContainer
-
-
 class Model(BaseModel):
-    interfaces: InterfacesModule
+    """
+    Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+    ## Tips
+    Initialization:
+    - all values have to be set via keyword arguments
+    - if a class contains only a `__root__` field, it can be initialized as follows:
+        - `member=MyNode(__root__=<value>)`
+        - `member=<value>`
+
+    Serialziation:
+    - use `exclude_defaults=True` to
+    - use `by_alias=True` to ensure qualified names are used ()
+    """
+
+    interfaces: Annotated[
+        Optional[InterfacesContainer], Field(alias='interfaces:interfaces')
+    ] = None
 
 
 from pydantic import BaseConfig, Extra

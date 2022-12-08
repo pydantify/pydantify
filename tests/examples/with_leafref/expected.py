@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -31,15 +31,15 @@ class InterfacesListEntry(BaseModel):
     List of configured device interfaces
     """
 
-    test: TestLeaf
+    test: Annotated[Optional[TestLeaf], Field(alias='interfaces:test')] = None
     """
     Test node
     """
-    name: NameLeaf
+    name: Annotated[Optional[NameLeaf], Field(alias='interfaces:name')] = None
     """
     Interface name
     """
-    ip: IpLeaf
+    ip: Annotated[Optional[IpLeaf], Field(alias='interfaces:ip')] = None
     """
     Interface IP
     """
@@ -52,20 +52,27 @@ class MgmtInterfaceLeaf(BaseModel):
     """
 
 
-class InterfacesModule(BaseModel):
+class Model(BaseModel):
     """
-    Example demonstarating leafref nodes
+        Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+    ## Tips
+    Initialization:
+    - all values have to be set via keyword arguments
+    - if a class contains only a `__root__` field, it can be initialized as follows:
+        - `member=MyNode(__root__=<value>)`
+        - `member=<value>`
+
+    Serialziation:
+    - use `exclude_defaults=True` to
+    - use `by_alias=True` to ensure qualified names are used ()
     """
 
-    interfaces: List[InterfacesListEntry]
-    mgmt_interface: Annotated[MgmtInterfaceLeaf, Field(alias='mgmt-interface')]
+    interfaces: Annotated[List[InterfacesListEntry], Field(alias='interfaces:interfaces')]
+    mgmt_interface: Annotated[Optional[MgmtInterfaceLeaf], Field(alias='interfaces:mgmt-interface')] = None
     """
     Dedicated management interface
     """
-
-
-class Model(BaseModel):
-    interfaces: InterfacesModule
 
 
 from pydantic import BaseConfig, Extra

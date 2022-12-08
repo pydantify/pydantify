@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Optional
 
 from pydantic import BaseModel, Field
 
@@ -31,30 +31,39 @@ class InterfacesContainer(BaseModel):
     Just a simple example of a container.
     """
 
-    name: NameLeaf
+    name: Annotated[NameLeaf, Field(alias='interfaces:name')]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    address: AddressLeaf
+    address: Annotated[AddressLeaf, Field(alias='interfaces:address')]
     """
     Interface IP address. Example value: 10.10.10.1
     """
-    port: PortLeaf
+    port: Annotated[PortLeaf, Field(alias='interfaces:port')]
     """
     Port number. Example value: 8080
     """
 
 
-class InterfacesModule(BaseModel):
-    """
-    Example using just leafs, containers and modules
-    """
-
-    interfaces: InterfacesContainer
-
-
 class Model(BaseModel):
-    interfaces: InterfacesModule
+    """
+    Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
+
+    ## Tips
+    Initialization:
+    - all values have to be set via keyword arguments
+    - if a class contains only a `__root__` field, it can be initialized as follows:
+        - `member=MyNode(__root__=<value>)`
+        - `member=<value>`
+
+    Serialziation:
+    - use `exclude_defaults=True` to
+    - use `by_alias=True` to ensure qualified names are used ()
+    """
+
+    interfaces: Annotated[
+        Optional[InterfacesContainer], Field(alias='interfaces:interfaces')
+    ] = None
 
 
 from pydantic import BaseConfig, Extra
@@ -64,8 +73,8 @@ BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
 BaseConfig.extra = Extra.forbid
 
 
-def restconf_patch_request(url: str, user_pw_auth: tuple[str, str], data: str) -> str:
-    r'''Sends a restconf "PUT" request to a network device
+def restconf_patch_request(url: str, user_pw_auth: tuple[str, str], data: str):
+    r'''Sends a restconf "PATCH" request to a network device
 
     :param url: e.g. `'https://sandbox.cisco.com/restconf/data/Cisco-IOS-XE-native:native/interface'`
     :param user_pw_auth: tuple of username & password, e.g. `("user", "pw")`
@@ -75,7 +84,7 @@ def restconf_patch_request(url: str, user_pw_auth: tuple[str, str], data: str) -
     '''
     import requests
 
-    response = requests.post(
+    response = requests.patch(
         url=url,
         auth=user_pw_auth,
         headers={'Accept': 'application/yang-data+json', 'Content-Type': 'application/yang-data+json'},
