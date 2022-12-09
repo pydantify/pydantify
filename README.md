@@ -7,9 +7,9 @@ A ***prototype*** CLI tool to transform YANG models into Pydantic datastructures
 - Python 3.10
 - pip
 
-**Installing from repository:**
+**Installing from PYPI:**
 ```bash
-pip install git+https://gitlab.ost.ch/pydantic-sa/pydantify
+pip install pydantify
 ```
 
 **Installing from local folder:**
@@ -83,28 +83,7 @@ NOTE: All unknown arguments will be passed to Pyang as-is and without guarantees
 - [yang-python training examples](https://github.com/cmoberg/netconf-yang-training)
 
 ### Yang models
-- [YangModels/yang](https://github.com/YangModels/yang): Yang models galore
+- [YangModels/yang](https://github.com/YangModels/yang)
 
 ### Pyang
 - [pyang](https://github.com/mbj4668/pyang)
-
----
-
-## Wider Ecosystem
-### Yang
-- [libyang](https://github.com/CESNET/libyang): C-based yang parser
-    - Only has [C++](https://github.com/CESNET/libyang-cpp/) and [Rust](https://github.com/rwestphal/yang2-rs/) bindings, but could become an option with some effort.
-- [pyangbind](https://github.com/robshakir/pyangbind): extensive pyang plugin capable of generating python code (abandoned?)
-    - Does its own parsing, storing and generating of YANG models. Possible starting off point if we don't find a library that does it for us.
-- [ydk-gen](https://github.com/CiscoDevNet/ydk-gen)
-- [yang2swagger](https://github.com/bartoszm/yang2swagger): java cli tool
-- [jsontopydantic](https://github.com/brokenloop/jsontopydantic): Literally our entire project? Are we missing something?
-### Restconf
-- [pynso-restconf](https://github.com/workfloworchestrator/pynso-restconf)
-- [restconf via requests example](https://github.com/twr14152/Network-Automation-Scripts_Python3/tree/master/restconf) [yang-python training examples](https://github.com/cmoberg/netconf-yang-training)
-
-### Netconf
-- [ncclient](https://github.com/ncclient/ncclient): python lib to make script interacting with netconf. Used in []()
-
-### Utility
-- [Awesome Pyproject.toml](https://github.com/carlosperate/awesome-pyproject)
