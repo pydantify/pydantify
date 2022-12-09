@@ -25,7 +25,7 @@ classifiers = [
 pydantify = "pydantify.main:main"
 
 [project.urls]
-Repository = "https://gitlab.ost.ch/pydantic-sa/yang2pydantic"
+Repository = "https://gitlab.ost.ch/pydantic-sa/pydantify"
 
 [project.optional-dependencies]
 [tool.pdm]
