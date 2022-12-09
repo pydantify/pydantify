@@ -471,7 +471,7 @@ summary = "Module for decorators, wrappers and monkey patching."
 
 [metadata]
 lock_version = "4.0"
-content_hash = "sha256:ae9dd68298ae98eb67e0acf073b9e8760058d5f327226fc14593888c9d018bf6"
+content_hash = "sha256:c04e6007917b020c4c5f48e3be529fc0837182720599b740d7c78f5e9150a85f"
 
 [metadata.files]
 "argcomplete 2.0.0" = [

@@ -10,7 +10,7 @@ dependencies = [
     "pydantic>=1.10.2",
     "pyang>=2.5.3",
     "psutil>=5.9.4",
-    "datamodel-code-generator @ git+https://github.com/Dominic-Walther/datamodel-code-generator#fix_multiline_docstring_indent",
+    "datamodel-code-generator @ git+https://github.com/Dominic-Walther/datamodel-code-generator@fix_multiline_docstring_indent",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
