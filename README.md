@@ -37,8 +37,10 @@ options:
   -V, --include-verification
                         Adds validation code, as well as the relevant YANG files, to the output model.
   -S, --standalone      Generated output model has no dependency on Pydantify.
+                        All required code is copied into the output model.
   -i INPUT_DIR, --input-dir INPUT_DIR, --path INPUT_DIR
                         The directory that contains the YANG input model.
+                        Defaults to the input file's folder.
   -o OUTPUT_DIR, --output-dir OUTPUT_DIR
                         The directory that should be used to store the output model. Defaults to "$CWD/out".
   -t TRIM_PATH, --trim-path TRIM_PATH

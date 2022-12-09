@@ -59,7 +59,7 @@ def parse_cli_arguments() -> List[str]:
         '--standalone',
         action='store_true',
         dest='standalone',
-        help='Generated output model has no dependency on Pydantify.',
+        help='Generated output model has no dependency on Pydantify. All required code is copied into the output model.',
         default=False,
     )
     parser.add_argument(
@@ -67,7 +67,7 @@ def parse_cli_arguments() -> List[str]:
         '--input-dir',
         '--path',
         dest='input_dir',
-        help='The directory that contains the YANG input model.',
+        help='The directory that contains the YANG input model. Defaults to the input file\'s folder.',
         default=None,
     )
     parser.add_argument(
