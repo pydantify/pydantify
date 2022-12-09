@@ -1,6 +1,6 @@
 [project]
 name = "pydantify"
-version = "0.1.0"
+version = "0.5.0"
 description = "Makes network automation pydantic."
 authors = [
     { name = "Dominic Walther", email = "dominic.walther@ost.ch" },
