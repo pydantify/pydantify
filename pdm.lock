@@ -87,7 +87,7 @@ name = "datamodel-code-generator"
 version = "0.0.0"
 requires_python = ">=3.7,<4.0"
 git = "https://github.com/Dominic-Walther/datamodel-code-generator"
-revision = "dba264b79f24b8bda219783eb3e886b69e882b0c"
+revision = "27f46d1c2bc299e2a583719451e5335498e5cbac"
 summary = "Datamodel Code Generator"
 dependencies = [
     "PySnooper<2.0.0,>=0.4.1",
@@ -471,7 +471,7 @@ summary = "Module for decorators, wrappers and monkey patching."
 
 [metadata]
 lock_version = "4.0"
-content_hash = "sha256:c04e6007917b020c4c5f48e3be529fc0837182720599b740d7c78f5e9150a85f"
+content_hash = "sha256:29614a53ea272088ecc3c997567fb592e419abd5d12b73fedc07580d3aa23476"
 
 [metadata.files]
 "argcomplete 2.0.0" = [
