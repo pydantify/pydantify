@@ -32,7 +32,7 @@ class BaseModel(PydanticBaseModel):
 
 @dataclass
 class GeneratedClass:
-    """Holds information about dynamically generated output plasses."""
+    """Holds information about a dynamically generated output class."""
 
     class_name: str = Undefined
     """Output class name"""
