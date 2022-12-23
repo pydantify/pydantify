@@ -10,7 +10,7 @@ dependencies = [
     "pydantic>=1.10.2",
     "pyang>=2.5.3",
     "psutil>=5.9.4",
-    "datamodel-code-generator @ git+https://github.com/Dominic-Walther/datamodel-code-generator",
+    "datamodel-code-generator @ git+https://github.com/koxudaxi/datamodel-code-generator.git@2f722699e046c030a5ca61f975bf98497c212b33",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
