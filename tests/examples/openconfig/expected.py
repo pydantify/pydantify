@@ -44,7 +44,7 @@ class NameLeaf(BaseModel):
 
 
 class TypeLeaf(BaseModel):
-    __root__: str = ''
+    __root__: str = ""
     """
     The type of the interface.
 
@@ -136,7 +136,9 @@ class ConfigContainer(BaseModel):
     level
     """
 
-    name: Annotated[Optional[NameLeaf], Field(alias='openconfig-interfaces:name')] = None
+    name: Annotated[
+        Optional[NameLeaf], Field(alias="openconfig-interfaces:name")
+    ] = None
     """
     The name of the interface.
 
@@ -171,7 +173,7 @@ class ConfigContainer(BaseModel):
     the system, it is instantiated with the same name in the
     /interfaces/interface[name]/state list.
     """
-    type: Annotated[TypeLeaf, Field(alias='openconfig-interfaces:type')]
+    type: Annotated[TypeLeaf, Field(alias="openconfig-interfaces:type")]
     """
     The type of the interface.
 
@@ -187,20 +189,24 @@ class ConfigContainer(BaseModel):
     A NETCONF server MUST reply with an rpc-error with the
     error-tag 'invalid-value' in this case.
     """
-    mtu: Annotated[Optional[MtuLeaf], Field(alias='openconfig-interfaces:mtu')] = None
+    mtu: Annotated[Optional[MtuLeaf], Field(alias="openconfig-interfaces:mtu")] = None
     """
     Set the max transmission unit size in octets
     for the physical interface.  If this is not set, the mtu is
     set to the operational default -- e.g., 1514 bytes on an
     Ethernet interface.
     """
-    loopback_mode: Annotated[LoopbackModeLeaf, Field(alias='openconfig-interfaces:loopback-mode')] = False
+    loopback_mode: Annotated[
+        LoopbackModeLeaf, Field(alias="openconfig-interfaces:loopback-mode")
+    ] = False
     """
     When set to true, the interface is logically looped back,
     such that packets that are forwarded via the interface
     are received on the same interface.
     """
-    description: Annotated[Optional[DescriptionLeaf], Field(alias='openconfig-interfaces:description')] = None
+    description: Annotated[
+        Optional[DescriptionLeaf], Field(alias="openconfig-interfaces:description")
+    ] = None
     """
     A textual description of the interface.
 
@@ -229,7 +235,7 @@ class ConfigContainer(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    enabled: Annotated[EnabledLeaf, Field(alias='openconfig-interfaces:enabled')] = True
+    enabled: Annotated[EnabledLeaf, Field(alias="openconfig-interfaces:enabled")] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -261,7 +267,9 @@ class Model(BaseModel):
     - use `by_alias=True` to ensure qualified names are used ()
     """
 
-    config: Annotated[Optional[ConfigContainer], Field(alias='openconfig-interfaces:config')] = None
+    config: Annotated[
+        Optional[ConfigContainer], Field(alias="openconfig-interfaces:config")
+    ] = None
 
 
 from pydantic import BaseConfig, Extra
@@ -278,7 +286,7 @@ if __name__ == "__main__":
 
     restconf_payload = model.json(exclude_defaults=True, by_alias=True)
 
-    print(f'Generated output: {restconf_payload}')
+    print(f"Generated output: {restconf_payload}")
 
     # Send config to network device:
     # from pydantify.utility import restconf_patch_request

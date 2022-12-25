@@ -16,7 +16,7 @@ from . import YANGSourcesTracker
 from . import function_content_to_source_code, function_to_source_code
 from ..utility import restconf_patch_request
 
-logger = logging.getLogger('pydantify')
+logger = logging.getLogger("pydantify")
 
 
 # Helper function
@@ -49,7 +49,7 @@ def model_init_code():  # pragma: no cover
 
         restconf_payload = model.json(exclude_defaults=True, by_alias=True, indent=2)
 
-        print(f'Generated output: {restconf_payload}')
+        print(f"Generated output: {restconf_payload}")
 
 
 def custom_model_config():  # pragma: no cover
@@ -70,38 +70,51 @@ class ModelGenerator:
     trim_path: str = None
 
     @classmethod
-    def generate(cls: Type[Self], ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper):
+    def generate(
+        cls: Type[Self],
+        ctx: Context,
+        modules: List[ModSubmodStatement],
+        fd: TextIOWrapper,
+    ):
         """Generate and write output model to a given file descriptor."""
         # Generate actual model
         cls.__generate(modules, fd)
-        fd.write('\n\n')
+        fd.write("\n\n")
 
         fd.write(function_content_to_source_code(custom_model_config))
-        fd.write('\n\n')
+        fd.write("\n\n")
 
         # Add initialization helper-code
         if cls.standalone:
             fd.write(function_to_source_code(restconf_patch_request))
-            fd.write('\n\n')
+            fd.write("\n\n")
 
         if cls.include_verification_code:
-            fd.write(function_content_to_source_code(dynamically_serialized_helper_function))
+            fd.write(
+                function_content_to_source_code(dynamically_serialized_helper_function)
+            )
         else:
             fd.write(function_content_to_source_code(model_init_code))
-            fd.write('\n')
+            fd.write("\n")
             fd.write(
-                '\n'.join(
+                "\n".join(
                     [
-                        '    # Send config to network device:',
-                        '    # from pydantify.utility import restconf_patch_request' if not cls.standalone else '',
+                        "    # Send config to network device:",
+                        "    # from pydantify.utility import restconf_patch_request"
+                        if not cls.standalone
+                        else "",
                         "    # restconf_patch_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)",
                     ]
                 )
             )
-        YANGSourcesTracker.copy_yang_files(input_root=cls.input_dir, output_dir=cls.output_dir)
+        YANGSourcesTracker.copy_yang_files(
+            input_root=cls.input_dir, output_dir=cls.output_dir
+        )
 
     @classmethod
-    def __generate(cls: Type[Self], modules: List[ModSubmodStatement], fd: TextIOWrapper):
+    def __generate(
+        cls: Type[Self], modules: List[ModSubmodStatement], fd: TextIOWrapper
+    ):
         """Generates and yields"""
 
         for module in modules:
@@ -109,7 +122,7 @@ class ModelGenerator:
                 split_path = cls.split_path(cls.trim_path)
                 module = cls.trim(module, split_path)
             if module is None:
-                logger.error('Invalid module. Exiting.')
+                logger.error("Invalid module. Exiting.")
                 sys.exit(0)
             mod = ModelRoot(module)
             json = cls.custom_dump(mod.to_pydantic_model())
@@ -131,10 +144,12 @@ class ModelGenerator:
 
     @classmethod
     def split_path(cls: Type[Self], path: str) -> List[str]:
-        return [p for p in path.split('/') if p != '']
+        return [p for p in path.split("/") if p != ""]
 
     @classmethod
-    def trim(cls: Type[Self], statement: Type[Statement], path: List[str]) -> Type[Statement] | None:
+    def trim(
+        cls: Type[Self], statement: Type[Statement], path: List[str]
+    ) -> Type[Statement] | None:
         arg, path = path[0], path[1:]
         if arg == statement.arg:
             while len(path) > 0:

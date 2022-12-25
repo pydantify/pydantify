@@ -7,7 +7,7 @@ from typing import Set, Type
 from pyang.error import Position
 from typing_extensions import Self
 
-logger = logging.getLogger('pydantify')
+logger = logging.getLogger("pydantify")
 
 
 class YANGSourcesTracker:

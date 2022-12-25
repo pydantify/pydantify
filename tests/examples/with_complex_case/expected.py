@@ -10,11 +10,11 @@ class IntervalLeaf(BaseModel):
 
 
 class IntervalCase(BaseModel):
-    interval: Annotated[IntervalLeaf, Field(alias='interfaces:interval')] = 30
+    interval: Annotated[IntervalLeaf, Field(alias="interfaces:interval")] = 30
 
 
 class DailyLeaf(BaseModel):
-    __root__: str = ''
+    __root__: str = ""
 
 
 class TimeOfDayLeaf(BaseModel):
@@ -22,16 +22,16 @@ class TimeOfDayLeaf(BaseModel):
 
 
 class DailyCase(BaseModel):
-    daily: Annotated[Optional[DailyLeaf], Field(alias='interfaces:daily')] = None
-    time_of_day: Annotated[TimeOfDayLeaf, Field(alias='interfaces:time-of-day')] = '1am'
+    daily: Annotated[Optional[DailyLeaf], Field(alias="interfaces:daily")] = None
+    time_of_day: Annotated[TimeOfDayLeaf, Field(alias="interfaces:time-of-day")] = "1am"
 
 
 class ManualLeaf(BaseModel):
-    __root__: str = ''
+    __root__: str = ""
 
 
 class ManualCase(BaseModel):
-    manual: Annotated[Optional[ManualLeaf], Field(alias='interfaces:manual')] = None
+    manual: Annotated[Optional[ManualLeaf], Field(alias="interfaces:manual")] = None
 
 
 class Model(BaseModel):
@@ -52,7 +52,7 @@ class Model(BaseModel):
 
     how: Annotated[
         Optional[Union[IntervalCase, DailyCase, ManualCase]],
-        Field(alias='interfaces:how'),
+        Field(alias="interfaces:how"),
     ] = None
 
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     restconf_payload = model.json(exclude_defaults=True, by_alias=True)
 
-    print(f'Generated output: {restconf_payload}')
+    print(f"Generated output: {restconf_payload}")
 
     # Send config to network device:
     # from pydantify.utility import restconf_patch_request

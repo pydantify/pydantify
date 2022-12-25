@@ -31,15 +31,15 @@ class InterfacesListEntry(BaseModel):
     List of configured device interfaces
     """
 
-    test: Annotated[Optional[TestLeaf], Field(alias='interfaces:test')] = None
+    test: Annotated[Optional[TestLeaf], Field(alias="interfaces:test")] = None
     """
     Test node
     """
-    name: Annotated[Optional[NameLeaf], Field(alias='interfaces:name')] = None
+    name: Annotated[Optional[NameLeaf], Field(alias="interfaces:name")] = None
     """
     Interface name
     """
-    ip: Annotated[Optional[IpLeaf], Field(alias='interfaces:ip')] = None
+    ip: Annotated[Optional[IpLeaf], Field(alias="interfaces:ip")] = None
     """
     Interface IP
     """
@@ -68,8 +68,12 @@ class Model(BaseModel):
     - use `by_alias=True` to ensure qualified names are used ()
     """
 
-    interfaces: Annotated[List[InterfacesListEntry], Field(alias='interfaces:interfaces')]
-    mgmt_interface: Annotated[Optional[MgmtInterfaceLeaf], Field(alias='interfaces:mgmt-interface')] = None
+    interfaces: Annotated[
+        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
+    ]
+    mgmt_interface: Annotated[
+        Optional[MgmtInterfaceLeaf], Field(alias="interfaces:mgmt-interface")
+    ] = None
     """
     Dedicated management interface
     """
@@ -89,7 +93,7 @@ if __name__ == "__main__":
 
     restconf_payload = model.json(exclude_defaults=True, by_alias=True)
 
-    print(f'Generated output: {restconf_payload}')
+    print(f"Generated output: {restconf_payload}")
 
     # Send config to network device:
     # from pydantify.utility import restconf_patch_request

@@ -28,7 +28,7 @@ class Model(BaseModel):
     - use `by_alias=True` to ensure qualified names are used ()
     """
 
-    address: Annotated[AddressLeaf, Field(alias='interfaces:address')]
+    address: Annotated[AddressLeaf, Field(alias="interfaces:address")]
     """
     Interface IP address. Example value: 10.10.10.1
     """
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     restconf_payload = model.json(exclude_defaults=True, by_alias=True)
 
-    print(f'Generated output: {restconf_payload}')
+    print(f"Generated output: {restconf_payload}")
 
     # Send config to network device:
     # from pydantify.utility import restconf_patch_request

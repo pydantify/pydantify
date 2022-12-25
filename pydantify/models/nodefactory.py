@@ -11,7 +11,7 @@ from pydantify.exceptions import NotImplementedException
 from . import Node
 from . import TypeResolver
 
-logger = logging.getLogger('pydantify')
+logger = logging.getLogger("pydantify")
 
 
 class NodeFactory:
@@ -24,7 +24,10 @@ class NodeFactory:
             return self.maps_to(*args, **kwds)
 
     _implemented_mappings: Dict[str, ClassMapping] = {}
-    _ignored_types: List[str] = ['rpc', 'notification']  #  TODO: potential extension to project?
+    _ignored_types: List[str] = [
+        "rpc",
+        "notification",
+    ]  #  TODO: potential extension to project?
 
     @classmethod
     def register_statement_class(cls: Type[Self], keywords: List[str]):
@@ -48,7 +51,9 @@ class NodeFactory:
             if stm.keyword in cls._ignored_types:
                 return None
             if stm.keyword not in cls._implemented_mappings.keys():
-                raise NotImplementedException(f'"{stm.keyword}" has not yet been implemented as a type.')
+                raise NotImplementedException(
+                    f'"{stm.keyword}" has not yet been implemented as a type.'
+                )
             mapping = cls._implemented_mappings[stm.keyword]
             node = mapping.maps_to(stm)
             TypeResolver.register(stm, node)

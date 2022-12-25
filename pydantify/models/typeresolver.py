@@ -32,14 +32,16 @@ if TYPE_CHECKING:
 
 
 class TypeResolver:
-    __mapping: Dict[Type[Statement], Type['Node']] = dict()
+    __mapping: Dict[Type[Statement], Type["Node"]] = dict()
 
     @classmethod
-    def get_model_if_known(cls: Type[Self], stm: Type[Statement]) -> Type['Node'] | None:
+    def get_model_if_known(
+        cls: Type[Self], stm: Type[Statement]
+    ) -> Type["Node"] | None:
         return TypeResolver.__mapping.get(stm, None)
 
     @classmethod
-    def register(cls: Type[Self], stm: Type[Statement], model: Type['Node']):
+    def register(cls: Type[Self], stm: Type[Statement], model: Type["Node"]):
         from . import Node
 
         assert isinstance(model, Node) and isinstance(stm, Statement)
@@ -53,9 +55,9 @@ class TypeResolver:
             return ret
 
         # If not known, check type definition
-        type = stm.search_one(keyword='type')
-        typespec = getattr(type, 'i_type_spec', None)
-        typedef = getattr(type, 'i_typedef', None)
+        type = stm.search_one(keyword="type")
+        typespec = getattr(type, "i_type_spec", None)
+        typedef = getattr(type, "i_typedef", None)
 
         if typedef is not None:  # Type is a typedef
             ret = cls.__mapping.get(typedef, None)
@@ -86,11 +88,11 @@ class TypeResolver:
                 return constr(min_length=spec.min, max_length=spec.max)
             case EnumTypeSpec.__qualname__:
                 base = Enum(
-                    Node.ensure_unique_name(f'{spec.name}Enum'), dict(spec.enums)
+                    Node.ensure_unique_name(f"{spec.name}Enum"), dict(spec.enums)
                 )  # TODO: make separate node type
                 return base
             case PathTypeSpec.__qualname__:
-                target_statement = getattr(spec, 'i_target_node')
+                target_statement = getattr(spec, "i_target_node")
                 if cls.__mapping.get(target_statement, None) is None:
                     NodeFactory.generate(target_statement)
                 return cls.__mapping.get(target_statement)._output_model.cls
@@ -111,12 +113,12 @@ class TypeResolver:
 
     @classmethod
     def __resolve_pattern(cls, patterns: List[XSDPattern]):
-        comnbined_pattern: str = '^'
+        comnbined_pattern: str = "^"
         for pattern in patterns:
             pattern: str = pattern.spec
-            if not pattern.startswith('^'):
-                pattern = '^' + pattern
-            if not pattern.endswith('$'):
-                pattern += '$'
-            comnbined_pattern += f'(?={pattern})'
-        return comnbined_pattern + '.*$'  # Capture everything if all lookaheads suceed
+            if not pattern.startswith("^"):
+                pattern = "^" + pattern
+            if not pattern.endswith("$"):
+                pattern += "$"
+            comnbined_pattern += f"(?={pattern})"
+        return comnbined_pattern + ".*$"  # Capture everything if all lookaheads suceed

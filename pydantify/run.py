@@ -29,11 +29,11 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
     # check for --plugindir
     args = iter(sys.argv[1:])
     for arg in args:
-        if arg.startswith('--plugindir'):
-            if arg == '--plugindir':
+        if arg.startswith("--plugindir"):
+            if arg == "--plugindir":
                 path = next(args)
-            elif arg.startswith('--plugindir='):
-                path = arg[arg.index('=')+1:]
+            elif arg.startswith("--plugindir="):
+                path = arg[arg.index("=") + 1 :]
             else:
                 continue
             plugindirs.append(path)
@@ -47,170 +47,220 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
 
     optlist = [
         # use capitalized versions of std options help and version
-        optparse.make_option("-h", "--help",
-                             action="help",
-                             help="Show this help message and exit"),
-        optparse.make_option("-v", "--version",
-                             action="version",
-                             help="Show version number and exit"),
-        optparse.make_option("-V", "--verbose",
-                             action="store_true"),
-        optparse.make_option("-e", "--list-errors",
-                             dest="list_errors",
-                             action="store_true",
-                             help="Print a listing of all error and warning " \
-                                 "codes and exit."),
-        optparse.make_option("--print-error-code",
-                             dest="print_error_code",
-                             action="store_true",
-                             help="On errors, print the error code instead " \
-                             "of the error message."),
-        optparse.make_option("--print-error-basename",
-                             dest="print_error_basename",
-                             action="store_true",
-                             help="On errors, print the basename of files " \
-                             "of the error message."),
-        optparse.make_option("--msg-template",
-                             dest="msg_template",
-                             type="string",
-                             help="Template used to display error messages. " \
-                             "This is a python new-style format string used " \
-                             "to format the message information with keys " \
-                             "file, line, code, type and msg. " \
-                             "Example: --msg-template='{file} || {line} || " \
-                             "{code} || {type} || {level} || {msg}'"),
-        optparse.make_option("-W",
-                             dest="warnings",
-                             action="append",
-                             default=[],
-                             metavar="WARNING",
-                             help="If WARNING is 'error', treat all warnings " \
-                                 "as errors, except any listed WARNING. " \
-                                 "If WARNING is 'none', do not report any " \
-                                 "warnings."),
-        optparse.make_option("-E",
-                             dest="errors",
-                             action="append",
-                             default=[],
-                             metavar="WARNING",
-                             help="Treat each WARNING as an error.  For a " \
-                                 "list of warnings, use --list-errors."),
-        optparse.make_option("--ignore-error",
-                             dest="ignore_error_tags",
-                             action="append",
-                             default=[],
-                             metavar="ERROR",
-                             help="Ignore ERROR.  Use with care.  For a " \
-                                 "list of errors, use --list-errors."),
-        optparse.make_option("--ignore-errors",
-                             dest="ignore_errors",
-                             action="store_true",
-                             help="Ignore all errors.  Use with care."),
-        optparse.make_option("--canonical",
-                             dest="canonical",
-                             action="store_true",
-                             help="Validate the module(s) according to the " \
-                             "canonical YANG order."),
-        optparse.make_option("--verify-revision-history",
-                             dest="verify_revision_history",
-                             action="store_true",
-                             help="Ensure that all old revisions in the " \
-                             "revision history can be found in the " \
-                             "module search path."),
-        optparse.make_option("--max-line-length",
-                             type="int",
-                             dest="max_line_len"),
-        optparse.make_option("--max-identifier-length",
-                             type="int",
-                             dest="max_identifier_len"),
-        optparse.make_option("-t", "--transform", dest="transforms",
-                             default=[], action="append",
-                             help="Apply transform TRANSFORM.  Supported " \
-                                  "transforms are: " + ', '.join(xforms)),
-        optparse.make_option("-f", "--format",
-                             dest="format",
-                             help="Convert to FORMAT.  Supported formats " \
-                             "are: " +  ', '.join(fmts)),
-        optparse.make_option("-o", "--output",
-                             dest="outfile",
-                             help="Write the output to OUTFILE instead " \
-                             "of stdout."),
-        optparse.make_option("-F", "--features",
-                             metavar="FEATURES",
-                             dest="features",
-                             default=[],
-                             action="append",
-                             help="Features to support, default all. " \
-                             "<modname>:[<feature>,]*"),
-        optparse.make_option("-X", "--exclude-features",
-                             metavar="EXCLUDE_FEATURES",
-                             dest="exclude_features",
-                             default=[],
-                             action="append",
-                             help="Features not to support, default none. " \
-                                  "<modname>:[<feature>,]*"),
-        optparse.make_option("", "--max-status",
-                             metavar="MAXSTATUS",
-                             dest="max_status",
-                             help="Max status to support, one of: " \
-                             "current, deprecated, obsolete"),
-        optparse.make_option("", "--deviation-module",
-                             metavar="DEVIATION",
-                             dest="deviations",
-                             default=[],
-                             action="append",
-                             help="Deviation module"),
-        optparse.make_option("-p", "--path",
-                             dest="path",
-                             default=[],
-                             action="append",
-                             help=os.pathsep + "-separated search path for yin"
-                             " and yang modules"),
-        optparse.make_option("--plugindir",
-                             dest="plugindir",
-                             help="Load pyang plugins from PLUGINDIR"),
-        optparse.make_option("--strict",
-                             dest="strict",
-                             action="store_true",
-                             help="Force strict YANG compliance."),
-        optparse.make_option("--lax-quote-checks",
-                             dest="lax_quote_checks",
-                             action="store_true",
-                             help="Lax check of backslash in quoted strings."),
-        optparse.make_option("--lax-xpath-checks",
-                             dest="lax_xpath_checks",
-                             action="store_true",
-                             help="Lax check of XPath expressions."),
-        optparse.make_option("--trim-yin",
-                             dest="trim_yin",
-                             action="store_true",
-                             help="In YIN input modules, trim whitespace "
-                             "in textual arguments."),
-        optparse.make_option("-L", "--hello",
-                             dest="hello",
-                             action="store_true",
-                             help="Filename of a server's hello message is "
-                             "given instead of module filename(s)."),
-        optparse.make_option("--implicit-hello-deviations",
-                             dest="implicit_hello_deviations",
-                             action="store_true",
-                             help="Attempt to parse all deviations from hello "
-                             "message regardless of declaration."),
-        optparse.make_option("--keep-comments",
-                             dest="keep_comments",
-                             action="store_true",
-                             help="Pyang will not discard comments; \
+        optparse.make_option(
+            "-h", "--help", action="help", help="Show this help message and exit"
+        ),
+        optparse.make_option(
+            "-v", "--version", action="version", help="Show version number and exit"
+        ),
+        optparse.make_option("-V", "--verbose", action="store_true"),
+        optparse.make_option(
+            "-e",
+            "--list-errors",
+            dest="list_errors",
+            action="store_true",
+            help="Print a listing of all error and warning " "codes and exit.",
+        ),
+        optparse.make_option(
+            "--print-error-code",
+            dest="print_error_code",
+            action="store_true",
+            help="On errors, print the error code instead " "of the error message.",
+        ),
+        optparse.make_option(
+            "--print-error-basename",
+            dest="print_error_basename",
+            action="store_true",
+            help="On errors, print the basename of files " "of the error message.",
+        ),
+        optparse.make_option(
+            "--msg-template",
+            dest="msg_template",
+            type="string",
+            help="Template used to display error messages. "
+            "This is a python new-style format string used "
+            "to format the message information with keys "
+            "file, line, code, type and msg. "
+            "Example: --msg-template='{file} || {line} || "
+            "{code} || {type} || {level} || {msg}'",
+        ),
+        optparse.make_option(
+            "-W",
+            dest="warnings",
+            action="append",
+            default=[],
+            metavar="WARNING",
+            help="If WARNING is 'error', treat all warnings "
+            "as errors, except any listed WARNING. "
+            "If WARNING is 'none', do not report any "
+            "warnings.",
+        ),
+        optparse.make_option(
+            "-E",
+            dest="errors",
+            action="append",
+            default=[],
+            metavar="WARNING",
+            help="Treat each WARNING as an error.  For a "
+            "list of warnings, use --list-errors.",
+        ),
+        optparse.make_option(
+            "--ignore-error",
+            dest="ignore_error_tags",
+            action="append",
+            default=[],
+            metavar="ERROR",
+            help="Ignore ERROR.  Use with care.  For a "
+            "list of errors, use --list-errors.",
+        ),
+        optparse.make_option(
+            "--ignore-errors",
+            dest="ignore_errors",
+            action="store_true",
+            help="Ignore all errors.  Use with care.",
+        ),
+        optparse.make_option(
+            "--canonical",
+            dest="canonical",
+            action="store_true",
+            help="Validate the module(s) according to the " "canonical YANG order.",
+        ),
+        optparse.make_option(
+            "--verify-revision-history",
+            dest="verify_revision_history",
+            action="store_true",
+            help="Ensure that all old revisions in the "
+            "revision history can be found in the "
+            "module search path.",
+        ),
+        optparse.make_option("--max-line-length", type="int", dest="max_line_len"),
+        optparse.make_option(
+            "--max-identifier-length", type="int", dest="max_identifier_len"
+        ),
+        optparse.make_option(
+            "-t",
+            "--transform",
+            dest="transforms",
+            default=[],
+            action="append",
+            help="Apply transform TRANSFORM.  Supported "
+            "transforms are: " + ", ".join(xforms),
+        ),
+        optparse.make_option(
+            "-f",
+            "--format",
+            dest="format",
+            help="Convert to FORMAT.  Supported formats " "are: " + ", ".join(fmts),
+        ),
+        optparse.make_option(
+            "-o",
+            "--output",
+            dest="outfile",
+            help="Write the output to OUTFILE instead " "of stdout.",
+        ),
+        optparse.make_option(
+            "-F",
+            "--features",
+            metavar="FEATURES",
+            dest="features",
+            default=[],
+            action="append",
+            help="Features to support, default all. " "<modname>:[<feature>,]*",
+        ),
+        optparse.make_option(
+            "-X",
+            "--exclude-features",
+            metavar="EXCLUDE_FEATURES",
+            dest="exclude_features",
+            default=[],
+            action="append",
+            help="Features not to support, default none. " "<modname>:[<feature>,]*",
+        ),
+        optparse.make_option(
+            "",
+            "--max-status",
+            metavar="MAXSTATUS",
+            dest="max_status",
+            help="Max status to support, one of: " "current, deprecated, obsolete",
+        ),
+        optparse.make_option(
+            "",
+            "--deviation-module",
+            metavar="DEVIATION",
+            dest="deviations",
+            default=[],
+            action="append",
+            help="Deviation module",
+        ),
+        optparse.make_option(
+            "-p",
+            "--path",
+            dest="path",
+            default=[],
+            action="append",
+            help=os.pathsep + "-separated search path for yin" " and yang modules",
+        ),
+        optparse.make_option(
+            "--plugindir", dest="plugindir", help="Load pyang plugins from PLUGINDIR"
+        ),
+        optparse.make_option(
+            "--strict",
+            dest="strict",
+            action="store_true",
+            help="Force strict YANG compliance.",
+        ),
+        optparse.make_option(
+            "--lax-quote-checks",
+            dest="lax_quote_checks",
+            action="store_true",
+            help="Lax check of backslash in quoted strings.",
+        ),
+        optparse.make_option(
+            "--lax-xpath-checks",
+            dest="lax_xpath_checks",
+            action="store_true",
+            help="Lax check of XPath expressions.",
+        ),
+        optparse.make_option(
+            "--trim-yin",
+            dest="trim_yin",
+            action="store_true",
+            help="In YIN input modules, trim whitespace " "in textual arguments.",
+        ),
+        optparse.make_option(
+            "-L",
+            "--hello",
+            dest="hello",
+            action="store_true",
+            help="Filename of a server's hello message is "
+            "given instead of module filename(s).",
+        ),
+        optparse.make_option(
+            "--implicit-hello-deviations",
+            dest="implicit_hello_deviations",
+            action="store_true",
+            help="Attempt to parse all deviations from hello "
+            "message regardless of declaration.",
+        ),
+        optparse.make_option(
+            "--keep-comments",
+            dest="keep_comments",
+            action="store_true",
+            help="Pyang will not discard comments; \
                                    has effect if the output plugin can \
-                                   handle comments."),
-        optparse.make_option("--no-path-recurse",
-                             dest="no_path_recurse",
-                             action="store_true",
-                             help="Do not recurse into directories in the \
-                                   yang path."),
-        ]
+                                   handle comments.",
+        ),
+        optparse.make_option(
+            "--no-path-recurse",
+            dest="no_path_recurse",
+            action="store_true",
+            help="Do not recurse into directories in the \
+                                   yang path.",
+        ),
+    ]
 
-    optparser = optparse.OptionParser(usage, add_help_option = False)
-    optparser.version = '%prog ' + pyang.__version__
+    optparser = optparse.OptionParser(usage, add_help_option=False)
+    optparser.version = "%prog " + pyang.__version__
     optparser.add_options(optlist)
 
     for p in plugin.plugins:
@@ -249,8 +299,9 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
     else:
         path += os.pathsep + "."
 
-    repos = repository.FileRepository(path, no_path_recurse=o.no_path_recurse,
-                                      verbose=o.verbose)
+    repos = repository.FileRepository(
+        path, no_path_recurse=o.no_path_recurse, verbose=o.verbose
+    )
 
     ctx = context.Context(repos)
 
@@ -275,8 +326,10 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
     for f in ctx.opts.exclude_features:
         (modulename, features) = parse_features_string(f)
         if modulename in ctx.features:
-            sys.stderr.write("module %s can't have both --hello / --features "
-                             "and --exclude-features\n" % modulename)
+            sys.stderr.write(
+                "module %s can't have both --hello / --features "
+                "and --exclude-features\n" % modulename
+            )
             sys.exit(1)
         ctx.exclude_features[modulename] = features
 
@@ -339,13 +392,12 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
         ctx.capabilities = hel.registered_capabilities()
         modules_missing = False
         for mn, rev in hel.yang_modules():
-            mod = ctx.search_module(error.Position(''), mn, rev)
+            mod = ctx.search_module(error.Position(""), mn, rev)
             if mod is None:
                 emarg = mn
                 if rev:
                     emarg += "@" + rev
-                sys.stderr.write(
-                    "module '%s' specified in hello not found.\n" % emarg)
+                sys.stderr.write("module '%s' specified in hello not found.\n" % emarg)
                 modules_missing = True
             else:
                 modules.append(mod)
@@ -354,14 +406,16 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
     else:
         if len(filenames) == 0:
             text = sys.stdin.read()
-            module = ctx.add_module('<stdin>', text)
+            module = ctx.add_module("<stdin>", text)
             if module is None:
                 exit_code = 1
             else:
                 modules.append(module)
-        if (len(filenames) > 1 and
-            emit_obj is not None and
-            not emit_obj.multiple_modules):
+        if (
+            len(filenames) > 1
+            and emit_obj is not None
+            and not emit_obj.multiple_modules
+        ):
             sys.stderr.write("too many files to convert\n")
             sys.exit(1)
 
@@ -375,7 +429,7 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
                 sys.stderr.write("error %s: %s\n" % (filename, ex))
                 sys.exit(1)
             except UnicodeDecodeError as ex:
-                s = str(ex).replace('utf-8', 'utf8')
+                s = str(ex).replace("utf-8", "utf8")
                 sys.stderr.write("%s: unicode error: %s\n" % (filename, s))
                 sys.exit(1)
             m = syntax.re_filename.search(filename)
@@ -383,9 +437,15 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
             if m is not None:
                 name, rev, in_format = m.groups()
                 name = os.path.basename(name)
-                module = ctx.add_module(filename, text, in_format, name, rev,
-                                        expect_failure_error=False,
-                                        primary_module=True)
+                module = ctx.add_module(
+                    filename,
+                    text,
+                    in_format,
+                    name,
+                    rev,
+                    expect_failure_error=False,
+                    primary_module=True,
+                )
             else:
                 module = ctx.add_module(filename, text, primary_module=True)
             if module is None:
@@ -396,7 +456,7 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
     modulenames = []
     for m in modules:
         modulenames.append(m.arg)
-        for s in m.search('include'):
+        for s in m.search("include"):
             modulenames.append(s.arg)
 
     # apply deviations
@@ -408,7 +468,7 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
             sys.stderr.write("error %s: %s\n" % (filename, ex))
             sys.exit(1)
         except UnicodeDecodeError as ex:
-            s = str(ex).replace('utf-8', 'utf8')
+            s = str(ex).replace("utf-8", "utf8")
             sys.stderr.write("%s: unicode error: %s\n" % (filename, s))
             sys.exit(1)
         m = ctx.add_module(filename, text)
@@ -416,7 +476,7 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
             ctx.deviation_modules.append(m)
     if o.hello and o.implicit_hello_deviations:
         for deviation_module in hel.yang_implicit_deviation_modules():
-            m = ctx.search_module(error.Position(''), deviation_module)
+            m = ctx.search_module(error.Position(""), deviation_module)
             if m is not None:
                 ctx.deviation_modules.append(m)
 
@@ -442,8 +502,7 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
                 ctx.exclude_features[m.arg] = list(m.i_features.keys())
             for f in ctx.features[m.arg]:
                 if f not in m.i_features:
-                    sys.stderr.write("unknown feature %s in module %s\n" %
-                                     (f, m.arg))
+                    sys.stderr.write("unknown feature %s in module %s\n" % (f, m.arg))
                     sys.exit(1)
                 if f in ctx.exclude_features[m.arg]:
                     ctx.exclude_features[m.arg].remove(f)
@@ -452,8 +511,7 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
                 ctx.features[m.arg] = list(m.i_features.keys())
             for f in ctx.exclude_features[m.arg]:
                 if f not in m.i_features:
-                    sys.stderr.write("unknown feature %s in module %s\n" %
-                                     (f, m.arg))
+                    sys.stderr.write("unknown feature %s in module %s\n" % (f, m.arg))
                     sys.exit(1)
                 if f in ctx.features[m.arg]:
                     ctx.features[m.arg].remove(f)
@@ -470,7 +528,7 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
                         ctx_validate_and_prune()
             except error.TransformError as e:
                 if e.msg != "":
-                    sys.stderr.write(e.msg + '\n')
+                    sys.stderr.write(e.msg + "\n")
                 sys.exit(e.exit_code)
 
     if len(xform_and_emit_objs) > 0 and len(modules) > 0:
@@ -497,22 +555,26 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
     for epos, etag, eargs in ctx.errors:
         if etag in o.ignore_error_tags:
             continue
-        if (ctx.implicit_errors is False and
-            epos.top is not None and
-            epos.top.arg not in modulenames and
-            (not hasattr(epos.top, 'i_modulename') or
-             epos.top.i_modulename not in modulenames) and
-            epos.ref not in filenames):
+        if (
+            ctx.implicit_errors is False
+            and epos.top is not None
+            and epos.top.arg not in modulenames
+            and (
+                not hasattr(epos.top, "i_modulename")
+                or epos.top.i_modulename not in modulenames
+            )
+            and epos.ref not in filenames
+        ):
             # this module was added implicitly (by import); skip this error
             # the code includes submodules
             continue
         elevel = error.err_level(etag)
         if error.is_warning(elevel) and etag not in o.errors:
             kind = "warning"
-            if 'error' in o.warnings and etag not in o.warnings:
+            if "error" in o.warnings and etag not in o.warnings:
                 kind = "error"
                 exit_code = 1
-            elif 'none' in o.warnings:
+            elif "none" in o.warnings:
                 continue
         else:
             kind = "error"
@@ -521,29 +583,35 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
 
         if o.msg_template is not None:
             try:
-                sys.stderr.write(str(o.msg_template).format(
-                    file=epos.ref, line=epos.line,
-                    code=etag, type=kind,
-                    msg=error.err_to_str(etag, eargs),
-                    level=elevel) + '\n')
-            except KeyError as error_msg:
                 sys.stderr.write(
-                    "unsupported key %s in msg-template\n" % error_msg)
+                    str(o.msg_template).format(
+                        file=epos.ref,
+                        line=epos.line,
+                        code=etag,
+                        type=kind,
+                        msg=error.err_to_str(etag, eargs),
+                        level=elevel,
+                    )
+                    + "\n"
+                )
+            except KeyError as error_msg:
+                sys.stderr.write("unsupported key %s in msg-template\n" % error_msg)
                 sys.exit(1)
         else:
-            sys.stderr.write('%s: %s: %s\n' %
-                             (epos.label(o.print_error_basename), kind, emsg))
+            sys.stderr.write(
+                "%s: %s: %s\n" % (epos.label(o.print_error_basename), kind, emsg)
+            )
 
     if emit_obj is not None and len(modules) > 0:
         tmpfile = None
         if o.outfile is None:
-            if sys.version < '3':
-                fd = codecs.getwriter('utf8')(sys.stdout)
+            if sys.version < "3":
+                fd = codecs.getwriter("utf8")(sys.stdout)
             else:
                 fd = sys.stdout
         else:
             tmpfile = o.outfile + ".tmp"
-            if sys.version < '3':
+            if sys.version < "3":
                 fd = codecs.open(tmpfile, "w+", encoding="utf-8")
             else:
                 fd = io.open(tmpfile, "w+", encoding="utf-8")
@@ -551,7 +619,7 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
             emit_obj.emit(ctx, modules, fd)
         except error.EmitError as e:
             if e.msg != "":
-                sys.stderr.write(e.msg + '\n')
+                sys.stderr.write(e.msg + "\n")
             if tmpfile is not None:
                 fd.close()
                 os.remove(tmpfile)
@@ -564,7 +632,8 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
         if tmpfile is not None:
             fd.close()
             from pathlib import Path
-            if (Path(o.outfile).exists()):
+
+            if Path(o.outfile).exists():
                 os.remove(o.outfile)
             os.rename(tmpfile, o.outfile)
 
@@ -572,12 +641,12 @@ Validates the YANG module in <filename> (or stdin), and all its dependencies."""
 
 
 def parse_features_string(s):
-    if s.find(':') == -1:
+    if s.find(":") == -1:
         return s, []
     else:
-        modulename, rest = s.split(':', 1)
-        if rest == '':
+        modulename, rest = s.split(":", 1)
+        if rest == "":
             return modulename, []
         else:
-            features = rest.split(',')
+            features = rest.split(",")
             return modulename, features

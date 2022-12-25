@@ -16,7 +16,7 @@ class DottedQuadType(BaseModel):
     __root__: Annotated[
         str,
         Field(
-            regex='^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$'
+            regex="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$"
         ),
     ]
     """
@@ -50,26 +50,26 @@ class InterfaceListEntry(BaseModel):
     Regular IPv4 address with subnet
     """
 
-    name: Annotated[NameLeaf, Field(alias='interfaces:name')]
+    name: Annotated[NameLeaf, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    address: Annotated[AddressLeaf, Field(alias='interfaces:address')]
+    address: Annotated[AddressLeaf, Field(alias="interfaces:address")]
     """
     Interface IP address. Example value: 10.10.10.1
     """
-    subnet_mask: Annotated[SubnetMaskLeaf, Field(alias='interfaces:subnet-mask')]
+    subnet_mask: Annotated[SubnetMaskLeaf, Field(alias="interfaces:subnet-mask")]
     """
     Interface subnet mask. Example value: 255.255.255.0
     """
-    enabled: Annotated[EnabledLeaf, Field(alias='interfaces:enabled')] = False
+    enabled: Annotated[EnabledLeaf, Field(alias="interfaces:enabled")] = False
     """
     Enable or disable the interface. Example value: true
     """
 
 
 class InterfacesContainer(BaseModel):
-    interface: Annotated[List[InterfaceListEntry], Field(alias='interfaces:interface')]
+    interface: Annotated[List[InterfaceListEntry], Field(alias="interfaces:interface")]
 
 
 class Model(BaseModel):
@@ -88,7 +88,9 @@ class Model(BaseModel):
     - use `by_alias=True` to ensure qualified names are used ()
     """
 
-    interfaces: Annotated[Optional[InterfacesContainer], Field(alias='interfaces:interfaces')] = None
+    interfaces: Annotated[
+        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 from pydantic import BaseConfig, Extra
@@ -105,7 +107,7 @@ if __name__ == "__main__":
 
     restconf_payload = model.json(exclude_defaults=True, by_alias=True)
 
-    print(f'Generated output: {restconf_payload}')
+    print(f"Generated output: {restconf_payload}")
 
     # Send config to network device:
     # from pydantify.utility import restconf_patch_request

@@ -20,18 +20,20 @@ class PortLeaf(BaseModel):
 
 
 class DestinationContainer(BaseModel):
-    address: Annotated[Optional[AddressLeaf], Field(alias='interfaces:address')] = None
+    address: Annotated[Optional[AddressLeaf], Field(alias="interfaces:address")] = None
     """
     Target IP address
     """
-    port: Annotated[Optional[PortLeaf], Field(alias='interfaces:port')] = None
+    port: Annotated[Optional[PortLeaf], Field(alias="interfaces:port")] = None
     """
     Target port number
     """
 
 
 class PeerContainer(BaseModel):
-    destination: Annotated[Optional[DestinationContainer], Field(alias='interfaces:destination')] = None
+    destination: Annotated[
+        Optional[DestinationContainer], Field(alias="interfaces:destination")
+    ] = None
 
 
 class Model(BaseModel):
@@ -50,7 +52,7 @@ class Model(BaseModel):
     - use `by_alias=True` to ensure qualified names are used ()
     """
 
-    peer: Annotated[Optional[PeerContainer], Field(alias='interfaces:peer')] = None
+    peer: Annotated[Optional[PeerContainer], Field(alias="interfaces:peer")] = None
 
 
 from pydantic import BaseConfig, Extra
@@ -67,7 +69,7 @@ if __name__ == "__main__":
 
     restconf_payload = model.json(exclude_defaults=True, by_alias=True)
 
-    print(f'Generated output: {restconf_payload}')
+    print(f"Generated output: {restconf_payload}")
 
     # Send config to network device:
     # from pydantify.utility import restconf_patch_request

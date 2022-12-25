@@ -19,7 +19,7 @@ from . import BaseModel, GeneratedClass, Node
 from . import NodeFactory
 from . import TypeResolver
 
-logger = logging.getLogger('pydantify')
+logger = logging.getLogger("pydantify")
 
 
 class Empty:
@@ -44,23 +44,29 @@ class TypeDefNode(Node):
         return base
 
     def name(self) -> str:
-        return self.make_unique_name(suffix='Type')
+        return self.make_unique_name(suffix="Type")
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this Typedef."""
         base_type = TypeResolver.resolve_statement(self.raw_statement)
-        output_model: Type[BaseModel] = create_model(self.name(), __base__=(BaseModel,), **{})
-        output_model.__fields__['__root__'] = ModelField.infer(
-            name='__root__', value=Undefined, annotation=base_type, class_validators={}, config=BaseModel.Config
+        output_model: Type[BaseModel] = create_model(
+            self.name(), __base__=(BaseModel,), **{}
+        )
+        output_model.__fields__["__root__"] = ModelField.infer(
+            name="__root__",
+            value=Undefined,
+            annotation=base_type,
+            class_validators={},
+            config=BaseModel.Config,
         )
         output_model.__doc__ = self.description
         return output_model
 
 
-@NodeFactory.register_statement_class(['leaf'])
+@NodeFactory.register_statement_class(["leaf"])
 class LeafNode(Node):
     def __init__(self, stm: LeafLeaflistStatement) -> None:
-        logger.debug(f'Parsing {__class__}')
+        logger.debug(f"Parsing {__class__}")
         super().__init__(stm)
 
         self._output_model = GeneratedClass(
@@ -74,7 +80,7 @@ class LeafNode(Node):
         )
 
     def name(self) -> str:
-        return self.make_unique_name(suffix='Leaf')
+        return self.make_unique_name(suffix="Leaf")
 
     def get_base_class(self) -> type:
         base = TypeResolver.resolve_statement(self.raw_statement)
@@ -87,23 +93,29 @@ class LeafNode(Node):
         if isinstance(base, Node):
             base: Node
             base = base._output_model.cls
-        output_model: Type[BaseModel] = create_model(self.name(), __base__=(BaseModel,), **fields)
+        output_model: Type[BaseModel] = create_model(
+            self.name(), __base__=(BaseModel,), **fields
+        )
         if base is not None:
             default = Undefined
             if base is Empty:  # TODO: ugly way of doing things
                 base = str
-                default = ''
-            output_model.__fields__['__root__'] = ModelField.infer(
-                name='__root__', value=default, annotation=base, class_validators={}, config=BaseModel.Config
+                default = ""
+            output_model.__fields__["__root__"] = ModelField.infer(
+                name="__root__",
+                value=default,
+                annotation=base,
+                class_validators={},
+                config=BaseModel.Config,
             )
         output_model.__doc__ = self.description
         return output_model
 
 
-@NodeFactory.register_statement_class(['case'])
+@NodeFactory.register_statement_class(["case"])
 class CaseNode(Node):
     def __init__(self, stm: Statement) -> None:
-        logger.debug(f'Parsing {__class__}')
+        logger.debug(f"Parsing {__class__}")
         assert isinstance(stm, Statement)
         super().__init__(stm)
 
@@ -114,31 +126,35 @@ class CaseNode(Node):
         )
 
     def name(self) -> str:
-        return self.make_unique_name(suffix='Case')
+        return self.make_unique_name(suffix="Case")
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        output_model: Type[BaseModel] = create_model(self.name(), __base__=(BaseModel,), **fields)
+        output_model: Type[BaseModel] = create_model(
+            self.name(), __base__=(BaseModel,), **fields
+        )
         output_model.__doc__ = self.description
         return output_model
 
 
-@NodeFactory.register_statement_class(['choice'])
+@NodeFactory.register_statement_class(["choice"])
 class ChoiceNode(Node):
     def __init__(self, stm: ChoiceStatement) -> None:
-        logger.debug(f'Parsing {__class__}')
+        logger.debug(f"Parsing {__class__}")
         assert isinstance(stm, ChoiceStatement)
         super().__init__(stm)
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(... if self.mandatory else None, alias=self.get_qualified_name()),
+            field_info=FieldInfo(
+                ... if self.mandatory else None, alias=self.get_qualified_name()
+            ),
             cls=self.to_pydantic_model(),
         )
 
     def name(self) -> str:
-        return self.make_unique_name(suffix='Choice')
+        return self.make_unique_name(suffix="Choice")
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
@@ -148,10 +164,10 @@ class ChoiceNode(Node):
         return output_model
 
 
-@NodeFactory.register_statement_class(['container'])
+@NodeFactory.register_statement_class(["container"])
 class ContainerNode(Node):
     def __init__(self, stm: ContainerStatement) -> None:
-        logger.debug(f'Parsing {__class__.__name__}')
+        logger.debug(f"Parsing {__class__.__name__}")
         assert isinstance(stm, ContainerStatement)
         super().__init__(stm)
 
@@ -165,13 +181,13 @@ class ContainerNode(Node):
         )
 
     def name(self) -> str:
-        return self.make_unique_name(suffix='Container')
+        return self.make_unique_name(suffix="Container")
 
 
-@NodeFactory.register_statement_class(['list'])
+@NodeFactory.register_statement_class(["list"])
 class ListNode(Node):
     def __init__(self, stm: ListStatement) -> None:
-        logger.debug(f'Parsing {__class__}')
+        logger.debug(f"Parsing {__class__}")
         assert isinstance(stm, ListStatement)
         super().__init__(stm)
 
@@ -184,20 +200,22 @@ class ListNode(Node):
         )
 
     def name(self) -> str:
-        return self.make_unique_name(suffix='ListEntry')
+        return self.make_unique_name(suffix="ListEntry")
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        output_model: Type[BaseModel] = create_model(self.name(), __base__=(BaseModel,), **fields)
+        output_model: Type[BaseModel] = create_model(
+            self.name(), __base__=(BaseModel,), **fields
+        )
         output_model.__doc__ = self.description
         return output_model
 
 
-@NodeFactory.register_statement_class(['module'])
+@NodeFactory.register_statement_class(["module"])
 class ModuleNode(Node):
     def __init__(self, stm: ModSubmodStatement) -> None:
-        logger.debug(f'Parsing {__class__}')
+        logger.debug(f"Parsing {__class__}")
         assert isinstance(stm, ModSubmodStatement)
         super().__init__(stm)
 
@@ -213,7 +231,7 @@ class ModuleNode(Node):
         return super().to_pydantic_model()
 
     def name(self) -> str:
-        return self.make_unique_name(suffix='Module')
+        return self.make_unique_name(suffix="Module")
 
 
 class ModelRoot:
@@ -227,8 +245,10 @@ class ModelRoot:
             fields = self.root_node._children_to_fields()
         else:
             fields = {self.root_node.arg: self.root_node.get_output_class().to_field()}
-        output_model: Type[BaseModel] = create_model('Model', __base__=(BaseModel,), **fields)
-        output_model.__doc__ = '''
+        output_model: Type[BaseModel] = create_model(
+            "Model", __base__=(BaseModel,), **fields
+        )
+        output_model.__doc__ = """
 Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
 
 ## Tips
@@ -241,5 +261,5 @@ Initialization:
 Serialziation:
 - `exclude_defaults=True` omits fields set to their default value (recommended)
 - `by_alias=True` ensures qualified names are used (necessary)
-'''
+"""
         return output_model

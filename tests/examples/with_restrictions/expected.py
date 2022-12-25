@@ -13,7 +13,7 @@ class NameLeaf(BaseModel):
 
 
 class ComplexAddressLeaf(BaseModel):
-    __root__: Annotated[str, Field(regex='^(?=^(\\d{1,3}\\.){3}\\d{1,3}$).*$')]
+    __root__: Annotated[str, Field(regex="^(?=^(\\d{1,3}\\.){3}\\d{1,3}$).*$")]
     """
     Interface IP address. Example value: 10.10.10.1
     """
@@ -38,19 +38,21 @@ class InterfacesContainer(BaseModel):
     Just a simple example of a container.
     """
 
-    name: Annotated[NameLeaf, Field(alias='interfaces:name')]
+    name: Annotated[NameLeaf, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    complex_address: Annotated[ComplexAddressLeaf, Field(alias='interfaces:complex-address')]
+    complex_address: Annotated[
+        ComplexAddressLeaf, Field(alias="interfaces:complex-address")
+    ]
     """
     Interface IP address. Example value: 10.10.10.1
     """
-    complex_port: Annotated[ComplexPortLeaf, Field(alias='interfaces:complex-port')]
+    complex_port: Annotated[ComplexPortLeaf, Field(alias="interfaces:complex-port")]
     """
     Port number. Example value: 8080
     """
-    simple_port: Annotated[SimplePortLeaf, Field(alias='interfaces:simple-port')]
+    simple_port: Annotated[SimplePortLeaf, Field(alias="interfaces:simple-port")]
     """
     Port number. Example value: 8080
     """
@@ -72,7 +74,9 @@ class Model(BaseModel):
     - use `by_alias=True` to ensure qualified names are used ()
     """
 
-    interfaces: Annotated[Optional[InterfacesContainer], Field(alias='interfaces:interfaces')] = None
+    interfaces: Annotated[
+        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 from pydantic import BaseConfig, Extra
@@ -89,7 +93,7 @@ if __name__ == "__main__":
 
     restconf_payload = model.json(exclude_defaults=True, by_alias=True)
 
-    print(f'Generated output: {restconf_payload}')
+    print(f"Generated output: {restconf_payload}")
 
     # Send config to network device:
     # from pydantify.utility import restconf_patch_request
