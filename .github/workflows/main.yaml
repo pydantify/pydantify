@@ -1,0 +1,65 @@
+---
+name: test pydantify
+on: [push,pull_request]
+
+jobs:
+  linters:
+    name: linters
+    strategy:
+      matrix:
+        python-version: [ '3.10' ]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - uses: pdm-project/setup-pdm@v3
+        name: Setup PDM
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: pdm install
+
+      - name: Run black
+        run: make black
+      # - name: Run mypy
+      #   run: make mypy
+
+  pytest:
+    name: Testing on Python ${{ matrix.python-version }} (${{ matrix.platform}})
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ '3.10', '3.11' ]
+        # platform: [ubuntu-latest, macOS-latest, windows-latest]
+        platform: [ubuntu-latest, macOS-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - uses: pdm-project/setup-pdm@v3
+        name: Setup PDM
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: pdm install
+
+      - name: Run pytest
+        run: make pytest

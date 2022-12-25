@@ -64,11 +64,11 @@ class CellListEntry(BaseModel):
     List of non-blank cells.
     """
 
-    coord: Annotated[Optional[CoordLeaf], Field(alias='turing-machine:coord')] = None
+    coord: Annotated[Optional[CoordLeaf], Field(alias="turing-machine:coord")] = None
     """
     Coordinate (index) of the tape cell.
     """
-    symbol: Annotated[Optional[SymbolLeaf], Field(alias='turing-machine:symbol')] = None
+    symbol: Annotated[Optional[SymbolLeaf], Field(alias="turing-machine:symbol")] = None
     """
     Symbol appearing in the tape cell.
     Blank (empty string) is not allowed here because the
@@ -81,7 +81,7 @@ class TapeContainer(BaseModel):
     The contents of the tape.
     """
 
-    cell: Annotated[List[CellListEntry], Field(alias='turing-machine:cell')]
+    cell: Annotated[List[CellListEntry], Field(alias="turing-machine:cell")]
 
 
 class LabelLeaf(BaseModel):
@@ -110,11 +110,11 @@ class InputContainer(BaseModel):
     Input parameters (arguments) of the transition rule.
     """
 
-    state: Annotated[StateLeaf2, Field(alias='turing-machine:state')]
+    state: Annotated[StateLeaf2, Field(alias="turing-machine:state")]
     """
     Current state of the control unit.
     """
-    symbol: Annotated[SymbolLeaf2, Field(alias='turing-machine:symbol')]
+    symbol: Annotated[SymbolLeaf2, Field(alias="turing-machine:symbol")]
     """
     Symbol read from the tape cell.
     """
@@ -165,17 +165,21 @@ class OutputContainer(BaseModel):
     Output values of the transition rule.
     """
 
-    state: Annotated[Optional[StateLeaf3], Field(alias='turing-machine:state')] = None
+    state: Annotated[Optional[StateLeaf3], Field(alias="turing-machine:state")] = None
     """
     New state of the control unit. If this leaf is not
     present, the state doesn't change.
     """
-    symbol: Annotated[Optional[SymbolLeaf3], Field(alias='turing-machine:symbol')] = None
+    symbol: Annotated[
+        Optional[SymbolLeaf3], Field(alias="turing-machine:symbol")
+    ] = None
     """
     Symbol to be written to the tape cell. If this leaf is
     not present, the symbol doesn't change.
     """
-    head_move: Annotated[HeadMoveLeaf, Field(alias='turing-machine:head-move')] = 'right'
+    head_move: Annotated[
+        HeadMoveLeaf, Field(alias="turing-machine:head-move")
+    ] = "right"
     """
     Move the head one cell to the left or right
     """
@@ -186,12 +190,16 @@ class DeltaListEntry(BaseModel):
     The list of transition rules.
     """
 
-    label: Annotated[Optional[LabelLeaf], Field(alias='turing-machine:label')] = None
+    label: Annotated[Optional[LabelLeaf], Field(alias="turing-machine:label")] = None
     """
     An arbitrary label of the transition rule.
     """
-    input: Annotated[Optional[InputContainer], Field(alias='turing-machine:input')] = None
-    output: Annotated[Optional[OutputContainer], Field(alias='turing-machine:output')] = None
+    input: Annotated[
+        Optional[InputContainer], Field(alias="turing-machine:input")
+    ] = None
+    output: Annotated[
+        Optional[OutputContainer], Field(alias="turing-machine:output")
+    ] = None
 
 
 class TransitionFunctionContainer(BaseModel):
@@ -200,7 +208,7 @@ class TransitionFunctionContainer(BaseModel):
     transition function.
     """
 
-    delta: Annotated[List[DeltaListEntry], Field(alias='turing-machine:delta')]
+    delta: Annotated[List[DeltaListEntry], Field(alias="turing-machine:delta")]
 
 
 class TuringMachineContainer(BaseModel):
@@ -208,19 +216,21 @@ class TuringMachineContainer(BaseModel):
     State data and configuration of a Turing Machine.
     """
 
-    state: Annotated[StateLeaf, Field(alias='turing-machine:state')]
+    state: Annotated[StateLeaf, Field(alias="turing-machine:state")]
     """
     Current state of the control unit.
     The initial state is 0.
     """
-    head_position: Annotated[HeadPositionLeaf, Field(alias='turing-machine:head-position')]
+    head_position: Annotated[
+        HeadPositionLeaf, Field(alias="turing-machine:head-position")
+    ]
     """
     Position of tape read/write head.
     """
-    tape: Annotated[Optional[TapeContainer], Field(alias='turing-machine:tape')] = None
+    tape: Annotated[Optional[TapeContainer], Field(alias="turing-machine:tape")] = None
     transition_function: Annotated[
         Optional[TransitionFunctionContainer],
-        Field(alias='turing-machine:transition-function'),
+        Field(alias="turing-machine:transition-function"),
     ] = None
 
 
@@ -240,7 +250,9 @@ class Model(BaseModel):
     - use `by_alias=True` to ensure qualified names are used ()
     """
 
-    turing_machine: Annotated[Optional[TuringMachineContainer], Field(alias='turing-machine:turing-machine')] = None
+    turing_machine: Annotated[
+        Optional[TuringMachineContainer], Field(alias="turing-machine:turing-machine")
+    ] = None
 
 
 from pydantic import BaseConfig, Extra
@@ -257,7 +269,7 @@ if __name__ == "__main__":
 
     restconf_payload = model.json(exclude_defaults=True, by_alias=True)
 
-    print(f'Generated output: {restconf_payload}')
+    print(f"Generated output: {restconf_payload}")
 
     # Send config to network device:
     # from pydantify.utility import restconf_patch_request

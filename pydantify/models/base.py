@@ -16,7 +16,7 @@ from pydantic.fields import FieldInfo, Undefined
 
 from ..utility.yang_sources_tracker import YANGSourcesTracker
 
-logger = logging.getLogger('pydantify')
+logger = logging.getLogger("pydantify")
 
 
 class BaseModel(PydanticBaseModel):
@@ -24,10 +24,10 @@ class BaseModel(PydanticBaseModel):
         @staticmethod
         def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:
             # Remove "title" property to avoid redundant annotation
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
-            if not schema.get('type', None) == 'object':
-                schema.pop('title', None)
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
+            if not schema.get("type", None) == "object":
+                schema.pop("title", None)
 
 
 @dataclass
@@ -47,20 +47,29 @@ class GeneratedClass:
         for prop in self.__dataclass_fields__.keys():
             value = getattr(self, prop, Undefined)
             if value == Undefined:
-                raise Exception(f'Member "{prop}" of class "{__class__.__name__}" is undefined.\n{self}')
+                raise Exception(
+                    f'Member "{prop}" of class "{__class__.__name__}" is undefined.\n{self}'
+                )
 
     def to_field(self) -> Tuple[Type[BaseModel] | Type, FieldInfo]:
         self.assert_is_valid()
-        return (self.field_annotation if self.field_annotation else self.cls, self.field_info)
+        return (
+            self.field_annotation if self.field_annotation else self.cls,
+            self.field_info,
+        )
 
 
 class Node(ABC):
-    _name_count: Dict[str, int] = dict()  # keeps track of the number of models with the same name
+    _name_count: Dict[
+        str, int
+    ] = dict()  # keeps track of the number of models with the same name
     alias_mapping: Dict[str, str] = dict()
 
     def __init__(self, stm: Statement):
-        self.children: List[Type[Node]] = __class__.extract_statement_list(stm, 'i_children')
-        self.mandatory = stm.search_one('mandatory', 'true') or any(
+        self.children: List[Type[Node]] = __class__.extract_statement_list(
+            stm, "i_children"
+        )
+        self.mandatory = stm.search_one("mandatory", "true") or any(
             (ch for ch in self.children if ch.mandatory == True)
         )
         self.arg: str = stm.arg
@@ -79,8 +88,10 @@ class Node(ABC):
         return self._output_model
 
     def get_qualified_name(self) -> str:
-        qualified_name = f'{self.raw_statement.i_module.arg}:{self.arg}'
-        self.alias_mapping[qualified_name] = FieldNameResolver(snake_case_field=True).get_valid_name(self.arg)
+        qualified_name = f"{self.raw_statement.i_module.arg}:{self.arg}"
+        self.alias_mapping[qualified_name] = FieldNameResolver(
+            snake_case_field=True
+        ).get_valid_name(self.arg)
         return qualified_name
 
     @abstractmethod
@@ -89,7 +100,7 @@ class Node(ABC):
 
     def make_unique_name(self, suffix: str):
         if self._name is None:
-            self._name = Node.ensure_unique_name(f'{self.arg.capitalize()}{suffix}')
+            self._name = Node.ensure_unique_name(f"{self.arg.capitalize()}{suffix}")
         return self._name
 
     @classmethod
@@ -97,7 +108,7 @@ class Node(ABC):
         count: int = Node._name_count.setdefault(name, 0)
         ret: str = name
         if count > 0:
-            ret = f'{name}{count+1}'
+            ret = f"{name}{count+1}"
         Node._name_count[name] += 1
         return ret
 
@@ -108,22 +119,24 @@ class Node(ABC):
     @staticmethod
     def __extract_comments(stm: Statement) -> str | None:
         """Gathers and returns all comments located in the node's root, if present."""
-        comments = stm.search('_comment')
+        comments = stm.search("_comment")
         if comments:
-            return " ".join((c.arg.lstrip('/ \n') for c in comments))
+            return " ".join((c.arg.lstrip("/ \n") for c in comments))
         return None
 
     @staticmethod
     def __extract_description(stm: Statement) -> str | None:
         """Returns the content of the "description" field, if present."""
-        description = stm.search_one('description')
+        description = stm.search_one("description")
         return description.arg if description is not None else None
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
         base = self.get_base_class()
-        output_model: Type[BaseModel] = create_model(self.name(), __base__=(base,), **fields)
+        output_model: Type[BaseModel] = create_model(
+            self.name(), __base__=(base,), **fields
+        )
         output_model.__doc__ = self.description
         return output_model
 
@@ -135,7 +148,9 @@ class Node(ABC):
         return ret
 
     @staticmethod
-    def extract_statement_list(statement: Statement, attr_name: str) -> List[Type[Node]]:
+    def extract_statement_list(
+        statement: Statement, attr_name: str
+    ) -> List[Type[Node]]:
         from .nodefactory import NodeFactory
 
         rv = getattr(statement, attr_name, [])

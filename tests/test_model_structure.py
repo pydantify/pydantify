@@ -24,29 +24,35 @@ class ParsedAST:
         for c in self.body:
             if isinstance(c, ast.ClassDef):
                 bases = ", ".join([b.id for b in c.bases])
-                self.classes[f'{c.name}({bases})'] = c
+                self.classes[f"{c.name}({bases})"] = c
 
     @validate_arguments
     @staticmethod
     def assert_python_sources_equal(generated: Path, expected: Path):
-        LOGGER.info(f'Output path: {generated}')
+        LOGGER.info(f"Output path: {generated}")
         ast1 = ParsedAST(generated)
         ast2 = ParsedAST(expected)
-        LOGGER.info(f'"Comparing:\n{"Expected":9}: {ast2.classes.keys()}\n{"Got":9}: {ast1.classes.keys()}')
+        LOGGER.info(
+            f'"Comparing:\n{"Expected":9}: {ast2.classes.keys()}\n{"Got":9}: {ast1.classes.keys()}'
+        )
         for a, b in zip(ast1.classes.keys(), ast2.classes.keys()):
-            assert a == b, f'Missmatch {a} vs {b}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
+            assert (
+                a == b
+            ), f'Missmatch {a} vs {b}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
         for a, b in zip(ast1.classes.values(), ast2.classes.values()):
             # Compare classes
             assert len(a.body) == len(b.body)
             for a2, b2 in zip(a.body, b.body):
                 # Compare class members
-                annotation_a: ast.Name = getattr(a2, 'annotation', None)
-                annotation_b: ast.Name = getattr(b2, 'annotation', None)
+                annotation_a: ast.Name = getattr(a2, "annotation", None)
+                annotation_b: ast.Name = getattr(b2, "annotation", None)
                 # Compare annotation
                 assert (annotation_a is None) == (annotation_b is None)
                 if annotation_a is not None:
                     # Compare annotated type
-                    assert getattr(annotation_a, 'id', None) == getattr(annotation_b, 'id', None)
+                    assert getattr(annotation_a, "id", None) == getattr(
+                        annotation_b, "id", None
+                    )
         assert len(ast1.body) == len(ast2.body)
 
 
@@ -54,11 +60,11 @@ def run_pydantify(input_file: Path, output_folder: Path, args: List[str] = []):
     args = [
         sys.argv[0],
         *args,
-        f'-i={input_file.parent}',
-        f'-o={output_folder}',
+        f"-i={input_file.parent}",
+        f"-o={output_folder}",
         str(input_file),
     ]
-    with patch.object(sys, 'argv', args):
+    with patch.object(sys, "argv", args):
         from pydantify.main import main
 
         try:
@@ -78,57 +84,82 @@ def reset_optparse():
 
 
 @pytest.mark.parametrize(
-    ('input_dir', 'expected_file', 'args'),
+    ("input_dir", "expected_file", "args"),
     [
-        param('examples/minimal/interfaces.yang', 'examples/minimal/expected.py', [], id='minimal'),
         param(
-            'examples/minimal/interfaces.yang',
-            'examples/minimal/expected_trimmed.py',
-            ['-t=/interfaces/interfaces/address'],
-            id='minimal_trimmed',
-        ),
-        param(
-            'examples/minimal/interfaces.yang',
-            'examples/minimal/expected_standalone.py',
-            ['--standalone'],
-            id='minimal_standalone',
-        ),
-        param(
-            'examples/minimal/interfaces.yang',
-            'examples/minimal/expected_trimmed.py',
-            ['-t=interfaces/interfaces/address'],
-            id='minimal_trimmed without leading /',
-        ),
-        param('examples/with_typedef/interfaces.yang', 'examples/with_typedef/expected.py', [], id='typedef'),
-        param('examples/with_leafref/interfaces.yang', 'examples/with_leafref/expected.py', [], id='leafref'),
-        param(
-            'examples/with_restrictions/interfaces.yang',
-            'examples/with_restrictions/expected.py',
+            "examples/minimal/interfaces.yang",
+            "examples/minimal/expected.py",
             [],
-            id='restrictions',
+            id="minimal",
         ),
-        param('examples/with_uses/interfaces.yang', 'examples/with_uses/expected.py', [], id='uses'),
-        param('examples/with_case/interfaces.yang', 'examples/with_case/expected.py', [], id='case'),
         param(
-            'examples/with_complex_case/interfaces.yang',
-            'examples/with_complex_case/expected.py',
+            "examples/minimal/interfaces.yang",
+            "examples/minimal/expected_trimmed.py",
+            ["-t=/interfaces/interfaces/address"],
+            id="minimal_trimmed",
+        ),
+        param(
+            "examples/minimal/interfaces.yang",
+            "examples/minimal/expected_standalone.py",
+            ["--standalone"],
+            id="minimal_standalone",
+        ),
+        param(
+            "examples/minimal/interfaces.yang",
+            "examples/minimal/expected_trimmed.py",
+            ["-t=interfaces/interfaces/address"],
+            id="minimal_trimmed without leading /",
+        ),
+        param(
+            "examples/with_typedef/interfaces.yang",
+            "examples/with_typedef/expected.py",
             [],
-            id='complex case',
+            id="typedef",
         ),
         param(
-            'examples/turing-machine/turing-machine.yang',
-            'examples/turing-machine/expected.py',
+            "examples/with_leafref/interfaces.yang",
+            "examples/with_leafref/expected.py",
             [],
-            id='turing machine',
+            id="leafref",
         ),
         param(
-            'examples/openconfig/openconfig-interfaces.yang',
-            'examples/openconfig/expected.py',
+            "examples/with_restrictions/interfaces.yang",
+            "examples/with_restrictions/expected.py",
+            [],
+            id="restrictions",
+        ),
+        param(
+            "examples/with_uses/interfaces.yang",
+            "examples/with_uses/expected.py",
+            [],
+            id="uses",
+        ),
+        param(
+            "examples/with_case/interfaces.yang",
+            "examples/with_case/expected.py",
+            [],
+            id="case",
+        ),
+        param(
+            "examples/with_complex_case/interfaces.yang",
+            "examples/with_complex_case/expected.py",
+            [],
+            id="complex case",
+        ),
+        param(
+            "examples/turing-machine/turing-machine.yang",
+            "examples/turing-machine/expected.py",
+            [],
+            id="turing machine",
+        ),
+        param(
+            "examples/openconfig/openconfig-interfaces.yang",
+            "examples/openconfig/expected.py",
             [
-                '-t=openconfig-interfaces/interfaces/interface/config',
-                '-i=examples/cisco',
+                "-t=openconfig-interfaces/interfaces/interface/config",
+                "-i=examples/cisco",
             ],
-            id='openconfig',
+            id="openconfig",
         ),
     ],
 )
@@ -140,5 +171,5 @@ def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Pa
         output_folder=tmp_path,
         args=args,
     )
-    print("Temp file: " + str(tmp_path / 'out.py'))
-    ParsedAST.assert_python_sources_equal(tmp_path / 'out.py', expected)
+    print("Temp file: " + str(tmp_path / "out.py"))
+    ParsedAST.assert_python_sources_equal(tmp_path / "out.py", expected)

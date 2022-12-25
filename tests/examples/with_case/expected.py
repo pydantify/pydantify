@@ -14,12 +14,12 @@ class EthernetContainer(BaseModel):
     Option A
     """
 
-    name: Annotated[Optional[NameLeaf], Field(alias='interfaces:name')] = None
+    name: Annotated[Optional[NameLeaf], Field(alias="interfaces:name")] = None
 
 
 class EthernetCase(BaseModel):
     ethernet: Annotated[
-        Optional[EthernetContainer], Field(alias='interfaces:ethernet')
+        Optional[EthernetContainer], Field(alias="interfaces:ethernet")
     ] = None
 
 
@@ -32,7 +32,7 @@ class Ethernet2Case(BaseModel):
     Option B
     """
 
-    name2: Annotated[Optional[Name2Leaf], Field(alias='interfaces:name2')] = None
+    name2: Annotated[Optional[Name2Leaf], Field(alias="interfaces:name2")] = None
 
 
 class Model(BaseModel):
@@ -53,7 +53,7 @@ class Model(BaseModel):
 
     interface_type: Annotated[
         Optional[Union[EthernetCase, Ethernet2Case]],
-        Field(alias='interfaces:interface-type'),
+        Field(alias="interfaces:interface-type"),
     ] = None
 
 
@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     restconf_payload = model.json(exclude_defaults=True, by_alias=True)
 
-    print(f'Generated output: {restconf_payload}')
+    print(f"Generated output: {restconf_payload}")
 
     # Send config to network device:
     # from pydantify.utility import restconf_patch_request
