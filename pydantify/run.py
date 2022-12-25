@@ -20,7 +20,6 @@ from pyang import syntax
 
 
 def run():
-
     usage = """%prog [options] [<filename>...]
 
 Validates the YANG module in <filename> (or stdin), and all its dependencies."""
