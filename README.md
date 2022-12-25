@@ -89,3 +89,9 @@ NOTE: All unknown arguments will be passed to Pyang as-is and without guarantees
 
 ### Pyang
 - [pyang](https://github.com/mbj4668/pyang)
+
+
+---
+## Thanks
+
+- Dejan Jovicic and Dominic Walther, who laid the foundations of pydantify
