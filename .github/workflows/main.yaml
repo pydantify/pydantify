@@ -21,7 +21,8 @@ jobs:
 
       - uses: pdm-project/setup-pdm@v3
         name: Setup PDM
-        cache: true
+        with:
+          cache: true
 
       - name: Install dependencies
         run: pdm install
@@ -53,7 +54,8 @@ jobs:
 
       - uses: pdm-project/setup-pdm@v3
         name: Setup PDM
-        cache: true
+        with:
+          cache: true
 
       - name: Install dependencies
         run: pdm install
