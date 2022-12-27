@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple, Type
+from typing import Any, Dict, List, Tuple, Type, TYPE_CHECKING, Optional, overload
 from datamodel_code_generator.reference import FieldNameResolver
 
 from pyang.statements import (
@@ -12,9 +12,12 @@ from pyang.statements import (
 from pydantic import BaseConfig
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import create_model
-from pydantic.fields import FieldInfo, Undefined
+from pydantic.fields import FieldInfo, Undefined, UndefinedType
 
 from ..utility.yang_sources_tracker import YANGSourcesTracker
+
+if TYPE_CHECKING:
+    __class__: Type
 
 logger = logging.getLogger("pydantify")
 
@@ -22,7 +25,7 @@ logger = logging.getLogger("pydantify")
 class BaseModel(PydanticBaseModel):
     class Config(BaseConfig):
         @staticmethod
-        def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:
+        def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:  # type: ignore
             # Remove "title" property to avoid redundant annotation
             for prop in schema.get("properties", {}).values():
                 prop.pop("title", None)
@@ -34,11 +37,11 @@ class BaseModel(PydanticBaseModel):
 class GeneratedClass:
     """Holds information about a dynamically generated output class."""
 
-    class_name: str = Undefined
+    class_name: str | UndefinedType = Undefined
     """Output class name"""
-    cls: Type[BaseModel] = Undefined
+    cls: Type[BaseModel] | UndefinedType = Undefined
     """Ouput model class"""
-    field_info: FieldInfo = Undefined
+    field_info: FieldInfo | UndefinedType = Undefined
     """Field info to add to field annotation"""
     field_annotation: Type | None = None
     """Annotated type when used """
@@ -52,11 +55,12 @@ class GeneratedClass:
                 )
 
     def to_field(self) -> Tuple[Type[BaseModel] | Type, FieldInfo]:
+        # Exception if any field are Undefined
         self.assert_is_valid()
         return (
             self.field_annotation if self.field_annotation else self.cls,
             self.field_info,
-        )
+        )  # type: ignore
 
 
 class Node(ABC):
@@ -69,7 +73,7 @@ class Node(ABC):
         self.children: List[Type[Node]] = __class__.extract_statement_list(
             stm, "i_children"
         )
-        self.mandatory = stm.search_one("mandatory", "true") or any(
+        self.mandatory: bool = stm.search_one("mandatory", "true") or any(
             (ch for ch in self.children if ch.mandatory == True)
         )
         self.arg: str = stm.arg
@@ -79,7 +83,7 @@ class Node(ABC):
         self.comments: str | None = __class__.__extract_comments(stm)
         self.description: str | None = __class__.__extract_description(stm)
         self.default = getattr(self.raw_statement, "i_default", Undefined)
-        self._name: str = None
+        self._name: Optional[str] = None
 
         self._output_model: GeneratedClass = GeneratedClass()
         YANGSourcesTracker.track_from_pos(stm.pos)
@@ -137,13 +141,12 @@ class Node(ABC):
         output_model: Type[BaseModel] = create_model(
             self.name(), __base__=(base,), **fields
         )
-        output_model.__doc__ = self.description
+        output_model.__doc__ = self.description or ""
         return output_model
 
     def _children_to_fields(self) -> Dict[str, Tuple[type, FieldInfo]]:
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
         for ch in self.children:
-            ch: Node
             ret[ch.arg] = ch._output_model.to_field()
         return ret
 
