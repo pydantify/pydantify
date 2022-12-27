@@ -1,7 +1,7 @@
 from enum import Enum
-from typing import TYPE_CHECKING, Dict, List, Type
+from typing import TYPE_CHECKING, Dict, List, Type, Optional
 
-from pyang.statements import Statement
+from pyang.statements import Statement, TypedefStatement, TypeStatement
 from pyang.types import (
     BooleanTypeSpec,
     EmptyTypeSpec,
@@ -48,24 +48,25 @@ class TypeResolver:
         cls.__mapping[stm] = model
 
     @classmethod
-    def resolve_statement(cls: Type[Self], stm: Type[Statement]) -> type:
+    def resolve_statement(cls: Type[Self], stm: Type[Statement]) -> Type["Node"]:
         # Check if already known
-        ret = cls.__mapping.get(stm, None)
+        ret: Optional[Type["Node"]] = cls.__mapping.get(stm, None)
         if ret is not None:
             return ret
 
         # If not known, check type definition
-        stm_type = stm.search_one(keyword="type")
-        typespec = getattr(stm_type, "i_type_spec", None)
-        typedef = getattr(stm_type, "i_typedef", None)
+        stm_type: TypeStatement = stm.search_one(keyword="type")
+        typespec: TypeSpec = getattr(stm_type, "i_type_spec", None)
+        typedef: TypedefStatement = getattr(stm_type, "i_typedef", None)
 
         if typedef is not None:  # Type is a typedef
             ret = cls.__mapping.get(typedef, None)
             if ret is None:
                 from . import TypeDefNode
 
-                ret = TypeDefNode(typedef)
-                cls.register(typedef, ret)
+                typedef_node = TypeDefNode(typedef)
+                cls.register(typedef, typedef_node)
+                return typedef_node
             return ret
 
         if typespec is not None:  # Type is a base type

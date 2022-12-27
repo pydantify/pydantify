@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Type, Union
+from typing import Any, Dict, List, Type, Union, TYPE_CHECKING
 
 from pyang.statements import (
     ChoiceStatement,
@@ -14,10 +14,14 @@ from pyang.statements import (
 )
 from pydantic import create_model
 from pydantic.fields import FieldInfo, ModelField, Undefined
+from pydantify.exceptions import NotImplementedException
 
 from . import BaseModel, GeneratedClass, Node
 from . import NodeFactory
 from . import TypeResolver
+
+if TYPE_CHECKING:
+    __class__: Type
 
 logger = logging.getLogger("pydantify")
 
@@ -59,7 +63,7 @@ class TypeDefNode(Node):
             class_validators={},
             config=BaseModel.Config,
         )
-        output_model.__doc__ = self.description
+        output_model.__doc__ = self.description or ""
         return output_model
 
 
@@ -89,26 +93,22 @@ class LeafNode(Node):
     def to_pydantic_model(self) -> Type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        base = self.get_base_class()
+        base: Any = self.get_base_class()
+
         if isinstance(base, Node):
-            base: Node
             base = base._output_model.cls
         output_model: Type[BaseModel] = create_model(
             self.name(), __base__=(BaseModel,), **fields
         )
         if base is not None:
-            default = Undefined
-            if base is Empty:  # TODO: ugly way of doing things
-                base = str
-                default = ""
             output_model.__fields__["__root__"] = ModelField.infer(
                 name="__root__",
-                value=default,
-                annotation=base,
+                value=Undefined if base is not Empty else "",
+                annotation=base if base is not Empty else str,
                 class_validators={},
                 config=BaseModel.Config,
             )
-        output_model.__doc__ = self.description
+        output_model.__doc__ = self.description or ""
         return output_model
 
 
@@ -134,7 +134,7 @@ class CaseNode(Node):
         output_model: Type[BaseModel] = create_model(
             self.name(), __base__=(BaseModel,), **fields
         )
-        output_model.__doc__ = self.description
+        output_model.__doc__ = self.description or ""
         return output_model
 
 
@@ -160,7 +160,7 @@ class ChoiceNode(Node):
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
         bases: tuple = tuple(x[0] for x in fields.values())
-        output_model: Type[BaseModel] = Union[bases]
+        output_model: Type[BaseModel] = Union[bases]  # type: ignore
         return output_model
 
 
@@ -195,7 +195,7 @@ class ListNode(Node):
         self._output_model = GeneratedClass(
             class_name=self.name(),
             cls=output_class,
-            field_annotation=List[output_class],
+            field_annotation=List[output_class],  # type: ignore
             field_info=FieldInfo(..., alias=self.get_qualified_name()),
         )
 
@@ -208,7 +208,7 @@ class ListNode(Node):
         output_model: Type[BaseModel] = create_model(
             self.name(), __base__=(BaseModel,), **fields
         )
-        output_model.__doc__ = self.description
+        output_model.__doc__ = self.description or ""
         return output_model
 
 
@@ -236,14 +236,14 @@ class ModuleNode(Node):
 
 class ModelRoot:
     def __init__(self, stm: Type[Statement]):
-        self.root_node: Type[Node] = NodeFactory.generate(stm)
+        self.root_node: Type[Node] | None = NodeFactory.generate(stm)
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         fields: Dict
         if isinstance(self.root_node, ModuleNode):
             # Take only children, as
             fields = self.root_node._children_to_fields()
-        else:
+        elif isinstance(self.root_node, Node):
             fields = {self.root_node.arg: self.root_node.get_output_class().to_field()}
         output_model: Type[BaseModel] = create_model(
             "Model", __base__=(BaseModel,), **fields
