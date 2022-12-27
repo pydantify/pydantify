@@ -14,7 +14,7 @@ black:
 # Python type check
 .PHONY: mypy
 mypy:
-	pdm run mypy ${CODE_DIRS}
+	pdm run mypy ${PROJECT}
 
 # Runn pytest, black and mypy
 .PHONY: tests
