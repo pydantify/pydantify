@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TYPE_CHECKING, Dict, List, Type, Optional
+from typing import TYPE_CHECKING, Dict, List, Type, Optional, Any
 
 from pyang.statements import Statement, TypedefStatement, TypeStatement
 from pyang.types import (
@@ -64,7 +64,7 @@ class TypeResolver:
             if ret is None:
                 from . import TypeDefNode
 
-                typedef_node = TypeDefNode(typedef)
+                typedef_node: Type[Node] = TypeDefNode(typedef)
                 cls.register(typedef, typedef_node)
                 return typedef_node
             return ret
@@ -76,7 +76,7 @@ class TypeResolver:
         assert False  ## Not yet implemented
 
     @classmethod
-    def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> Type:
+    def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> Any:
         from . import Node, NodeFactory, Empty
 
         match (spec.__class__.__qualname__):
@@ -88,15 +88,16 @@ class TypeResolver:
             case LengthTypeSpec.__qualname__:
                 return constr(min_length=spec.min, max_length=spec.max)
             case EnumTypeSpec.__qualname__:
-                base = Enum(
+                return Enum(
                     Node.ensure_unique_name(f"{spec.name}Enum"), dict(spec.enums)
                 )  # TODO: make separate node type
-                return base
             case PathTypeSpec.__qualname__:
                 target_statement = getattr(spec, "i_target_node")
                 if cls.__mapping.get(target_statement, None) is None:
                     NodeFactory.generate(target_statement)
-                return cls.__mapping.get(target_statement)._output_model.cls
+                node = cls.__mapping.get(target_statement)
+                if isinstance(node, Node):
+                    return cls.__mapping.get(target_statement)._output_model.cls
             case IntTypeSpec.__qualname__:
                 return conint(ge=spec.min, le=spec.max)
             case StringTypeSpec.__qualname__:
@@ -113,13 +114,13 @@ class TypeResolver:
         assert False, f'Spec "{spec.__class__.__qualname__}" not yet implemented.'
 
     @classmethod
-    def __resolve_pattern(cls, patterns: List[XSDPattern]):
+    def __resolve_pattern(cls, patterns: List[XSDPattern]) -> str:
         comnbined_pattern: str = "^"
         for pattern in patterns:
-            pattern: str = pattern.spec
-            if not pattern.startswith("^"):
-                pattern = "^" + pattern
-            if not pattern.endswith("$"):
-                pattern += "$"
-            comnbined_pattern += f"(?={pattern})"
+            pattern_spec: str = pattern.spec
+            if not pattern_spec.startswith("^"):
+                pattern_spec = "^" + pattern_spec
+            if not pattern_spec.endswith("$"):
+                pattern_spec += "$"
+            comnbined_pattern += f"(?={pattern_spec})"
         return comnbined_pattern + ".*$"  # Capture everything if all lookaheads suceed
