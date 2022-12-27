@@ -55,9 +55,9 @@ class TypeResolver:
             return ret
 
         # If not known, check type definition
-        type = stm.search_one(keyword="type")
-        typespec = getattr(type, "i_type_spec", None)
-        typedef = getattr(type, "i_typedef", None)
+        stm_type = stm.search_one(keyword="type")
+        typespec = getattr(stm_type, "i_type_spec", None)
+        typedef = getattr(stm_type, "i_typedef", None)
 
         if typedef is not None:  # Type is a typedef
             ret = cls.__mapping.get(typedef, None)
