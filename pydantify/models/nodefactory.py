@@ -42,7 +42,7 @@ class NodeFactory:
         return _register
 
     @classmethod
-    def generate(cls: Type[Self], stm: Type[Statement]) -> Type[Node]:
+    def generate(cls: Type[Self], stm: Type[Statement]) -> Type[Node] | None:
         assert isinstance(stm, Statement)
         known_model = TypeResolver.get_model_if_known(stm)
         if known_model is not None:
