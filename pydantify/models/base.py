@@ -3,7 +3,8 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple, Type, TYPE_CHECKING, Optional, overload
+from enum import Enum
+from typing import Any, Dict, List, Tuple, Type, TYPE_CHECKING, Optional
 from datamodel_code_generator.reference import FieldNameResolver
 
 from pyang.statements import (
@@ -70,16 +71,14 @@ class Node(ABC):
     alias_mapping: Dict[str, str] = dict()
 
     def __init__(self, stm: Statement):
-        self.children: List[Type[Node]] = __class__.extract_statement_list(
-            stm, "i_children"
-        )
+        self.children: List[Node] = __class__.extract_statement_list(stm, "i_children")
         self.mandatory: bool = stm.search_one("mandatory", "true") or any(
             (ch for ch in self.children if ch.mandatory == True)
         )
         self.arg: str = stm.arg
         self.keyword: str = stm.keyword
-        self.raw_statement: Type[Statement] = stm
-        self.substmts: List[Type[Statement]] = stm.substmts
+        self.raw_statement: Statement = stm
+        self.substmts: List[Statement] = stm.substmts
         self.comments: str | None = __class__.__extract_comments(stm)
         self.description: str | None = __class__.__extract_description(stm)
         self.default = getattr(self.raw_statement, "i_default", Undefined)
@@ -116,7 +115,7 @@ class Node(ABC):
         Node._name_count[name] += 1
         return ret
 
-    def get_base_class(self) -> type:
+    def get_base_class(self) -> type | Node | Enum:
         """Returns the class the output class should be derived from. Defaults to BaseModel."""
         return BaseModel
 
@@ -138,6 +137,10 @@ class Node(ABC):
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
         base = self.get_base_class()
+
+        if isinstance(base, Node) or isinstance(base, Enum):
+            raise Exception(f"Base model need to be a class. Got {base}")
+
         output_model: Type[BaseModel] = create_model(
             self.name(), __base__=(base,), **fields
         )
@@ -151,9 +154,7 @@ class Node(ABC):
         return ret
 
     @staticmethod
-    def extract_statement_list(
-        statement: Statement, attr_name: str
-    ) -> List[Type[Node]]:
+    def extract_statement_list(statement: Statement, attr_name: str) -> List[Node]:
         from .nodefactory import NodeFactory
 
         rv = getattr(statement, attr_name, [])

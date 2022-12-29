@@ -27,30 +27,27 @@ from pyang.types import (
 from pydantic.types import ConstrainedInt, conint, constr
 from typing_extensions import Self
 
-if TYPE_CHECKING:
-    from . import Node
+from . import Node
 
 
 class TypeResolver:
-    __mapping: Dict[Type[Statement], Type["Node"]] = dict()
+    __mapping: Dict[Statement, Node] = dict()
 
     @classmethod
-    def get_model_if_known(
-        cls: Type[Self], stm: Type[Statement]
-    ) -> Type["Node"] | None:
+    def get_model_if_known(cls: Type[Self], stm: Statement) -> Node | None:
         return TypeResolver.__mapping.get(stm, None)
 
     @classmethod
-    def register(cls: Type[Self], stm: Type[Statement], model: Type["Node"]):
+    def register(cls: Type[Self], stm: Statement, model: Node):
         from . import Node
 
         assert isinstance(model, Node) and isinstance(stm, Statement)
         cls.__mapping[stm] = model
 
     @classmethod
-    def resolve_statement(cls: Type[Self], stm: Type[Statement]) -> Type["Node"]:
+    def resolve_statement(cls: Type[Self], stm: Statement) -> type | Node | Enum:
         # Check if already known
-        ret: Optional[Type["Node"]] = cls.__mapping.get(stm, None)
+        ret: Optional[Node] = cls.__mapping.get(stm, None)
         if ret is not None:
             return ret
 
@@ -64,7 +61,7 @@ class TypeResolver:
             if ret is None:
                 from . import TypeDefNode
 
-                typedef_node: Type[Node] = TypeDefNode(typedef)
+                typedef_node: Node = TypeDefNode(typedef)
                 cls.register(typedef, typedef_node)
                 return typedef_node
             return ret
@@ -76,12 +73,12 @@ class TypeResolver:
         assert False  ## Not yet implemented
 
     @classmethod
-    def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> Any:
+    def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> type | Enum:
         from . import Node, NodeFactory, Empty
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
-                base: ConstrainedInt = cls.__resolve_type_spec(spec.base)
+                base: Type[ConstrainedInt] = cls.__resolve_type_spec(spec.base)  # type: ignore
                 base.ge = spec.min
                 base.le = spec.max
                 return base
@@ -97,7 +94,7 @@ class TypeResolver:
                     NodeFactory.generate(target_statement)
                 node = cls.__mapping.get(target_statement)
                 if isinstance(node, Node):
-                    return cls.__mapping.get(target_statement)._output_model.cls
+                    return node._output_model.cls  # type: ignore
             case IntTypeSpec.__qualname__:
                 return conint(ge=spec.min, le=spec.max)
             case StringTypeSpec.__qualname__:

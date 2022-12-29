@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from enum import Enum
 from typing import Any, Dict, List, Type, Union, TYPE_CHECKING
 
 from pyang.statements import (
@@ -43,7 +44,7 @@ class TypeDefNode(Node):
             cls=self.to_pydantic_model(),
         )
 
-    def get_base_class(self) -> type:
+    def get_base_class(self) -> type | Node | Enum:
         base = TypeResolver.resolve_statement(self.raw_statement)
         return base
 
@@ -86,7 +87,7 @@ class LeafNode(Node):
     def name(self) -> str:
         return self.make_unique_name(suffix="Leaf")
 
-    def get_base_class(self) -> type:
+    def get_base_class(self) -> type | Node | Enum:
         base = TypeResolver.resolve_statement(self.raw_statement)
         return base
 
@@ -236,7 +237,7 @@ class ModuleNode(Node):
 
 class ModelRoot:
     def __init__(self, stm: Type[Statement]):
-        self.root_node: Type[Node] | None = NodeFactory.generate(stm)
+        self.root_node: Node | None = NodeFactory.generate(stm)
 
     def to_pydantic_model(self) -> Type[BaseModel]:
         fields: Dict

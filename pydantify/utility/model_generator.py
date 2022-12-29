@@ -148,8 +148,8 @@ class ModelGenerator:
 
     @classmethod
     def trim(
-        cls: Type[Self], statement: Type[Statement], path: List[str]
-    ) -> Type[Statement] | None:
+        cls: Type[Self], statement: Statement, path: List[str]
+    ) -> Statement | None:
         arg, path = path[0], path[1:]
         if arg == statement.arg:
             while len(path) > 0:
