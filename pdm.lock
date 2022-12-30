@@ -85,11 +85,8 @@ summary = "Code coverage measurement for Python"
 
 [[package]]
 name = "datamodel-code-generator"
-version = "0.0.0"
+version = "0.14.1"
 requires_python = ">=3.7,<4.0"
-git = "https://github.com/koxudaxi/datamodel-code-generator.git"
-ref = "2f722699e046c030a5ca61f975bf98497c212b33"
-revision = "2f722699e046c030a5ca61f975bf98497c212b33"
 summary = "Datamodel Code Generator"
 dependencies = [
     "PySnooper<2.0.0,>=0.4.1",
@@ -99,7 +96,7 @@ dependencies = [
     "inflect<6.0,>=4.1.0",
     "isort<6.0,>=4.3.21",
     "jinja2<4.0,>=2.10.1",
-    "openapi-spec-validator<0.4,>=0.2.8",
+    "openapi-spec-validator<=0.5.1,>=0.2.8",
     "packaging",
     "prance<1.0,>=0.18.2",
     "pydantic[email]<2.0,>=1.10.0; python_version >= \"3.11\"",
@@ -505,7 +502,7 @@ summary = "Module for decorators, wrappers and monkey patching."
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:a2c5c0991d1dd0e034f9685a0f1ce3c039c29169ec511390d62e75c0e4cdb206"
+content_hash = "sha256:b8259757a8ee52ab5a8630b1c69911a53fa29a38534cfe430afe358baea1ae5f"
 
 [metadata.files]
 "argcomplete 2.0.0" = [
@@ -610,6 +607,10 @@ content_hash = "sha256:a2c5c0991d1dd0e034f9685a0f1ce3c039c29169ec511390d62e75c0e
     {url = "https://files.pythonhosted.org/packages/f8/82/6bbe8886ea92af508e02f499d3e9a3869ac6e1e5aa6758cb1a792c245947/coverage-7.0.0-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:59e71912c7fc78d08a567ee65656123878f49ca1b5672e660ea70bf8dfbebf8f"},
     {url = "https://files.pythonhosted.org/packages/fc/74/46222b13f03d5eb0f03fa16cfaa7da110c7f5884df4813d1a9f213e6fc5b/coverage-7.0.0-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:d6b4af31fb49a2ae8de1cd505fa66c403bfcc5066e845ac19d8904dcfc9d40da"},
     {url = "https://files.pythonhosted.org/packages/fe/e4/00cda2a8565a3d66432c38221a19b71c9deb42091dfff6f6b9eb27c513e1/coverage-7.0.0-cp37-cp37m-win32.whl", hash = "sha256:30220518dd89c4878908d73f5f3d1269f86e9e045354436534587a18c7b9da85"},
+]
+"datamodel-code-generator 0.14.1" = [
+    {url = "https://files.pythonhosted.org/packages/23/53/8896360a6c21ea1efa6e533cde1d571225974dec5065118eb0c19fb30e59/datamodel_code_generator-0.14.1-py3-none-any.whl", hash = "sha256:c41415bf1ac3b16886eff798adfdd4c1532cc85217b4bc31155b803ebc225370"},
+    {url = "https://files.pythonhosted.org/packages/9b/fd/5cb7f410d7830ecaffd82c4cc69418670b8b455b046ace0ec19e7ad37242/datamodel_code_generator-0.14.1.tar.gz", hash = "sha256:3fe9a6545680c8fb02f8f89dc24b364e1c268d0bf0dfc76ca9747c72fcfb60ad"},
 ]
 "dill 0.3.6" = [
     {url = "https://files.pythonhosted.org/packages/7c/e7/364a09134e1062d4d5ff69b853a56cf61c223e0afcc6906b6832bcd51ea8/dill-0.3.6.tar.gz", hash = "sha256:e5db55f3687856d8fbdab002ed78544e1c4559a130302693d839dfe8f93f2373"},

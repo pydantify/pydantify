@@ -10,7 +10,7 @@ dependencies = [
     "pydantic>=1.10.2",
     "pyang>=2.5.3",
     "psutil>=5.9.4",
-    "datamodel-code-generator @ git+https://github.com/koxudaxi/datamodel-code-generator.git@2f722699e046c030a5ca61f975bf98497c212b33",
+    "datamodel-code-generator>=0.14.1",
     "requests>=2.28.1",
     "typing-extensions>=4.4.0",
 ]
