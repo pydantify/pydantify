@@ -1,8 +1,8 @@
 import json
 import logging
+import sys
 from io import TextIOWrapper
 from pathlib import Path
-import sys
 from typing import List, Type, Optional
 
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser

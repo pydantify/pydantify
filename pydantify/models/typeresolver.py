@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TYPE_CHECKING, Dict, List, Type, Optional, Any
+from typing import Dict, List, Type, Optional
 
 from pyang.statements import Statement, TypedefStatement, TypeStatement
 from pyang.types import (
@@ -39,8 +39,6 @@ class TypeResolver:
 
     @classmethod
     def register(cls: Type[Self], stm: Statement, model: Node):
-        from . import Node
-
         assert isinstance(model, Node) and isinstance(stm, Statement)
         cls.__mapping[stm] = model
 

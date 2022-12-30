@@ -139,7 +139,7 @@ class Node(ABC):
         base = self.get_base_class()
 
         if isinstance(base, Node) or isinstance(base, Enum):
-            raise Exception(f"Base model need to be a class. Got {base}")
+            raise Exception(f"Base model needs to be a class. Got {base}")
 
         output_model: Type[BaseModel] = create_model(
             self.name(), __base__=(base,), **fields
