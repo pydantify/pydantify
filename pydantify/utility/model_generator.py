@@ -1,9 +1,9 @@
 import json
 import logging
+import sys
 from io import TextIOWrapper
 from pathlib import Path
-import sys
-from typing import List, Type
+from typing import List, Type, Optional
 
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 from pyang.context import Context
@@ -64,10 +64,10 @@ class ModelGenerator:
     """In charge of generating the output model"""
 
     include_verification_code: bool = False
-    input_dir: Path = None
+    input_dir: Path
     output_dir: Path
     standalone: bool = False
-    trim_path: str = None
+    trim_path: Optional[str] = None
 
     @classmethod
     def generate(
@@ -148,8 +148,8 @@ class ModelGenerator:
 
     @classmethod
     def trim(
-        cls: Type[Self], statement: Type[Statement], path: List[str]
-    ) -> Type[Statement] | None:
+        cls: Type[Self], statement: Statement, path: List[str]
+    ) -> Statement | None:
         arg, path = path[0], path[1:]
         if arg == statement.arg:
             while len(path) > 0:
@@ -165,6 +165,7 @@ class ModelGenerator:
                     )
                     return None
             return statement
+        return None
 
     @classmethod
     def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> str:

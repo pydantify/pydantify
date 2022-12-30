@@ -18,7 +18,7 @@ class NodeFactory:
     # src: statements.data_definition_keywords
     @dataclass
     class ClassMapping:
-        maps_to: Callable[..., Type[Node]]
+        maps_to: Callable[..., Node]
 
         def __call__(self, *args: Any, **kwds: Any) -> Any:
             return self.maps_to(*args, **kwds)
@@ -42,7 +42,7 @@ class NodeFactory:
         return _register
 
     @classmethod
-    def generate(cls: Type[Self], stm: Type[Statement]) -> Type[Node]:
+    def generate(cls: Type[Self], stm: Statement) -> Node | None:
         assert isinstance(stm, Statement)
         known_model = TypeResolver.get_model_if_known(stm)
         if known_model is not None:

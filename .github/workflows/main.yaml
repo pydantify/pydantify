@@ -29,8 +29,9 @@ jobs:
 
       - name: Run black
         run: make black
-      # - name: Run mypy
-      #   run: make mypy
+      
+      - name: Run mypy
+        run: make mypy
 
   pytest:
     name: Testing on Python ${{ matrix.python-version }} (${{ matrix.platform}})
