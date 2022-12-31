@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json"
+
+site_name: pydantify
+site_description: Transform YANG models into pydantic datastructures
+strict: true
+# site_url:
+repo_url: https://github.com/pydantify/pydantify
+repo_name: pydantify/pydantify
+
+theme:
+  name: material
+  palette: 
+    - scheme: slate
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
+      primary: amber
+      accent: yellow
+
+    - scheme: default
+      toggle:
+        icon: material/lightbulb 
+        name: Switch to dark mode
+      primary: amber
+      accent: yellow
+  features:
+    - navigation.tracking
