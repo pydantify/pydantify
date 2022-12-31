@@ -1,6 +1,8 @@
 # Pydantify
 A ***prototype*** CLI tool to transform YANG models into Pydantic datastructures that can be initialized with config values and serialized into RESTCONF payloads.
 
+[Check out the documentation https://pydantify.github.io/pydantify/](https://pydantify.github.io/pydantify/)
+
 ## For users
 ### Installation
 **Prerequisites:**
