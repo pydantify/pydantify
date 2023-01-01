@@ -226,14 +226,14 @@ class LeafListNode(Node):
             field_annotation=List[output_class],  # type: ignore
             field_info=FieldInfo(
                 self.default if self.default is not None or not self.mandatory else ...,
-                description=self.description, 
-                alias=self.get_qualified_name()
+                description=self.description,
+                alias=self.get_qualified_name(),
             ),
         )
 
     def name(self) -> str:
         return self.make_unique_name(suffix="LeafList")
-    
+
     def get_base_class(self) -> type | Node | Enum:
         base = TypeResolver.resolve_statement(self.raw_statement)
         return base

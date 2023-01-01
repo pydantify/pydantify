@@ -42,20 +42,20 @@ class InterfacesListEntry(BaseModel):
     List of configured device interfaces
     """
 
-    name: Annotated[Optional[NameLeaf], Field(alias='interfaces:name')] = None
+    name: Annotated[Optional[NameLeaf], Field(alias="interfaces:name")] = None
     """
     Interface name
     """
-    ip: Annotated[List[IpLeafList], Field(alias='interfaces:ip')] = []
+    ip: Annotated[List[IpLeafList], Field(alias="interfaces:ip")] = []
     """
     List of interface IPs
     """
-    tagged: Annotated[List[TaggedLeafList], Field(alias='interfaces:tagged')] = []
+    tagged: Annotated[List[TaggedLeafList], Field(alias="interfaces:tagged")] = []
     """
     List of tagged VLANs
     """
     untagged: Annotated[
-        Optional[UntaggedLeaf], Field(alias='interfaces:untagged')
+        Optional[UntaggedLeaf], Field(alias="interfaces:untagged")
     ] = None
     """
     Untagged VLAN
@@ -79,7 +79,7 @@ class Model(BaseModel):
     """
 
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias='interfaces:interfaces')
+        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
     ]
 
 
