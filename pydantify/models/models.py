@@ -213,6 +213,53 @@ class ListNode(Node):
         return output_model
 
 
+@NodeFactory.register_statement_class(["leaf-list"])
+class LeafListNode(Node):
+    def __init__(self, stm: LeafLeaflistStatement) -> None:
+        logger.debug(f"Parsing {__class__}")
+        super().__init__(stm)
+
+        output_class = self.to_pydantic_model()
+        self._output_model = GeneratedClass(
+            class_name=self.name(),
+            cls=output_class,
+            field_annotation=List[output_class],  # type: ignore
+            field_info=FieldInfo(
+                self.default if self.default is not None or not self.mandatory else ...,
+                description=self.description, 
+                alias=self.get_qualified_name()
+            ),
+        )
+
+    def name(self) -> str:
+        return self.make_unique_name(suffix="LeafList")
+    
+    def get_base_class(self) -> type | Node | Enum:
+        base = TypeResolver.resolve_statement(self.raw_statement)
+        return base
+
+    def to_pydantic_model(self) -> type[BaseModel]:
+        """Generates the output class representing this node."""
+        fields: Dict[str, Any] = self._children_to_fields()
+        base: Any = self.get_base_class()
+
+        if isinstance(base, Node):
+            base = base._output_model.cls
+        output_model: type[BaseModel] = create_model(
+            self.name(), __base__=(BaseModel,), **fields
+        )
+        if base is not None:
+            output_model.__fields__["__root__"] = ModelField.infer(
+                name="__root__",
+                value=Undefined if base is not Empty else "",
+                annotation=base if base is not Empty else str,
+                class_validators={},
+                config=BaseModel.Config,
+            )
+        output_model.__doc__ = self.description or ""
+        return output_model
+
+
 @NodeFactory.register_statement_class(["module"])
 class ModuleNode(Node):
     def __init__(self, stm: ModSubmodStatement) -> None:

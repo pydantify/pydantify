@@ -161,6 +161,12 @@ def reset_optparse():
             ],
             id="openconfig",
         ),
+        param(
+            "examples/with_leaflist/interfaces.yang",
+            "examples/with_leaflist/expected.py",
+            [],
+            id="leaf-list",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
