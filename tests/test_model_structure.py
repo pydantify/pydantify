@@ -167,6 +167,12 @@ def reset_optparse():
             [],
             id="leaf-list",
         ),
+        param(
+            "examples/with_union/interfaces.yang",
+            "examples/with_union/expected.py",
+            [],
+            id="type union",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):

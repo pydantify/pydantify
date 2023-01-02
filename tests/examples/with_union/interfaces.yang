@@ -1,0 +1,22 @@
+module interfaces {
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+
+  description 'Example demonstarating leafref nodes';
+
+  container interfaces {
+    description 'Just a simple example of a container.';
+
+    leaf union_leaf {
+        type union {
+          type int32;
+          type string;
+        }
+        mandatory "true";
+        description
+            "Number or 'unbounded'";
+    }
+  }
+}
