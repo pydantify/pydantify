@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, List, Type, Optional
+from typing import Dict, List, Type, Optional, Union
 
 from pyang.statements import Statement, TypedefStatement, TypeStatement
 from pyang.types import (
@@ -51,6 +51,13 @@ class TypeResolver:
 
         # If not known, check type definition
         stm_type: TypeStatement = stm.search_one(keyword="type")
+
+        return cls.__resolve_type_statement(stm_type=stm_type)
+
+    @classmethod
+    def __resolve_type_statement(
+        cls: Type[Self], stm_type: TypeStatement
+    ) -> type | Node | Enum:
         typespec: TypeSpec = getattr(stm_type, "i_type_spec", None)
         typedef: TypedefStatement = getattr(stm_type, "i_typedef", None)
 
@@ -106,6 +113,9 @@ class TypeResolver:
                 return Empty
             case IdentityrefTypeSpec.__qualname__:  # TODO: abort before entering this stage?
                 return Empty
+            case UnionTypeSpec.__qualname__:
+                union = tuple([cls.__resolve_type_statement(typ) for typ in spec.types])
+                return Union[union]  # type: ignore
         assert False, f'Spec "{spec.__class__.__qualname__}" not yet implemented.'
 
     @classmethod
