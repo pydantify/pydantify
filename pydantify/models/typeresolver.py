@@ -25,9 +25,11 @@ from pyang.types import (
     UnionTypeSpec,
 )
 from pydantic.types import ConstrainedInt, conint, constr
+from pydantic.fields import UndefinedType
 from typing_extensions import Self
 
 from . import Node
+from ..utility.patterns import convert_pattern
 
 
 class TypeResolver:
@@ -57,7 +59,7 @@ class TypeResolver:
     @classmethod
     def __resolve_type_statement(
         cls: Type[Self], stm_type: TypeStatement
-    ) -> type | Node | Enum:
+    ) -> type | Enum:
         typespec: TypeSpec = getattr(stm_type, "i_type_spec", None)
         typedef: TypedefStatement = getattr(stm_type, "i_typedef", None)
 
@@ -68,8 +70,12 @@ class TypeResolver:
 
                 typedef_node: Node = TypeDefNode(typedef)
                 cls.register(typedef, typedef_node)
-                return typedef_node
-            return ret
+                output_type = typedef_node._output_model.cls
+            else:
+                output_type = ret._output_model.cls
+            if isinstance(output_type, UndefinedType):
+                raise Exception(f"{typedef_node} output model is Undefined")
+            return output_type
 
         if typespec is not None:  # Type is a base type
             resolved = cls.__resolve_type_spec(typespec)
@@ -108,7 +114,7 @@ class TypeResolver:
                 return bool
             case PatternTypeSpec.__qualname__:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
-                return constr(regex=pattern)
+                return constr(regex=convert_pattern(pattern))
             case EmptyTypeSpec.__qualname__:
                 return Empty
             case IdentityrefTypeSpec.__qualname__:  # TODO: abort before entering this stage?
