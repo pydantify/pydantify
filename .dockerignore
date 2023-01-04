@@ -4,5 +4,16 @@ __pypackages__
 .git
 .pdm.toml
 .vscode
+.devcontainer
+.github
+.venv
+.mypy_cache
+.pytest_cache
+.gitignore
+out
+tests
+LICENSE
+Makefile
+mkdocs.yml
 *.pyc
 Dockerfile
