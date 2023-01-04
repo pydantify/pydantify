@@ -1,7 +1,7 @@
 {
     "interfaces": {
         "how": {
-            "daily": "",
+            "daily": {},
             "time_of_day": "3pm"
         }
     }
