@@ -23,8 +23,9 @@ from pyang.types import (
     InstanceIdentifierTypeSpec,
     LeafrefTypeSpec,
     UnionTypeSpec,
+    Decimal64TypeSpec,
 )
-from pydantic.types import ConstrainedInt, conint, constr
+from pydantic.types import ConstrainedInt, conint, constr, confloat
 from pydantic.fields import UndefinedType
 from typing_extensions import Self
 
@@ -114,6 +115,8 @@ class TypeResolver:
                     return node._output_model.cls  # type: ignore
             case IntTypeSpec.__qualname__:
                 return conint(ge=spec.min, le=spec.max)
+            case Decimal64TypeSpec.__qualname__:
+                return confloat(ge=spec.min.value, le=spec.max.value)
             case StringTypeSpec.__qualname__:
                 return str
             case BooleanTypeSpec.__qualname__:
