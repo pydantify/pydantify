@@ -5,33 +5,26 @@ from typing import Annotated, Optional, Union
 from pydantic import BaseModel, Field
 
 
-class IntervalLeaf(BaseModel):
-    __root__: Annotated[int, Field(ge=0, le=65535)]
+class UnionLeafLeafItem(BaseModel):
+    __root__: Annotated[int, Field(ge=-2147483648, le=2147483647)]
 
 
-class IntervalCase(BaseModel):
-    interval: Annotated[IntervalLeaf, Field(alias="interfaces:interval")] = 30
+class UnionLeafLeaf(BaseModel):
+    __root__: Union[UnionLeafLeafItem, str]
+    """
+    Number or 'unbounded'
+    """
 
 
-class DailyLeaf(BaseModel):
-    pass
+class InterfacesContainer(BaseModel):
+    """
+    Just a simple example of a container.
+    """
 
-
-class TimeOfDayLeaf(BaseModel):
-    __root__: str
-
-
-class DailyCase(BaseModel):
-    daily: Annotated[Optional[DailyLeaf], Field(alias="interfaces:daily")] = None
-    time_of_day: Annotated[TimeOfDayLeaf, Field(alias="interfaces:time-of-day")] = "1am"
-
-
-class ManualLeaf(BaseModel):
-    pass
-
-
-class ManualCase(BaseModel):
-    manual: Annotated[Optional[ManualLeaf], Field(alias="interfaces:manual")] = None
+    union_leaf: Annotated[UnionLeafLeaf, Field(alias="interfaces:union_leaf")]
+    """
+    Number or 'unbounded'
+    """
 
 
 class Model(BaseModel):
@@ -46,13 +39,12 @@ class Model(BaseModel):
         - `member=<value>`
 
     Serialziation:
-    - use `exclude_defaults=True` to
-    - use `by_alias=True` to ensure qualified names are used ()
+    - `exclude_defaults=True` omits fields set to their default value (recommended)
+    - `by_alias=True` ensures qualified names are used (necessary)
     """
 
-    how: Annotated[
-        Optional[Union[IntervalCase, DailyCase, ManualCase]],
-        Field(alias="interfaces:how"),
+    interfaces: Annotated[
+        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
     ] = None
 
 
@@ -68,7 +60,7 @@ if __name__ == "__main__":
         # <Initialize model here>
     )
 
-    restconf_payload = model.json(exclude_defaults=True, by_alias=True)
+    restconf_payload = model.json(exclude_defaults=True, by_alias=True, indent=2)
 
     print(f"Generated output: {restconf_payload}")
 

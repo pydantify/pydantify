@@ -10,6 +10,7 @@ from datamodel_code_generator.reference import FieldNameResolver
 from pyang.statements import (
     Statement,
 )
+from pyang.types import Decimal64Value
 from pydantic import BaseConfig
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import create_model
@@ -81,7 +82,12 @@ class Node(ABC):
         self.substmts: List[Statement] = stm.substmts
         self.comments: str | None = __class__.__extract_comments(stm)
         self.description: str | None = __class__.__extract_description(stm)
-        self.default = getattr(self.raw_statement, "i_default", Undefined)
+
+        default = getattr(self.raw_statement, "i_default", Undefined)
+        if isinstance(default, Decimal64Value):
+            self.default = default.value
+        else:
+            self.default = getattr(self.raw_statement, "i_default", Undefined)
         self._name: Optional[str] = None
 
         self._output_model: GeneratedClass = GeneratedClass()

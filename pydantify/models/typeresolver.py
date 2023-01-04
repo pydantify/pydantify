@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, List, Type, Optional
+from typing import Dict, List, Type, Optional, Union
 
 from pyang.statements import Statement, TypedefStatement, TypeStatement
 from pyang.types import (
@@ -23,11 +23,14 @@ from pyang.types import (
     InstanceIdentifierTypeSpec,
     LeafrefTypeSpec,
     UnionTypeSpec,
+    Decimal64TypeSpec,
 )
-from pydantic.types import ConstrainedInt, conint, constr
+from pydantic.types import ConstrainedInt, conint, constr, confloat, conbytes
+from pydantic.fields import UndefinedType
 from typing_extensions import Self
 
 from . import Node
+from ..utility.patterns import convert_pattern
 
 
 class TypeResolver:
@@ -51,6 +54,19 @@ class TypeResolver:
 
         # If not known, check type definition
         stm_type: TypeStatement = stm.search_one(keyword="type")
+
+        # # If we need to deal with identity in a specific way:
+        # if stm_type is None:
+        #     if stm.keyword == "identity":
+        #         return object
+        #     raise NotImplementedError(f"Statement {stm} not implemented")
+
+        return cls.__resolve_type_statement(stm_type=stm_type)
+
+    @classmethod
+    def __resolve_type_statement(
+        cls: Type[Self], stm_type: TypeStatement
+    ) -> type | Enum:
         typespec: TypeSpec = getattr(stm_type, "i_type_spec", None)
         typedef: TypedefStatement = getattr(stm_type, "i_typedef", None)
 
@@ -61,8 +77,12 @@ class TypeResolver:
 
                 typedef_node: Node = TypeDefNode(typedef)
                 cls.register(typedef, typedef_node)
-                return typedef_node
-            return ret
+                output_type = typedef_node._output_model.cls
+            else:
+                output_type = ret._output_model.cls
+            if isinstance(output_type, UndefinedType):
+                raise Exception(f"{typedef_node} output model is Undefined")
+            return output_type
 
         if typespec is not None:  # Type is a base type
             resolved = cls.__resolve_type_spec(typespec)
@@ -72,7 +92,7 @@ class TypeResolver:
 
     @classmethod
     def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> type | Enum:
-        from . import Node, NodeFactory, Empty
+        from . import Node, NodeFactory
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
@@ -81,7 +101,10 @@ class TypeResolver:
                 base.le = spec.max
                 return base
             case LengthTypeSpec.__qualname__:
-                return constr(min_length=spec.min, max_length=spec.max)
+                return constr(
+                    min_length=spec.min,
+                    max_length=spec.max,
+                )
             case EnumTypeSpec.__qualname__:
                 return Enum(
                     Node.ensure_unique_name(f"{spec.name}Enum"), dict(spec.enums)
@@ -94,18 +117,60 @@ class TypeResolver:
                 if isinstance(node, Node):
                     return node._output_model.cls  # type: ignore
             case IntTypeSpec.__qualname__:
-                return conint(ge=spec.min, le=spec.max)
+                return conint(
+                    ge=spec.min,
+                    le=spec.max,
+                )
+            case Decimal64TypeSpec.__qualname__:
+                return confloat(
+                    ge=spec.min.value,
+                    le=spec.max.value,
+                )
             case StringTypeSpec.__qualname__:
                 return str
             case BooleanTypeSpec.__qualname__:
                 return bool
+            case BinaryTypeSpec.__qualname__:
+                return conbytes(
+                    min_length=spec.min,
+                    max_length=spec.max,
+                )
             case PatternTypeSpec.__qualname__:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
-                return constr(regex=pattern)
+                return constr(regex=convert_pattern(pattern))
             case EmptyTypeSpec.__qualname__:
-                return Empty
+                return dict
             case IdentityrefTypeSpec.__qualname__:  # TODO: abort before entering this stage?
-                return Empty
+                # def find_identityref(spec: IdentityrefTypeSpec):
+                #     from pyang.util import prefix_to_module
+
+                #     base_statement: BaseStatement = spec.idbases[0]
+                #     base_arg: str = spec.idbases[0].arg
+                #     module = base_statement.i_module
+                #     pos = base_statement.pos
+                #     errors = []
+
+                #     prefix = None
+                #     if ":" in base_arg:
+                #         prefix, name = base_arg.split(":")
+                #     else:
+                #         name = base_arg
+
+                #     if not prefix or prefix == module.i_module:
+                #         prefix_module = module
+                #     else:
+                #         prefix_module = prefix_to_module(module, prefix, pos, errors)
+                #         if prefix_module is None:
+                #             raise Exception(f"No module found for prefix {prefix}")
+                #     if stm := prefix_module.i_identities.get(name):
+                #         return cls.resolve_statement(stm)
+                #     raise Exception(f"No node {name} not found with prefix {prefix}")
+
+                # return find_identityref(spec)
+                return object
+            case UnionTypeSpec.__qualname__:
+                union = tuple([cls.__resolve_type_statement(typ) for typ in spec.types])
+                return Union[union]  # type: ignore
         assert False, f'Spec "{spec.__class__.__qualname__}" not yet implemented.'
 
     @classmethod

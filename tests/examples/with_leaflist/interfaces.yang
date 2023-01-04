@@ -1,0 +1,37 @@
+module interfaces {
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+  
+  description 'Example demonstarating leafref nodes';
+
+  typedef vlan_id {
+    type uint16 {
+        range "1 .. 4094";
+      }
+  }
+
+
+  list interfaces {
+    key "name";
+    description "List of configured device interfaces";
+
+    leaf name {
+      type string;
+      description "Interface name";
+    }
+    leaf-list ip {
+      type string;
+      description "List of interface IPs";
+    }
+    leaf-list tagged {
+      type vlan_id;
+      description "List of tagged VLANs";
+    }
+    leaf untagged {
+      type vlan_id;
+      description "Untagged VLAN";
+    }
+  }
+}
