@@ -14,7 +14,7 @@ class IntervalCase(BaseModel):
 
 
 class DailyLeaf(BaseModel):
-    __root__: str = ""
+    pass
 
 
 class TimeOfDayLeaf(BaseModel):
@@ -27,7 +27,7 @@ class DailyCase(BaseModel):
 
 
 class ManualLeaf(BaseModel):
-    __root__: str = ""
+    pass
 
 
 class ManualCase(BaseModel):

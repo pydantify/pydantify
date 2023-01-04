@@ -27,10 +27,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger("pydantify")
 
 
-class Empty:
-    pass
-
-
 class TypeDefNode(Node):
     def __init__(self, stm: TypedefStatement) -> None:
         super().__init__(stm)
@@ -104,8 +100,8 @@ class LeafNode(Node):
         if base is not None:
             output_model.__fields__["__root__"] = ModelField.infer(
                 name="__root__",
-                value=Undefined if base is not Empty else "",
-                annotation=base if base is not Empty else str,
+                value=Undefined,
+                annotation=base,
                 class_validators={},
                 config=BaseModel.Config,
             )
@@ -161,7 +157,7 @@ class ChoiceNode(Node):
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
         bases: tuple = tuple(x[0] for x in fields.values())
-        output_model: Type[BaseModel] = Union[bases]  # type: ignore
+        output_model: type[BaseModel] = Union[bases]  # type: ignore
         return output_model
 
 
@@ -251,8 +247,8 @@ class LeafListNode(Node):
         if base is not None:
             output_model.__fields__["__root__"] = ModelField.infer(
                 name="__root__",
-                value=Undefined if base is not Empty else "",
-                annotation=base if base is not Empty else str,
+                value=Undefined,
+                annotation=base,
                 class_validators={},
                 config=BaseModel.Config,
             )

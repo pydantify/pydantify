@@ -54,6 +54,12 @@ class TypeResolver:
         # If not known, check type definition
         stm_type: TypeStatement = stm.search_one(keyword="type")
 
+        # # If we need to deal with identity in a specific way:
+        # if stm_type is None:
+        #     if stm.keyword == "identity":
+        #         return object
+        #     raise NotImplementedError(f"Statement {stm} not implemented")
+
         return cls.__resolve_type_statement(stm_type=stm_type)
 
     @classmethod
@@ -85,7 +91,7 @@ class TypeResolver:
 
     @classmethod
     def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> type | Enum:
-        from . import Node, NodeFactory, Empty
+        from . import Node, NodeFactory
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
@@ -116,9 +122,35 @@ class TypeResolver:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
                 return constr(regex=convert_pattern(pattern))
             case EmptyTypeSpec.__qualname__:
-                return Empty
+                return dict
             case IdentityrefTypeSpec.__qualname__:  # TODO: abort before entering this stage?
-                return Empty
+                # def find_identityref(spec: IdentityrefTypeSpec):
+                #     from pyang.util import prefix_to_module
+
+                #     base_statement: BaseStatement = spec.idbases[0]
+                #     base_arg: str = spec.idbases[0].arg
+                #     module = base_statement.i_module
+                #     pos = base_statement.pos
+                #     errors = []
+
+                #     prefix = None
+                #     if ":" in base_arg:
+                #         prefix, name = base_arg.split(":")
+                #     else:
+                #         name = base_arg
+
+                #     if not prefix or prefix == module.i_module:
+                #         prefix_module = module
+                #     else:
+                #         prefix_module = prefix_to_module(module, prefix, pos, errors)
+                #         if prefix_module is None:
+                #             raise Exception(f"No module found for prefix {prefix}")
+                #     if stm := prefix_module.i_identities.get(name):
+                #         return cls.resolve_statement(stm)
+                #     raise Exception(f"No node {name} not found with prefix {prefix}")
+
+                # return find_identityref(spec)
+                return object
             case UnionTypeSpec.__qualname__:
                 union = tuple([cls.__resolve_type_statement(typ) for typ in spec.types])
                 return Union[union]  # type: ignore

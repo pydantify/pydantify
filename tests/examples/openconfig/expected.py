@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Any
 
 from pydantic import BaseModel, Field
 
@@ -44,7 +44,7 @@ class NameLeaf(BaseModel):
 
 
 class TypeLeaf(BaseModel):
-    __root__: str = ""
+    __root__: Any
     """
     The type of the interface.
 

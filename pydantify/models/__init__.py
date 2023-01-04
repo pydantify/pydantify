@@ -3,7 +3,6 @@ from .typeresolver import TypeResolver
 from .nodefactory import NodeFactory
 from .models import (
     ContainerNode,
-    Empty,
     GeneratedClass,
     LeafNode,
     ListNode,
