@@ -1,0 +1,33 @@
+module my-endpoint {
+  namespace
+  "http://pydantify.github.io/ns/yang/pydantify-endpoint";
+
+  prefix "ep";
+  
+  description 'Example demonstarating leafref nodes';
+
+  typedef port {
+    type uint16 {
+        range "1 .. 65535";
+      }
+  }
+
+  container endpoint {
+    description "Definition of a endpoint";
+
+    leaf address {
+      type string;
+      description "Endpoint address. IP or FQDN";
+      mandatory true;
+    }
+    leaf port {
+      type port;
+      description "Port number between 1 and 65535";
+      mandatory true;
+    }
+    leaf description {
+      type string;
+      description "Endpoint description";
+    }
+  }
+}

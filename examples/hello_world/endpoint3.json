@@ -1,0 +1,6 @@
+{
+  "my-endpoint:endpoint": {
+    "my-endpoint:address": "172.0.0.1",
+    "my-endpoint:port": 9100
+  }
+}
