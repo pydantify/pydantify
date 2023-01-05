@@ -1,0 +1,5 @@
+module: my-endpoint
+  +--rw endpoint
+     +--rw address        string
+     +--rw port           port
+     +--rw description?   string

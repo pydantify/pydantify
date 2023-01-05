@@ -1,0 +1,7 @@
+{
+  "endpoint": {
+    "address": "localhost",
+    "port": 8080,
+    "description": null
+  }
+}

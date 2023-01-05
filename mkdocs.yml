@@ -25,3 +25,14 @@ theme:
       accent: yellow
   features:
     - navigation.tracking
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  # - mdx_include:
+  #     base_path: docs
+  # - markdown_include.include:
+  #     base_path: docs

@@ -1,0 +1,7 @@
+{
+  "my-endpoint:endpoint": {
+    "my-endpoint:address": "::1",
+    "my-endpoint:port": 2222,
+    "my-endpoint:description": "Port 2222 on localhost"
+  }
+}
