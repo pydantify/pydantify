@@ -43,8 +43,8 @@ with Path("endpoint4.json").open("w") as fp_ep:
 endpoint5 = Model.parse_obj(
     {
         "my-endpoint:endpoint": {
-            "my-endpoint:address": "localhost",
-            "my-endpoint:port": 8000,
+            "my-endpoint:address": "remote",
+            "my-endpoint:port": 53,
         }
     }
 )

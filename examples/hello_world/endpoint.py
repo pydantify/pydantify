@@ -35,16 +35,16 @@ class EndpointContainer(BaseModel):
     Definition of a endpoint
     """
 
-    address: Annotated[AddressLeaf, Field(alias='my-endpoint:address')]
+    address: Annotated[AddressLeaf, Field(alias="my-endpoint:address")]
     """
     Endpoint address. IP or FQDN
     """
-    port: Annotated[PortLeaf, Field(alias='my-endpoint:port')]
+    port: Annotated[PortLeaf, Field(alias="my-endpoint:port")]
     """
     Port number between 1 adn 65535
     """
     description: Annotated[
-        Optional[DescriptionLeaf], Field(alias='my-endpoint:description')
+        Optional[DescriptionLeaf], Field(alias="my-endpoint:description")
     ] = None
     """
     Endpoint description
@@ -68,7 +68,7 @@ class Model(BaseModel):
     """
 
     endpoint: Annotated[
-        Optional[EndpointContainer], Field(alias='my-endpoint:endpoint')
+        Optional[EndpointContainer], Field(alias="my-endpoint:endpoint")
     ] = None
 
 
