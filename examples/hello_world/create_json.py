@@ -33,7 +33,21 @@ with Path("endpoint3.json").open("w") as fp_ep:
     fp_ep.write(json_output)
 
 
-endpoint4 = Model(**{"endpoint": {"address": "localhost", "port": 8000}})
+endpoint4 = Model(
+    **{"endpoint": {"my-endpoint:address": "localhost", "my-endpoint:port": 8000}}
+)
 json_output = endpoint4.json(exclude_defaults=True, by_alias=True, indent=2)
 with Path("endpoint4.json").open("w") as fp_ep:
+    fp_ep.write(json_output)
+
+endpoint5 = Model.parse_obj(
+    {
+        "my-endpoint:endpoint": {
+            "my-endpoint:address": "localhost",
+            "my-endpoint:port": 8000,
+        }
+    }
+)
+json_output = endpoint5.json(exclude_defaults=True, by_alias=True, indent=2)
+with Path("endpoint5.json").open("w") as fp_ep:
     fp_ep.write(json_output)

@@ -1,0 +1,6 @@
+{
+  "my-endpoint:endpoint": {
+    "my-endpoint:address": "localhost",
+    "my-endpoint:port": 8000
+  }
+}
