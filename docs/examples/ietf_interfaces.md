@@ -179,11 +179,30 @@ Now the output contains all layers of the YANG tree starting at the root interfa
 
 ## Update device configuration
 
+Using the newly created model from the top, a *PATCH* request can be sent to the device using the root URL of the model (same URL was used to get the data).
+
+??? info "exclude_defaults=True"
+
+    It is recommended to use the option `exlude_defaults=True` not to send unnecessary data.
+
 ```python title="restconf.py" linenums="66"
 --8<-- "examples/ietf-interfaces/restconf.py:66:69"
 ```
 
+To address the interface directly using the URL, to not only update but also be able to replace the configuration, the data structure needs not a map containing a list of interfaces but a map containing a map looking like this:
 
+```json title="JSON paylod to address interface direclty"
+{
+  "ietf-interfaces:interface": {
+    "ietf-interfaces:name": "GigabitEthernet2",
+    "ietf-interfaces:description": "https://pydantify.github.io/pydantify/",
+    "ietf-interfaces:type": "iana-if-type:ethernetCsmacd",
+    "ietf-interfaces:enabled": true,
+  }
+}
+```
+
+Now the URL must include the interface like `ietf-interfaces:interfaces/interface=GigabitEthernet2`.
 
 ```python title="restconf.py" linenums="74"
 --8<-- "examples/ietf-interfaces/restconf.py:74:81"
