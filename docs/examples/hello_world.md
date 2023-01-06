@@ -23,7 +23,7 @@ $ pydantify examples/hello_world/my-endpoint.yang
 [INFO] /workspaces/pydantify/pydantify/plugins/pydantic_plugin.py:41 (emit): Output model generated in 0.049s.
 ```
 
-The generated module will be in the file `out/out.py`. We can move and rename it to `endpoint.py`
+The generated module will be in the file `out/out.py`. We can move and rename it to `endpoint.py`.
 
 ```python title="endpoint.py"
 --8<-- "examples/hello_world/endpoint.py"
