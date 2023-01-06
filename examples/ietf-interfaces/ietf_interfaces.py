@@ -148,7 +148,7 @@ class InterfaceListEntry(BaseModel):
     /interfaces-state/interface list.
     """
 
-    name: Annotated[Optional[NameLeaf], Field(alias='ietf-interfaces:name')] = None
+    name: Annotated[Optional[NameLeaf], Field(alias="ietf-interfaces:name")] = None
     """
     The name of the interface.
 
@@ -180,7 +180,7 @@ class InterfaceListEntry(BaseModel):
     /interface-state/interface list.
     """
     description: Annotated[
-        Optional[DescriptionLeaf], Field(alias='ietf-interfaces:description')
+        Optional[DescriptionLeaf], Field(alias="ietf-interfaces:description")
     ] = None
     """
     A textual description of the interface.
@@ -210,7 +210,7 @@ class InterfaceListEntry(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    type: Annotated[TypeLeaf, Field(alias='ietf-interfaces:type')]
+    type: Annotated[TypeLeaf, Field(alias="ietf-interfaces:type")]
     """
     The type of the interface.
 
@@ -226,7 +226,7 @@ class InterfaceListEntry(BaseModel):
     A NETCONF server MUST reply with an rpc-error with the
     error-tag 'invalid-value' in this case.
     """
-    enabled: Annotated[EnabledLeaf, Field(alias='ietf-interfaces:enabled')] = True
+    enabled: Annotated[EnabledLeaf, Field(alias="ietf-interfaces:enabled")] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -244,7 +244,7 @@ class InterfaceListEntry(BaseModel):
     """
     link_up_down_trap_enable: Annotated[
         Optional[LinkUpDownTrapEnableLeaf],
-        Field(alias='ietf-interfaces:link-up-down-trap-enable'),
+        Field(alias="ietf-interfaces:link-up-down-trap-enable"),
     ] = None
     """
     Controls whether linkUp/linkDown SNMP notifications
@@ -263,7 +263,7 @@ class InterfacesContainer(BaseModel):
     """
 
     interface: Annotated[
-        List[InterfaceListEntry], Field(alias='ietf-interfaces:interface')
+        List[InterfaceListEntry], Field(alias="ietf-interfaces:interface")
     ]
 
 
@@ -284,7 +284,7 @@ class Model(BaseModel):
     """
 
     interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias='ietf-interfaces:interfaces')
+        Optional[InterfacesContainer], Field(alias="ietf-interfaces:interfaces")
     ] = None
 
 
