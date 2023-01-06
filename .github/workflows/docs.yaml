@@ -7,6 +7,8 @@ on:
       - "docs/**"
       - "mkdocs.yml"
       - ".github/workflows/docs.yaml"
+  release:
+    types: [published]
 permissions:
   contents: write
 jobs:
