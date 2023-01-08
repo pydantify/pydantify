@@ -46,7 +46,7 @@ dev = [
 ]
 
 [tool.pdm.scripts]
-class_diagram = "pyreverse -o plantuml -d graphs --project pydantify --colorized pydantify"
+class_diagram = "pyreverse -o mmd -d docs/resources --project pydantify --colorized pydantify"
 
 [build-system]
 requires = ["pdm-pep517>=0.12.0"]

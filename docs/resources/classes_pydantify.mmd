@@ -1,0 +1,124 @@
+classDiagram
+  class BaseModel {
+  }
+  class CaseNode {
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ChoiceNode {
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ClassMapping {
+    maps_to : Callable[..., Node]
+  }
+  class Config {
+    schema_extra(schema: dict[str, Any], model: type[BaseModel]) None
+  }
+  class ContainerNode {
+    name() str
+  }
+  class GeneratedClass {
+    class_name : str | UndefinedType
+    cls : Type[BaseModel] | UndefinedType
+    field_annotation : Optional[Type | None]
+    field_info : FieldInfo | UndefinedType
+    assert_is_valid()
+    to_field() Tuple[Type[BaseModel] | Type, FieldInfo]
+  }
+  class LeafListNode {
+    get_base_class() type | Node | Enum
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class LeafNode {
+    get_base_class() type | Node | Enum
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ListNode {
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ModelGenerator {
+    include_verification_code : bool
+    input_dir : Path
+    output_dir : Path
+    standalone : bool
+    trim_path : Optional[str]
+    custom_dump(model: Type[BaseModel]) str
+    generate(ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper)
+    split_path(path: str) List[str]
+    trim(statement: Statement, path: List[str]) Statement | None
+  }
+  class ModelRoot {
+    root_node : Node | None
+    to_pydantic_model() type[BaseModel]
+  }
+  class ModuleNode {
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class Node {
+    alias_mapping : Dict[str, str]
+    arg : str
+    children : List[Node]
+    comments : str | None
+    default
+    description : str | None
+    keyword : str
+    mandatory : bool
+    raw_statement : Statement
+    substmts : List[Statement]
+    ensure_unique_name(name: str) str
+    extract_statement_list(statement: Statement, attr_name: str) List[Node]
+    get_base_class() type | Node | Enum
+    get_output_class() GeneratedClass
+    get_qualified_name() str
+    make_unique_name(suffix: str)
+    name() str
+    to_pydantic_model() Type[BaseModel]
+  }
+  class NodeFactory {
+    generate(stm: Statement) Node | None
+    register_statement_class(keywords: List[str])
+  }
+  class NotImplementedException {
+  }
+  class Pydantify {
+    handle_comments : bool
+    multiple_modules : bool
+    add_output_format(fmts: Dict[str, PyangPlugin])
+    emit(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper)
+  }
+  class TypeDefNode {
+    get_base_class() type | Node | Enum
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class TypeResolver {
+    get_model_if_known(stm: Statement) Node | None
+    register(stm: Statement, model: Node)
+    resolve_statement(stm: Statement) type | Node | Enum
+  }
+  class YANGSourcesTracker {
+    copy_yang_files(input_root: Path, output_dir: Path) None
+    track_from_pos(pos: Position) None
+  }
+  CaseNode --|> Node
+  ChoiceNode --|> Node
+  ContainerNode --|> Node
+  LeafListNode --|> Node
+  LeafNode --|> Node
+  ListNode --|> Node
+  ModuleNode --|> Node
+  TypeDefNode --|> Node
+  GeneratedClass --* Node : _output_model
+  GeneratedClass --* CaseNode : _output_model
+  GeneratedClass --* ChoiceNode : _output_model
+  GeneratedClass --* ContainerNode : _output_model
+  GeneratedClass --* LeafListNode : _output_model
+  GeneratedClass --* LeafNode : _output_model
+  GeneratedClass --* ListNode : _output_model
+  GeneratedClass --* ModuleNode : _output_model
+  GeneratedClass --* TypeDefNode : _output_model

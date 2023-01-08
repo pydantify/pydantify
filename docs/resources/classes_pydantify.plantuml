@@ -1,0 +1,126 @@
+@startuml classes_pydantify
+set namespaceSeparator none
+class "BaseModel" as pydantify.models.base.BaseModel #antiquewhite {
+}
+class "CaseNode" as pydantify.models.models.CaseNode #antiquewhite {
+  name() -> str
+  to_pydantic_model() -> type[BaseModel]
+}
+class "ChoiceNode" as pydantify.models.models.ChoiceNode #antiquewhite {
+  name() -> str
+  to_pydantic_model() -> type[BaseModel]
+}
+class "ClassMapping" as pydantify.models.nodefactory.NodeFactory.ClassMapping #antiquewhite {
+  maps_to : Callable[..., Node]
+}
+class "Config" as pydantify.models.base.BaseModel.Config #antiquewhite {
+  schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None
+}
+class "ContainerNode" as pydantify.models.models.ContainerNode #antiquewhite {
+  name() -> str
+}
+class "GeneratedClass" as pydantify.models.base.GeneratedClass #antiquewhite {
+  class_name : str | UndefinedType
+  cls : Type[BaseModel] | UndefinedType
+  field_annotation : Optional[Type | None]
+  field_info : FieldInfo | UndefinedType
+  assert_is_valid()
+  to_field() -> Tuple[Type[BaseModel] | Type, FieldInfo]
+}
+class "LeafListNode" as pydantify.models.models.LeafListNode #antiquewhite {
+  get_base_class() -> type | Node | Enum
+  name() -> str
+  to_pydantic_model() -> type[BaseModel]
+}
+class "LeafNode" as pydantify.models.models.LeafNode #antiquewhite {
+  get_base_class() -> type | Node | Enum
+  name() -> str
+  to_pydantic_model() -> type[BaseModel]
+}
+class "ListNode" as pydantify.models.models.ListNode #antiquewhite {
+  name() -> str
+  to_pydantic_model() -> type[BaseModel]
+}
+class "ModelGenerator" as pydantify.utility.model_generator.ModelGenerator #burlywood {
+  include_verification_code : bool
+  input_dir : Path
+  output_dir : Path
+  standalone : bool
+  trim_path : Optional[str]
+  custom_dump(model: Type[BaseModel]) -> str
+  generate(ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper)
+  split_path(path: str) -> List[str]
+  trim(statement: Statement, path: List[str]) -> Statement | None
+}
+class "ModelRoot" as pydantify.models.models.ModelRoot #antiquewhite {
+  root_node : Node | None
+  to_pydantic_model() -> type[BaseModel]
+}
+class "ModuleNode" as pydantify.models.models.ModuleNode #antiquewhite {
+  name() -> str
+  to_pydantic_model() -> type[BaseModel]
+}
+class "Node" as pydantify.models.base.Node #antiquewhite {
+  alias_mapping : Dict[str, str]
+  arg : str
+  children : List[Node]
+  comments : str | None
+  default
+  description : str | None
+  keyword : str
+  mandatory : bool
+  raw_statement : Statement
+  substmts : List[Statement]
+  ensure_unique_name(name: str) -> str
+  extract_statement_list(statement: Statement, attr_name: str) -> List[Node]
+  get_base_class() -> type | Node | Enum
+  get_output_class() -> GeneratedClass
+  get_qualified_name() -> str
+  make_unique_name(suffix: str)
+  name() -> str
+  to_pydantic_model() -> Type[BaseModel]
+}
+class "NodeFactory" as pydantify.models.nodefactory.NodeFactory #antiquewhite {
+  generate(stm: Statement) -> Node | None
+  register_statement_class(keywords: List[str])
+}
+class "<color:red>NotImplementedException</color>" as pydantify.exceptions.NotImplementedException #aliceblue {
+}
+class "Pydantify" as pydantify.plugins.pydantic_plugin.Pydantify #aquamarine {
+  handle_comments : bool
+  multiple_modules : bool
+  add_output_format(fmts: Dict[str, PyangPlugin])
+  emit(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper)
+}
+class "TypeDefNode" as pydantify.models.models.TypeDefNode #antiquewhite {
+  get_base_class() -> type | Node | Enum
+  name() -> str
+  to_pydantic_model() -> type[BaseModel]
+}
+class "TypeResolver" as pydantify.models.typeresolver.TypeResolver #antiquewhite {
+  get_model_if_known(stm: Statement) -> Node | None
+  register(stm: Statement, model: Node)
+  resolve_statement(stm: Statement) -> type | Node | Enum
+}
+class "YANGSourcesTracker" as pydantify.utility.yang_sources_tracker.YANGSourcesTracker #burlywood {
+  copy_yang_files(input_root: Path, output_dir: Path) -> None
+  track_from_pos(pos: Position) -> None
+}
+pydantify.models.models.CaseNode --|> pydantify.models.base.Node
+pydantify.models.models.ChoiceNode --|> pydantify.models.base.Node
+pydantify.models.models.ContainerNode --|> pydantify.models.base.Node
+pydantify.models.models.LeafListNode --|> pydantify.models.base.Node
+pydantify.models.models.LeafNode --|> pydantify.models.base.Node
+pydantify.models.models.ListNode --|> pydantify.models.base.Node
+pydantify.models.models.ModuleNode --|> pydantify.models.base.Node
+pydantify.models.models.TypeDefNode --|> pydantify.models.base.Node
+pydantify.models.base.GeneratedClass --* pydantify.models.base.Node : _output_model
+pydantify.models.base.GeneratedClass --* pydantify.models.models.CaseNode : _output_model
+pydantify.models.base.GeneratedClass --* pydantify.models.models.ChoiceNode : _output_model
+pydantify.models.base.GeneratedClass --* pydantify.models.models.ContainerNode : _output_model
+pydantify.models.base.GeneratedClass --* pydantify.models.models.LeafListNode : _output_model
+pydantify.models.base.GeneratedClass --* pydantify.models.models.LeafNode : _output_model
+pydantify.models.base.GeneratedClass --* pydantify.models.models.ListNode : _output_model
+pydantify.models.base.GeneratedClass --* pydantify.models.models.ModuleNode : _output_model
+pydantify.models.base.GeneratedClass --* pydantify.models.models.TypeDefNode : _output_model
+@enduml
