@@ -19,3 +19,8 @@ mypy:
 # Runn pytest, black and mypy
 .PHONY: tests
 tests: pytest black mypy
+
+# Python type check
+.PHONY: diagrams
+diagrams:
+	pdm run pyreverse -o mmd -d docs/resources --project ${PROJECT} --colorized --ignore nodefactory.py,typeresolver.py  ${PROJECT}/models/
