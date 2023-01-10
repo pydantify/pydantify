@@ -1,0 +1,51 @@
+classDiagram
+  class pydantify {
+  }
+  class __main__ {
+  }
+  class exceptions {
+  }
+  class main {
+  }
+  class models {
+  }
+  class base {
+  }
+  class models {
+  }
+  class nodefactory {
+  }
+  class typeresolver {
+  }
+  class plugins {
+  }
+  class pydantic_plugin {
+  }
+  class run {
+  }
+  class utility {
+  }
+  class function_tools {
+  }
+  class model_generator {
+  }
+  class patterns {
+  }
+  class restconf {
+  }
+  class yang_sources_tracker {
+  }
+  __main__ --> main
+  main --> run
+  main --> model_generator
+  models --> base
+  models --> models
+  models --> nodefactory
+  models --> typeresolver
+  base --> nodefactory
+  models --> exceptions
+  nodefactory --> exceptions
+  pydantic_plugin --> model_generator
+  utility --> function_tools
+  utility --> restconf
+  utility --> yang_sources_tracker
