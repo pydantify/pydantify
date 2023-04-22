@@ -86,8 +86,10 @@ class Node(ABC):
         default = getattr(self.raw_statement, "i_default", Undefined)
         if isinstance(default, Decimal64Value):
             self.default = default.value
+        elif isinstance(default, Statement) and default.keyword == "identity":
+            self.default = default.arg
         else:
-            self.default = getattr(self.raw_statement, "i_default", Undefined)
+            self.default = default
         self._name: Optional[str] = None
 
         self._output_model: GeneratedClass = GeneratedClass()

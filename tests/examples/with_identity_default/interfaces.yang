@@ -1,0 +1,75 @@
+module interfaces {
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+  
+  description 'Example demonstarating leafref nodes';
+
+  // copied from openconfig-vlan-types.yang
+  identity TPID_TYPES {
+    description
+      "Base identity for TPID values that can be matched or that override
+       the VLAN ethertype value";
+  }
+
+  identity TPID_0X8100 {
+    base TPID_TYPES;
+    description
+      "Default TPID value for 802.1q single-tagged VLANs.";
+  }
+
+  identity TPID_0X88A8 {
+    base TPID_TYPES;
+    description
+      "TPID value for 802.1ad provider bridging, QinQ or
+       stacked VLANs.";
+  }
+
+  identity TPID_0X9100 {
+    base TPID_TYPES;
+    description
+      "Alternate TPID value.";
+  }
+
+  identity TPID_0X9200 {
+    base TPID_TYPES;
+    description
+      "Alternate TPID value.";
+  }
+
+  identity TPID_ANY {
+    base TPID_TYPES;
+    description
+      "A wildcard that matches any of the generally used TPID values
+       for singly- or multiply-tagged VLANs. Equivalent to matching
+       any of TPID_0X8100, TPID_0X88A8, TPID_0X9100 and TPID_0x9200.
+       This value is only applicable where the TPID of a packet is
+       being matched.";
+  }
+
+  list interfaces {
+    key "name";
+    description "List of configured device interfaces";
+
+    leaf name {
+      type string;
+      description "Interface name";
+    }
+    leaf-list ip {
+      type string;
+      description "List of interface IPs";
+    }
+    
+    // copied from openconfig-interfaces.yang
+    leaf tpid {
+      type identityref {
+        base TPID_TYPES;
+      }
+      default TPID_0X8100;
+      description
+        "Optionally set the tag protocol identifier field (TPID) that
+        is accepted on the VLAN";
+    }
+  }
+}

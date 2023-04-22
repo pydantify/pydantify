@@ -173,6 +173,12 @@ def reset_optparse():
             [],
             id="type union",
         ),
+        param(
+            "examples/with_identity_default/interfaces.yang",
+            "examples/with_identity_default/expected.py",
+            [],
+            id="identity default",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
