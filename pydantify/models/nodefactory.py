@@ -25,7 +25,6 @@ class NodeFactory:
 
     _implemented_mappings: Dict[str, ClassMapping] = {}
     _ignored_types: List[str] = [
-        "output",
         "notification",
     ]  #  TODO: potential extension to project?
 

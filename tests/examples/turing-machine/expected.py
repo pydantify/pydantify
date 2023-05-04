@@ -234,6 +234,10 @@ class TuringMachineContainer(BaseModel):
     ] = None
 
 
+class Output(BaseModel):
+    pass
+
+
 class TapeContentLeaf(BaseModel):
     __root__: str
     """
@@ -264,10 +268,15 @@ class InitializeRpc(BaseModel):
        tape is othewise empty.
     """
 
+    output: Output
     input: Input
 
 
 class Input2(BaseModel):
+    pass
+
+
+class Output2(BaseModel):
     pass
 
 
@@ -277,6 +286,7 @@ class RunRpc(BaseModel):
     """
 
     input: Input2
+    output: Output2
 
 
 class Model(BaseModel):
