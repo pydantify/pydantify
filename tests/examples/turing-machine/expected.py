@@ -234,6 +234,24 @@ class TuringMachineContainer(BaseModel):
     ] = None
 
 
+class TapeContentLeaf(BaseModel):
+    __root__: str
+    """
+    The string with which the tape shall be initialized. The
+    leftmost symbol will be at tape coordinate 0.
+    """
+
+
+class Input(BaseModel):
+    tape_content: Annotated[
+        TapeContentLeaf, Field(alias='turing-machine:tape-content')
+    ] = ''
+    """
+    The string with which the tape shall be initialized. The
+    leftmost symbol will be at tape coordinate 0.
+    """
+
+
 class InitializeRpc(BaseModel):
     """
     Initialize the Turing Machine as follows:
@@ -246,11 +264,19 @@ class InitializeRpc(BaseModel):
        tape is othewise empty.
     """
 
+    input: Input
+
+
+class Input2(BaseModel):
+    pass
+
 
 class RunRpc(BaseModel):
     """
     Start the Turing Machine operation.
     """
+
+    input: Input2
 
 
 class Model(BaseModel):
