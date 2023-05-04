@@ -25,7 +25,8 @@ class NodeFactory:
 
     _implemented_mappings: Dict[str, ClassMapping] = {}
     _ignored_types: List[str] = [
-        "rpc",
+        "input",
+        "output",
         "notification",
     ]  #  TODO: potential extension to project?
 

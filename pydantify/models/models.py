@@ -278,6 +278,20 @@ class ModuleNode(Node):
         return self.make_unique_name(suffix="Module")
 
 
+@NodeFactory.register_statement_class(["rpc"])
+class RpcNode(Node):
+    def __init__(self, stm: ModSubmodStatement) -> None:
+        super().__init__(stm)
+        self._output_model = GeneratedClass(
+            class_name=self.name(),
+            cls=self.to_pydantic_model(),
+            field_info=FieldInfo(...),
+        )
+
+    def name(self):
+        return self.make_unique_name(suffix="Rpc")
+
+
 class ModelRoot:
     def __init__(self, stm: type[Statement]):
         self.root_node: Node | None = NodeFactory.generate(stm)
