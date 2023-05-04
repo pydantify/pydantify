@@ -244,8 +244,8 @@ class TapeContentLeaf(BaseModel):
 
 class Input(BaseModel):
     tape_content: Annotated[
-        TapeContentLeaf, Field(alias='turing-machine:tape-content')
-    ] = ''
+        TapeContentLeaf, Field(alias="turing-machine:tape-content")
+    ] = ""
     """
     The string with which the tape shall be initialized. The
     leftmost symbol will be at tape coordinate 0.
