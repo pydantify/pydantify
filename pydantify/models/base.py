@@ -156,7 +156,12 @@ class Node(ABC):
     def _children_to_fields(self) -> Dict[str, Tuple[type, FieldInfo]]:
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
         for ch in self.children:
-            ret[ch.arg] = ch._output_model.to_field()
+            # Field name "validate" shadows a BaseModel attribute; using a different field name.
+            key = ch.arg
+            if key == "validate":
+                key = "validate_"
+
+            ret[key] = ch._output_model.to_field()
         return ret
 
     @staticmethod
