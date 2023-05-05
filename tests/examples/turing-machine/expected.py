@@ -234,6 +234,61 @@ class TuringMachineContainer(BaseModel):
     ] = None
 
 
+class Output(BaseModel):
+    pass
+
+
+class TapeContentLeaf(BaseModel):
+    __root__: str
+    """
+    The string with which the tape shall be initialized. The
+    leftmost symbol will be at tape coordinate 0.
+    """
+
+
+class Input(BaseModel):
+    tape_content: Annotated[
+        TapeContentLeaf, Field(alias="turing-machine:tape-content")
+    ] = ""
+    """
+    The string with which the tape shall be initialized. The
+    leftmost symbol will be at tape coordinate 0.
+    """
+
+
+class InitializeRpc(BaseModel):
+    """
+    Initialize the Turing Machine as follows:
+
+    1. Put the control unit into the initial state (0).
+    2. Move the read/write head to the tape cell with coordinate
+       zero.
+    3. Write the string from the 'tape-content' input parameter to
+       the tape, character by character, starting at cell 0. The
+       tape is othewise empty.
+    """
+
+    output: Output
+    input: Input
+
+
+class Input2(BaseModel):
+    pass
+
+
+class Output2(BaseModel):
+    pass
+
+
+class RunRpc(BaseModel):
+    """
+    Start the Turing Machine operation.
+    """
+
+    input: Input2
+    output: Output2
+
+
 class Model(BaseModel):
     """
     Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
@@ -253,6 +308,8 @@ class Model(BaseModel):
     turing_machine: Annotated[
         Optional[TuringMachineContainer], Field(alias="turing-machine:turing-machine")
     ] = None
+    initialize: InitializeRpc
+    run: RunRpc
 
 
 from pydantic import BaseConfig, Extra

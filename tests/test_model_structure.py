@@ -173,6 +173,12 @@ def reset_optparse():
             [],
             id="type union",
         ),
+        param(
+            "examples/netconf/ietf-netconf.yang",
+            "examples/netconf/expected.py",
+            [],
+            id="netconf",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
