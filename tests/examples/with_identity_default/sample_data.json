@@ -1,0 +1,18 @@
+{
+    "interfaces": {
+        "interfaces": [
+            {
+                "name": "GigabitEthernet 0/0/0",
+                "ip": [
+                    "10.10.10.1",
+                    "10.10.10.2"
+                ]
+            },
+            {
+                "name": "GigabitEthernet 0/0/1",
+                "ip": ["192.168.1.1"],
+                "tpid": "TPID_0X88A8"
+            }
+        ]
+    }
+}
