@@ -27,10 +27,11 @@ from pyang.types import (
 )
 from pydantic.types import ConstrainedInt, conint, constr, confloat, conbytes
 from pydantic.fields import UndefinedType
-from typing_extensions import Self
+from typing_extensions import Annotated, Self
 
 from . import Node
 from ..utility.patterns import convert_pattern
+from pydantic import Field, StringConstraints
 
 
 class TypeResolver:
@@ -101,10 +102,10 @@ class TypeResolver:
                 base.le = spec.max
                 return base
             case LengthTypeSpec.__qualname__:
-                return constr(
+                return Annotated[str, StringConstraints(
                     min_length=spec.min,
                     max_length=spec.max,
-                )
+                )]
             case EnumTypeSpec.__qualname__:
                 return Enum(
                     Node.ensure_unique_name(f"{spec.name}Enum"), dict(spec.enums)
@@ -117,27 +118,27 @@ class TypeResolver:
                 if isinstance(node, Node):
                     return node._output_model.cls  # type: ignore
             case IntTypeSpec.__qualname__:
-                return conint(
+                return Annotated[int, Field(
                     ge=spec.min,
                     le=spec.max,
-                )
+                )]
             case Decimal64TypeSpec.__qualname__:
-                return confloat(
+                return Annotated[float, Field(
                     ge=spec.min.value,
                     le=spec.max.value,
-                )
+                )]
             case StringTypeSpec.__qualname__:
                 return str
             case BooleanTypeSpec.__qualname__:
                 return bool
             case BinaryTypeSpec.__qualname__:
-                return conbytes(
+                return Annotated[bytes, Field(
                     min_length=spec.min,
                     max_length=spec.max,
-                )
+                )]
             case PatternTypeSpec.__qualname__:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
-                return constr(regex=convert_pattern(pattern))
+                return Annotated[str, StringConstraints(pattern=convert_pattern(pattern))]
             case EmptyTypeSpec.__qualname__:
                 return dict
             case IdentityrefTypeSpec.__qualname__:  # TODO: abort before entering this stage?

@@ -25,6 +25,8 @@ logger = logging.getLogger("pydantify")
 
 
 class BaseModel(PydanticBaseModel):
+    # TODO[pydantic]: The `Config` class inherits from another class, please create the `model_config` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
     class Config(BaseConfig):
         @staticmethod
         def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:  # type: ignore
@@ -52,9 +54,7 @@ class GeneratedClass:
         for prop in self.__dataclass_fields__.keys():
             value = getattr(self, prop, Undefined)
             if value == Undefined:
-                raise Exception(
-                    f'Member "{prop}" of class "{__class__.__name__}" is undefined.\n{self}'
-                )
+                raise Exception(f'Member "{prop}" of class "{__class__.__name__}" is undefined.\n{self}')
 
     def to_field(self) -> Tuple[Type[BaseModel] | Type, FieldInfo]:
         # Exception if any field are Undefined
@@ -66,9 +66,7 @@ class GeneratedClass:
 
 
 class Node(ABC):
-    _name_count: Dict[
-        str, int
-    ] = dict()  # keeps track of the number of models with the same name
+    _name_count: Dict[str, int] = dict()  # keeps track of the number of models with the same name
     alias_mapping: Dict[str, str] = dict()
 
     def __init__(self, stm: Statement):
@@ -100,9 +98,7 @@ class Node(ABC):
 
     def get_qualified_name(self) -> str:
         qualified_name = f"{self.raw_statement.i_module.arg}:{self.arg}"
-        self.alias_mapping[qualified_name] = FieldNameResolver(
-            snake_case_field=True
-        ).get_valid_name(self.arg)
+        self.alias_mapping[qualified_name] = FieldNameResolver(snake_case_field=True).get_valid_name(self.arg)
         return qualified_name
 
     @abstractmethod
@@ -149,9 +145,7 @@ class Node(ABC):
         if isinstance(base, Node) or isinstance(base, Enum):
             raise Exception(f"Base model needs to be a class. Got {base}")
 
-        output_model: Type[BaseModel] = create_model(
-            self.name(), __base__=(base,), **fields
-        )
+        output_model: Type[BaseModel] = create_model(self.name(), __base__=(base,), **fields)
         output_model.__doc__ = self.description or ""
         return output_model
 
