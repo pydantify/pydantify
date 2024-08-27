@@ -11,10 +11,11 @@ from pyang.statements import (
     Statement,
 )
 from pyang.types import Decimal64Value
-from pydantic import BaseConfig
 from pydantic import BaseModel as PydanticBaseModel
-from pydantic import create_model
-from pydantic.fields import FieldInfo, Undefined, UndefinedType
+from pydantic import ConfigDict, create_model
+from pydantic import RootModel as PydanticRootModel
+from pydantic.fields import FieldInfo
+from pydantic_core import PydanticUndefined, PydanticUndefinedType
 
 from ..utility.yang_sources_tracker import YANGSourcesTracker
 
@@ -24,40 +25,51 @@ if TYPE_CHECKING:
 logger = logging.getLogger("pydantify")
 
 
+def custom_json_schema_extra(schema: dict[str, Any]) -> None:  # type: ignore
+    # Remove "title" property to avoid redundant annotation
+    for prop in schema.get("properties", {}).values():
+        prop.pop("title", None)
+    if not schema.get("type", None) == "object":
+        schema.pop("title", None)
+
+
+model_config = ConfigDict(
+    regex_engine="python-re",
+    json_schema_extra=custom_json_schema_extra,
+)
+
+
 class BaseModel(PydanticBaseModel):
-    class Config(BaseConfig):
-        @staticmethod
-        def schema_extra(schema: dict[str, Any], model: type[BaseModel]) -> None:  # type: ignore
-            # Remove "title" property to avoid redundant annotation
-            for prop in schema.get("properties", {}).values():
-                prop.pop("title", None)
-            if not schema.get("type", None) == "object":
-                schema.pop("title", None)
+    model_config = model_config
+
+
+class RootModel(PydanticRootModel):
+    model_config = model_config
 
 
 @dataclass
 class GeneratedClass:
     """Holds information about a dynamically generated output class."""
 
-    class_name: str | UndefinedType = Undefined
+    class_name: str | PydanticUndefinedType = PydanticUndefined
     """Output class name"""
-    cls: Type[BaseModel] | UndefinedType = Undefined
+    cls: Type[BaseModel] | Type[RootModel] | PydanticUndefinedType = PydanticUndefined
     """Ouput model class"""
-    field_info: FieldInfo | UndefinedType = Undefined
+    field_info: FieldInfo | PydanticUndefinedType = PydanticUndefined
     """Field info to add to field annotation"""
     field_annotation: Type | None = None
     """Annotated type when used """
 
     def assert_is_valid(self):
         for prop in self.__dataclass_fields__.keys():
-            value = getattr(self, prop, Undefined)
-            if value == Undefined:
+            value = getattr(self, prop, PydanticUndefined)
+            if value == PydanticUndefined:
                 raise Exception(
-                    f'Member "{prop}" of class "{__class__.__name__}" is undefined.\n{self}'
+                    f'Member "{prop}" of class "{__class__.__name__}" is PydanticUndefined.\n{self}'
                 )
 
     def to_field(self) -> Tuple[Type[BaseModel] | Type, FieldInfo]:
-        # Exception if any field are Undefined
+        # Exception if any field are PydanticUndefined
         self.assert_is_valid()
         return (
             self.field_annotation if self.field_annotation else self.cls,
@@ -66,9 +78,9 @@ class GeneratedClass:
 
 
 class Node(ABC):
-    _name_count: Dict[
-        str, int
-    ] = dict()  # keeps track of the number of models with the same name
+    _name_count: Dict[str, int] = (
+        dict()
+    )  # keeps track of the number of models with the same name
     alias_mapping: Dict[str, str] = dict()
 
     def __init__(self, stm: Statement):
@@ -83,7 +95,7 @@ class Node(ABC):
         self.comments: str | None = __class__.__extract_comments(stm)
         self.description: str | None = __class__.__extract_description(stm)
 
-        default = getattr(self.raw_statement, "i_default", Undefined)
+        default = getattr(self.raw_statement, "i_default", PydanticUndefined)
         if isinstance(default, Decimal64Value):
             self.default = default.value
         elif isinstance(default, Statement) and default.keyword == "identity":
@@ -141,7 +153,7 @@ class Node(ABC):
         description = stm.search_one("description")
         return description.arg if description is not None else None
 
-    def to_pydantic_model(self) -> Type[BaseModel]:
+    def to_pydantic_model(self) -> Type[BaseModel] | Type[RootModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
         base = self.get_base_class()

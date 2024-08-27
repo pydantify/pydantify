@@ -1,22 +1,20 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import List
 
-from pydantic import BaseModel, Field
-
-
-class NameLeaf(BaseModel):
-    __root__: str
-    """
-    Interface name. Example value: GigabitEthernet 0/0/0
-    """
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+from typing_extensions import Annotated
 
 
-class DottedQuadType(BaseModel):
-    __root__: Annotated[
+class DottedQuadType(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[
         str,
         Field(
-            regex="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$"
+            pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$"
         ),
     ]
     """
@@ -24,24 +22,43 @@ class DottedQuadType(BaseModel):
     """
 
 
-class AddressLeaf(BaseModel):
-    __root__: DottedQuadType
+class EnabledLeaf(RootModel[bool]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[bool, Field(title="EnabledLeaf")]
     """
-    Interface IP address. Example value: 10.10.10.1
+    Enable or disable the interface. Example value: true
     """
 
 
-class SubnetMaskLeaf(BaseModel):
-    __root__: DottedQuadType
+class NameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[str, Field(title="NameLeaf")]
+    """
+    Interface name. Example value: GigabitEthernet 0/0/0
+    """
+
+
+class SubnetMaskLeaf(RootModel[DottedQuadType]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[DottedQuadType, Field(title="Subnet-maskLeaf")]
     """
     Interface subnet mask. Example value: 255.255.255.0
     """
 
 
-class EnabledLeaf(BaseModel):
-    __root__: bool
+class AddressLeaf(RootModel[DottedQuadType]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[DottedQuadType, Field(title="AddressLeaf")]
     """
-    Enable or disable the interface. Example value: true
+    Interface IP address. Example value: 10.10.10.1
     """
 
 
@@ -50,25 +67,19 @@ class InterfaceListEntry(BaseModel):
     Regular IPv4 address with subnet
     """
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     name: Annotated[NameLeaf, Field(alias="interfaces:name")]
-    """
-    Interface name. Example value: GigabitEthernet 0/0/0
-    """
     address: Annotated[AddressLeaf, Field(alias="interfaces:address")]
-    """
-    Interface IP address. Example value: 10.10.10.1
-    """
     subnet_mask: Annotated[SubnetMaskLeaf, Field(alias="interfaces:subnet-mask")]
-    """
-    Interface subnet mask. Example value: 255.255.255.0
-    """
-    enabled: Annotated[EnabledLeaf, Field(alias="interfaces:enabled")] = False
-    """
-    Enable or disable the interface. Example value: true
-    """
+    enabled: Annotated[EnabledLeaf, Field(False, alias="interfaces:enabled")]
 
 
 class InterfacesContainer(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     interface: Annotated[List[InterfaceListEntry], Field(alias="interfaces:interface")]
 
 
@@ -79,33 +90,31 @@ class Model(BaseModel):
     ## Tips
     Initialization:
     - all values have to be set via keyword arguments
-    - if a class contains only a `__root__` field, it can be initialized as follows:
-        - `member=MyNode(__root__=<value>)`
+    - if a class contains only a `root` field, it can be initialized as follows:
+        - `member=MyNode(root=<value>)`
         - `member=<value>`
 
     Serialziation:
-    - use `exclude_defaults=True` to
-    - use `by_alias=True` to ensure qualified names are used ()
+    - `exclude_defaults=True` omits fields set to their default value (recommended)
+    - `by_alias=True` ensures qualified names are used (necessary)
     """
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
-    ] = None
-
-
-from pydantic import BaseConfig, Extra
-
-BaseConfig.allow_population_by_field_name = True
-BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
-BaseConfig.extra = Extra.forbid
+        InterfacesContainer, Field(None, alias="interfaces:interfaces")
+    ]
 
 
 if __name__ == "__main__":
-    model = Model(
+    model = Model(  # type: ignore[call-arg]
         # <Initialize model here>
     )
 
-    restconf_payload = model.json(exclude_defaults=True, by_alias=True)
+    restconf_payload = model.model_dump_json(
+        exclude_defaults=True, by_alias=True, indent=2
+    )
 
     print(f"Generated output: {restconf_payload}")
 

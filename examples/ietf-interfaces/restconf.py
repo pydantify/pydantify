@@ -27,10 +27,8 @@ print(json.dumps(response.json(), indent=2))
 
 
 print("#" * 17, "Convert received data into pydantic model", "#" * 17)
-from ietf_interfaces import Model, BaseConfig
-from pydantic import Extra
+from ietf_interfaces import Model
 
-BaseConfig.extra = Extra.ignore
 model = Model.parse_obj(response.json())
 
 print(model.json(exclude_defaults=True, by_alias=True, indent=2))
@@ -41,8 +39,8 @@ print(
 for interface in model.interfaces.interface:
     print(
         "Interface {name} is {status}".format(
-            name=interface.name.__root__,
-            status="enabled" if interface.enabled.__root__ else "disabled",
+            name=interface.name.root,
+            status="enabled" if interface.enabled.root else "disabled",
         )
     )
 
@@ -50,9 +48,9 @@ print("#" * 17, "Change status and description for the second interface", "#" * 
 from ietf_interfaces import EnabledLeaf, DescriptionLeaf, InterfacesContainer
 
 interface = model.interfaces.interface[1]
-interface.enabled = EnabledLeaf(__root__=True)
+interface.enabled = EnabledLeaf(root=True)
 interface.description = DescriptionLeaf(
-    __root__="https://pydantify.github.io/pydantify/"
+    root="https://pydantify.github.io/pydantify/"
 )
 print(interface.json(exclude_defaults=True, by_alias=True, indent=2))
 

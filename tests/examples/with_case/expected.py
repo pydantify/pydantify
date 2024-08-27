@@ -1,30 +1,23 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional, Union
+from typing import Union
 
-from pydantic import BaseModel, Field
-
-
-class NameLeaf(BaseModel):
-    __root__: str
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+from typing_extensions import Annotated
 
 
-class EthernetContainer(BaseModel):
-    """
-    Option A
-    """
-
-    name: Annotated[Optional[NameLeaf], Field(alias="interfaces:name")] = None
-
-
-class EthernetCase(BaseModel):
-    ethernet: Annotated[
-        Optional[EthernetContainer], Field(alias="interfaces:ethernet")
-    ] = None
+class Name2Leaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[str, Field(title="Name2Leaf")]
 
 
-class Name2Leaf(BaseModel):
-    __root__: str
+class NameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[str, Field(title="NameLeaf")]
 
 
 class Ethernet2Case(BaseModel):
@@ -32,7 +25,28 @@ class Ethernet2Case(BaseModel):
     Option B
     """
 
-    name2: Annotated[Optional[Name2Leaf], Field(alias="interfaces:name2")] = None
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    name2: Annotated[Name2Leaf, Field(None, alias="interfaces:name2")]
+
+
+class EthernetContainer(BaseModel):
+    """
+    Option A
+    """
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    name: Annotated[NameLeaf, Field(None, alias="interfaces:name")]
+
+
+class EthernetCase(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ethernet: Annotated[EthernetContainer, Field(None, alias="interfaces:ethernet")]
 
 
 class Model(BaseModel):
@@ -42,34 +56,32 @@ class Model(BaseModel):
     ## Tips
     Initialization:
     - all values have to be set via keyword arguments
-    - if a class contains only a `__root__` field, it can be initialized as follows:
-        - `member=MyNode(__root__=<value>)`
+    - if a class contains only a `root` field, it can be initialized as follows:
+        - `member=MyNode(root=<value>)`
         - `member=<value>`
 
     Serialziation:
-    - use `exclude_defaults=True` to
-    - use `by_alias=True` to ensure qualified names are used ()
+    - `exclude_defaults=True` omits fields set to their default value (recommended)
+    - `by_alias=True` ensures qualified names are used (necessary)
     """
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     interface_type: Annotated[
-        Optional[Union[EthernetCase, Ethernet2Case]],
-        Field(alias="interfaces:interface-type"),
-    ] = None
-
-
-from pydantic import BaseConfig, Extra
-
-BaseConfig.allow_population_by_field_name = True
-BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
-BaseConfig.extra = Extra.forbid
+        Union[EthernetCase, Ethernet2Case],
+        Field(None, alias="interfaces:interface-type"),
+    ]
 
 
 if __name__ == "__main__":
-    model = Model(
+    model = Model(  # type: ignore[call-arg]
         # <Initialize model here>
     )
 
-    restconf_payload = model.json(exclude_defaults=True, by_alias=True)
+    restconf_payload = model.model_dump_json(
+        exclude_defaults=True, by_alias=True, indent=2
+    )
 
     print(f"Generated output: {restconf_payload}")
 

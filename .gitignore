@@ -13,3 +13,4 @@ out
 .coverage
 htmlcov
 .devcontainer
+.venv

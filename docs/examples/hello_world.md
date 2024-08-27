@@ -54,7 +54,7 @@ With the option `by_alias` the JSON includes the YANG module name in the keys.
 --8<-- "examples/hello_world/endpoint1_json_exclude_default_and_by_alias.json"
 ```
 
-Model objects containing only a `__root__` field can be created automatically. So, instead of creating a port object, specify the value in the argument of the `EndpointContainer` creation. *Pydantic* creates objects automatically in the background. More information can be found in the *pydantic* documentation for [Custom Root Types](https://docs.pydantic.dev/usage/models/#custom-root-types)
+Model objects containing only a `root` field can be created automatically. So, instead of creating a port object, specify the value in the argument of the `EndpointContainer` creation. *Pydantic* creates objects automatically in the background. More information can be found in the *pydantic* documentation for [Custom Root Types](https://docs.pydantic.dev/usage/models/#rootmodel-and-custom-root-types)
 
 ```python title="create_json.py" linenums="20"
 --8<-- "examples/hello_world/create_json.py:20:25"

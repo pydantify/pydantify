@@ -1,26 +1,36 @@
 from __future__ import annotations
 
-from typing import Annotated, Any, List, Optional
+from typing import Any, List
 
-from pydantic import BaseModel, Field
-
-
-class NameLeaf(BaseModel):
-    __root__: str
-    """
-    Interface name
-    """
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+from typing_extensions import Annotated
 
 
-class IpLeafList(BaseModel):
-    __root__: str
+class IpLeafList(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[str, Field(title="IpLeafList")]
     """
     List of interface IPs
     """
 
 
-class TpidLeaf(BaseModel):
-    __root__: Any
+class NameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[str, Field(title="NameLeaf")]
+    """
+    Interface name
+    """
+
+
+class TpidLeaf(RootModel[Any]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[Any, Field(title="TpidLeaf")]
     """
     Optionally set the tag protocol identifier field (TPID) that
     is accepted on the VLAN
@@ -32,19 +42,15 @@ class InterfacesListEntry(BaseModel):
     List of configured device interfaces
     """
 
-    name: Annotated[Optional[NameLeaf], Field(alias="interfaces:name")] = None
-    """
-    Interface name
-    """
-    ip: Annotated[List[IpLeafList], Field(alias="interfaces:ip")] = []
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    name: Annotated[NameLeaf, Field(None, alias="interfaces:name")]
+    ip: Annotated[List[IpLeafList], Field([], alias="interfaces:ip")]
     """
     List of interface IPs
     """
-    tpid: Annotated[TpidLeaf, Field(alias="interfaces:tpid")] = "TPID_0X8100"
-    """
-    Optionally set the tag protocol identifier field (TPID) that
-    is accepted on the VLAN
-    """
+    tpid: Annotated[TpidLeaf, Field("TPID_0X8100", alias="interfaces:tpid")]
 
 
 class Model(BaseModel):
@@ -54,8 +60,8 @@ class Model(BaseModel):
     ## Tips
     Initialization:
     - all values have to be set via keyword arguments
-    - if a class contains only a `__root__` field, it can be initialized as follows:
-        - `member=MyNode(__root__=<value>)`
+    - if a class contains only a `root` field, it can be initialized as follows:
+        - `member=MyNode(root=<value>)`
         - `member=<value>`
 
     Serialziation:
@@ -63,24 +69,22 @@ class Model(BaseModel):
     - `by_alias=True` ensures qualified names are used (necessary)
     """
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     interfaces: Annotated[
         List[InterfacesListEntry], Field(alias="interfaces:interfaces")
     ]
 
 
-from pydantic import BaseConfig, Extra
-
-BaseConfig.allow_population_by_field_name = True
-BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
-BaseConfig.extra = Extra.forbid
-
-
 if __name__ == "__main__":
-    model = Model(
+    model = Model(  # type: ignore[call-arg]
         # <Initialize model here>
     )
 
-    restconf_payload = model.json(exclude_defaults=True, by_alias=True, indent=2)
+    restconf_payload = model.model_dump_json(
+        exclude_defaults=True, by_alias=True, indent=2
+    )
 
     print(f"Generated output: {restconf_payload}")
 

@@ -119,9 +119,9 @@ Now the model is filled with the received data. By using the option `by_alias=Tr
 
 As with all Python objects, you can access them and make evaluations.
 
-??? info "`__root__`"
+??? info "`root`"
 
-    For now, to access the value of the leaf object, the variable `__root__` needs to be used. Hopefully we can improve this in future versions.
+    For now, to access the value of the leaf object, the variable `root` needs to be used. Hopefully we can improve this in future versions.
 
 ```python title="restconf.py" linenums="41"
 --8<-- "examples/ietf-interfaces/restconf.py:41:47"
