@@ -13,14 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
       - uses: pdm-project/setup-pdm@v3
         name: Setup PDM
         with:
+          python-version: ${{ matrix.python-version }}
           cache: true
 
       - name: Install dependencies
@@ -47,14 +43,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
       - uses: pdm-project/setup-pdm@v3
         name: Setup PDM
         with:
+          python-version: ${{ matrix.python-version }}
           cache: true
 
       - name: install setuptools
