@@ -23,12 +23,6 @@ jobs:
         with:
           cache: true
 
-      - name: Update apt
-        run: sudo apt-get update
-
-      - name: Install libxml2-dev libxslt-dev
-        run: sudo apt-get install libxml2-dev libxslt-dev
-
       - name: Install dependencies
         run: pdm install
 
@@ -62,6 +56,9 @@ jobs:
         name: Setup PDM
         with:
           cache: true
+
+      - name: install setuptools
+        run: pip install setuptools
 
       - name: Install dependencies
         run: pdm install
