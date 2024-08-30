@@ -13,15 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: x64
-
       - uses: pdm-project/setup-pdm@v3
         name: Setup PDM
         with:
+          python-version: ${{ matrix.python-version }}
           cache: true
 
       - name: Install dependencies
@@ -29,7 +24,7 @@ jobs:
 
       - name: Run black
         run: make black
-      
+
       - name: Run mypy
         run: make mypy
 
@@ -48,15 +43,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: x64
-
       - uses: pdm-project/setup-pdm@v3
         name: Setup PDM
         with:
+          python-version: ${{ matrix.python-version }}
           cache: true
 
       - name: Install dependencies
