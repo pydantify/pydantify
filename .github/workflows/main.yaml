@@ -27,8 +27,8 @@ jobs:
       - name: Update apt
         run: sudo apt-get update
 
-      - name: Install libxml2-utils
-        run: sudo apt-get install libxml2-utils
+      - name: Install libxml2-dev libxslt-dev
+        run: sudo apt-get install libxml2-dev libxslt-dev
 
       - name: Install dependencies
         run: pdm install
