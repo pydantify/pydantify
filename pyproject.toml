@@ -13,6 +13,7 @@ dependencies = [
     "datamodel-code-generator==0.25.8",
     "requests>=2.32.3",
     "typing-extensions>=4.12.2",
+    "setuptools>=74.0.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -29,7 +30,6 @@ pydantify = "pydantify.main:main"
 [project.urls]
 Repository = "https://gitlab.ost.ch/pydantic-sa/pydantify"
 
-[project.optional-dependencies]
 [tool.pdm]
 [tool.pdm.dev-dependencies]
 dev = [
