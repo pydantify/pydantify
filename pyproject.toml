@@ -7,7 +7,7 @@ authors = [
     { name = "Dejan Jovicic", email = "dejan.jovicic@ost.ch" },
 ]
 dependencies = [
-    "pydantic==2.9.0b1",
+    "pydantic==2.9.0",
     "pyang==2.6.1",
     "psutil>=6.0.0",
     "datamodel-code-generator==0.25.8",
