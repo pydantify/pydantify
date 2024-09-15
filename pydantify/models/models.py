@@ -14,10 +14,9 @@ from pyang.statements import (
     TypedefStatement,
 )
 from pydantic import create_model
-from pydantic.fields import FieldInfo, ModelField, Undefined
-from pydantify.exceptions import NotImplementedException
+from pydantic.fields import Field
 
-from . import BaseModel, GeneratedClass, Node
+from . import BaseModel, GeneratedClass, Node, RootModel
 from . import NodeFactory
 from . import TypeResolver
 
@@ -33,7 +32,7 @@ class TypeDefNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(
+            field_info=Field(
                 self.default if self.default is not None or not self.mandatory else ...,
                 alias=self.get_qualified_name(),
             ),
@@ -47,18 +46,11 @@ class TypeDefNode(Node):
     def name(self) -> str:
         return self.make_unique_name(suffix="Type")
 
-    def to_pydantic_model(self) -> type[BaseModel]:
+    def to_pydantic_model(self) -> type[RootModel]:
         """Generates the output class representing this Typedef."""
         base_type = TypeResolver.resolve_statement(self.raw_statement)
-        output_model: type[BaseModel] = create_model(
-            self.name(), __base__=(BaseModel,), **{}
-        )
-        output_model.__fields__["__root__"] = ModelField.infer(
-            name="__root__",
-            value=Undefined,
-            annotation=base_type,
-            class_validators={},
-            config=BaseModel.Config,
+        output_model: type[RootModel] = create_model(
+            self.name(), __base__=(RootModel[base_type],)  # type: ignore[misc]
         )
         output_model.__doc__ = self.description or ""
         return output_model
@@ -72,7 +64,7 @@ class LeafNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(
+            field_info=Field(
                 self.default if self.default is not None or not self.mandatory else ...,
                 description=self.description,
                 alias=self.get_qualified_name(),
@@ -87,24 +79,21 @@ class LeafNode(Node):
         base = TypeResolver.resolve_statement(self.raw_statement)
         return base
 
-    def to_pydantic_model(self) -> type[BaseModel]:
+    def to_pydantic_model(self) -> type[BaseModel | RootModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
         base: Any = self.get_base_class()
 
         if isinstance(base, Node):
             base = base._output_model.cls
-        output_model: type[BaseModel] = create_model(
-            self.name(), __base__=(BaseModel,), **fields
-        )
+
+        output_model: type[BaseModel] | type[RootModel]
         if base is not None:
-            output_model.__fields__["__root__"] = ModelField.infer(
-                name="__root__",
-                value=Undefined,
-                annotation=base,
-                class_validators={},
-                config=BaseModel.Config,
+            output_model = create_model(
+                self.name(), __base__=(RootModel[base],)  # type: ignore[misc]
             )
+        else:
+            output_model = create_model(self.name(), __base__=(BaseModel,), **fields)
         output_model.__doc__ = self.description or ""
         return output_model
 
@@ -118,7 +107,7 @@ class CaseNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(..., alias=self.get_qualified_name()),
+            field_info=Field(..., alias=self.get_qualified_name()),
             cls=self.to_pydantic_model(),
         )
 
@@ -144,7 +133,7 @@ class ChoiceNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(
+            field_info=Field(  # type: ignore[arg-type]
                 ... if self.mandatory else None, alias=self.get_qualified_name()
             ),
             cls=self.to_pydantic_model(),
@@ -170,7 +159,7 @@ class ContainerNode(Node):
 
         self._output_model = GeneratedClass(
             class_name=self.name(),
-            field_info=FieldInfo(
+            field_info=Field(  # type: ignore[arg-type]
                 ... if self.mandatory else None,
                 alias=self.get_qualified_name(),
             ),
@@ -193,7 +182,7 @@ class ListNode(Node):
             class_name=self.name(),
             cls=output_class,
             field_annotation=List[output_class],  # type: ignore
-            field_info=FieldInfo(..., alias=self.get_qualified_name()),
+            field_info=Field(..., alias=self.get_qualified_name()),
         )
 
     def name(self) -> str:
@@ -220,7 +209,7 @@ class LeafListNode(Node):
             class_name=self.name(),
             cls=output_class,
             field_annotation=List[output_class],  # type: ignore
-            field_info=FieldInfo(
+            field_info=Field(
                 self.default if self.default is not None or not self.mandatory else ...,
                 description=self.description,
                 alias=self.get_qualified_name(),
@@ -234,24 +223,21 @@ class LeafListNode(Node):
         base = TypeResolver.resolve_statement(self.raw_statement)
         return base
 
-    def to_pydantic_model(self) -> type[BaseModel]:
+    def to_pydantic_model(self) -> type[BaseModel | RootModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
         base: Any = self.get_base_class()
 
         if isinstance(base, Node):
             base = base._output_model.cls
-        output_model: type[BaseModel] = create_model(
-            self.name(), __base__=(BaseModel,), **fields
-        )
+
+        output_model: type[BaseModel] | type[RootModel]
         if base is not None:
-            output_model.__fields__["__root__"] = ModelField.infer(
-                name="__root__",
-                value=Undefined,
-                annotation=base,
-                class_validators={},
-                config=BaseModel.Config,
+            output_model = create_model(
+                self.name(), __base__=(RootModel[base],)  # type: ignore[misc]
             )
+        else:
+            output_model = create_model(self.name(), __base__=(BaseModel,), **fields)
         output_model.__doc__ = self.description or ""
         return output_model
 
@@ -268,10 +254,10 @@ class ModuleNode(Node):
             class_name=self.name(),
             cls=output_class,
             field_annotation=output_class,
-            field_info=FieldInfo(...),
+            field_info=Field(...),
         )
 
-    def to_pydantic_model(self) -> type[BaseModel]:
+    def to_pydantic_model(self) -> type[BaseModel] | type[RootModel]:
         return super().to_pydantic_model()
 
     def name(self) -> str:
@@ -298,8 +284,8 @@ Initialize an instance of this class and serialize it to JSON; this results in a
 ## Tips
 Initialization:
 - all values have to be set via keyword arguments
-- if a class contains only a `__root__` field, it can be initialized as follows:
-    - `member=MyNode(__root__=<value>)`
+- if a class contains only a `root` field, it can be initialized as follows:
+    - `member=MyNode(root=<value>)`
     - `member=<value>`
 
 Serialziation:

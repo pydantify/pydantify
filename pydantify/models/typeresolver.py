@@ -25,9 +25,10 @@ from pyang.types import (
     UnionTypeSpec,
     Decimal64TypeSpec,
 )
-from pydantic.types import ConstrainedInt, conint, constr, confloat, conbytes
-from pydantic.fields import UndefinedType
-from typing_extensions import Self
+from pydantic import Field
+from pydantic.types import conbytes, confloat, conint, constr
+from pydantic_core import PydanticUndefinedType, core_schema
+from typing_extensions import Annotated, Self
 
 from . import Node
 from ..utility.patterns import convert_pattern
@@ -80,7 +81,7 @@ class TypeResolver:
                 output_type = typedef_node._output_model.cls
             else:
                 output_type = ret._output_model.cls
-            if isinstance(output_type, UndefinedType):
+            if isinstance(output_type, PydanticUndefinedType):
                 raise Exception(f"{typedef_node} output model is Undefined")
             return output_type
 
@@ -96,10 +97,7 @@ class TypeResolver:
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
-                base: Type[ConstrainedInt] = cls.__resolve_type_spec(spec.base)  # type: ignore
-                base.ge = spec.min
-                base.le = spec.max
-                return base
+                return conint(ge=spec.min, le=spec.max)
             case LengthTypeSpec.__qualname__:
                 return constr(
                     min_length=spec.min,
@@ -137,10 +135,12 @@ class TypeResolver:
                 )
             case PatternTypeSpec.__qualname__:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
-                return constr(regex=convert_pattern(pattern))
+                return constr(pattern=convert_pattern(pattern))
             case EmptyTypeSpec.__qualname__:
                 return dict
-            case IdentityrefTypeSpec.__qualname__:  # TODO: abort before entering this stage?
+            case (
+                IdentityrefTypeSpec.__qualname__
+            ):  # TODO: abort before entering this stage?
                 # def find_identityref(spec: IdentityrefTypeSpec):
                 #     from pyang.util import prefix_to_module
 

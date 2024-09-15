@@ -1,37 +1,53 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import List
 
-from pydantic import BaseModel, Field
-
-
-class NameLeaf(BaseModel):
-    __root__: str
-    """
-    Interface name
-    """
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+from typing_extensions import Annotated
 
 
-class IpLeafList(BaseModel):
-    __root__: str
+class IpLeafList(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[str, Field(title="IpLeafList")]
     """
     List of interface IPs
     """
 
 
-class VlanIdType(BaseModel):
-    __root__: Annotated[int, Field(ge=1, le=4094)]
+class NameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[str, Field(title="NameLeaf")]
+    """
+    Interface name
+    """
 
 
-class TaggedLeafList(BaseModel):
-    __root__: VlanIdType
+class VlanIdType(RootModel[int]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[int, Field(ge=1, le=4094)]
+
+
+class TaggedLeafList(RootModel[VlanIdType]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[VlanIdType, Field(title="TaggedLeafList")]
     """
     List of tagged VLANs
     """
 
 
-class UntaggedLeaf(BaseModel):
-    __root__: VlanIdType
+class UntaggedLeaf(RootModel[VlanIdType]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[VlanIdType, Field(title="UntaggedLeaf")]
     """
     Untagged VLAN
     """
@@ -42,24 +58,19 @@ class InterfacesListEntry(BaseModel):
     List of configured device interfaces
     """
 
-    name: Annotated[Optional[NameLeaf], Field(alias="interfaces:name")] = None
-    """
-    Interface name
-    """
-    ip: Annotated[List[IpLeafList], Field(alias="interfaces:ip")] = []
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    name: Annotated[NameLeaf, Field(None, alias="interfaces:name")]
+    ip: Annotated[List[IpLeafList], Field([], alias="interfaces:ip")]
     """
     List of interface IPs
     """
-    tagged: Annotated[List[TaggedLeafList], Field(alias="interfaces:tagged")] = []
+    tagged: Annotated[List[TaggedLeafList], Field([], alias="interfaces:tagged")]
     """
     List of tagged VLANs
     """
-    untagged: Annotated[
-        Optional[UntaggedLeaf], Field(alias="interfaces:untagged")
-    ] = None
-    """
-    Untagged VLAN
-    """
+    untagged: Annotated[UntaggedLeaf, Field(None, alias="interfaces:untagged")]
 
 
 class Model(BaseModel):
@@ -69,8 +80,8 @@ class Model(BaseModel):
     ## Tips
     Initialization:
     - all values have to be set via keyword arguments
-    - if a class contains only a `__root__` field, it can be initialized as follows:
-        - `member=MyNode(__root__=<value>)`
+    - if a class contains only a `root` field, it can be initialized as follows:
+        - `member=MyNode(root=<value>)`
         - `member=<value>`
 
     Serialziation:
@@ -78,24 +89,22 @@ class Model(BaseModel):
     - `by_alias=True` ensures qualified names are used (necessary)
     """
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     interfaces: Annotated[
         List[InterfacesListEntry], Field(alias="interfaces:interfaces")
     ]
 
 
-from pydantic import BaseConfig, Extra
-
-BaseConfig.allow_population_by_field_name = True
-BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
-BaseConfig.extra = Extra.forbid
-
-
 if __name__ == "__main__":
-    model = Model(
+    model = Model(  # type: ignore[call-arg]
         # <Initialize model here>
     )
 
-    restconf_payload = model.json(exclude_defaults=True, by_alias=True, indent=2)
+    restconf_payload = model.model_dump_json(
+        exclude_defaults=True, by_alias=True, indent=2
+    )
 
     print(f"Generated output: {restconf_payload}")
 

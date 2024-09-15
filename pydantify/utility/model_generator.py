@@ -5,10 +5,11 @@ from io import TextIOWrapper
 from pathlib import Path
 from typing import List, Type, Optional
 
+from datamodel_code_generator.model import pydantic_v2
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 from pyang.context import Context
 from pyang.statements import ModSubmodStatement, Statement
-from pydantic.main import BaseModel
+from pydantic import BaseModel
 from typing_extensions import Self
 
 from ..models import ModelRoot, Node
@@ -34,7 +35,7 @@ def dynamically_serialized_helper_function():  # pragma: no cover
             model = Model(**input)
             print("Instantiation successful!")
 
-            output = model.json(exclude_defaults=True, by_alias=True)
+            output = model.model_dump_json(exclude_defaults=True, by_alias=True)
             print(f"{output=}")
 
             assert json.loads(output) == input
@@ -47,17 +48,11 @@ def model_init_code():  # pragma: no cover
             # <Initialize model here>
         )
 
-        restconf_payload = model.json(exclude_defaults=True, by_alias=True, indent=2)
+        restconf_payload = model.model_dump_json(
+            exclude_defaults=True, by_alias=True, indent=2
+        )
 
         print(f"Generated output: {restconf_payload}")
-
-
-def custom_model_config():  # pragma: no cover
-    from pydantic import BaseConfig, Extra
-
-    BaseConfig.allow_population_by_field_name = True
-    BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
-    BaseConfig.extra = Extra.forbid
 
 
 class ModelGenerator:
@@ -81,9 +76,6 @@ class ModelGenerator:
         cls.__generate(modules, fd)
         fd.write("\n\n")
 
-        fd.write(function_content_to_source_code(custom_model_config))
-        fd.write("\n\n")
-
         # Add initialization helper-code
         if cls.standalone:
             fd.write(function_to_source_code(restconf_patch_request))
@@ -100,9 +92,11 @@ class ModelGenerator:
                 "\n".join(
                     [
                         "    # Send config to network device:",
-                        "    # from pydantify.utility import restconf_patch_request"
-                        if not cls.standalone
-                        else "",
+                        (
+                            "    # from pydantify.utility import restconf_patch_request"
+                            if not cls.standalone
+                            else ""
+                        ),
                         "    # restconf_patch_request(url='...', user_pw_auth=('usr', 'pw'), data=restconf_payload)",
                     ]
                 )
@@ -128,6 +122,10 @@ class ModelGenerator:
             json = cls.custom_dump(mod.to_pydantic_model())
             parser = JsonSchemaParser(
                 json,
+                data_model_type=pydantic_v2.BaseModel,
+                data_model_root_type=pydantic_v2.RootModel,
+                data_type_manager_type=pydantic_v2.DataTypeManager,
+                data_model_field_type=pydantic_v2.DataModelField,
                 snake_case_field=True,
                 apply_default_values_for_required_fields=True,
                 use_annotated=True,
@@ -137,9 +135,17 @@ class ModelGenerator:
                 aliases=Node.alias_mapping,
                 reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
                 strict_nullable=True,
+                allow_population_by_field_name=True,
+                allow_extra_fields=False,
             )
             result = parser.parse()
-            fd.write(result)
+            # Keep mypy happy
+            if isinstance(result, str):
+                fd.write(result)
+            else:
+                logger.warning(
+                    f"Expected string but got {type(result)} whilst parsing JSON"
+                )
             pass
 
     @classmethod
@@ -169,5 +175,5 @@ class ModelGenerator:
 
     @classmethod
     def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> str:
-        schema = model.schema(by_alias=True)
+        schema = model.model_json_schema(by_alias=True)
         return json.dumps(schema)

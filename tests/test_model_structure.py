@@ -3,11 +3,11 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import List
+from typing import Any, List
 from unittest.mock import patch
 
 import pytest
-from pydantic import validate_arguments
+from pydantic import validate_call
 from pytest import param
 from typing_extensions import Self
 
@@ -23,11 +23,18 @@ class ParsedAST:
         self.classes: dict[str, ast.ClassDef] = dict()
         for c in self.body:
             if isinstance(c, ast.ClassDef):
-                bases = ", ".join([b.id for b in c.bases])
+                try:
+                    bases = ", ".join([b.id for b in c.bases])  # type: ignore[attr-defined]
+                except AttributeError:
+                    bases = ", ".join([b.value.id for b in c.bases])  # type: ignore[attr-defined]
                 self.classes[f"{c.name}({bases})"] = c
 
-    @validate_arguments
     @staticmethod
+    def get_annotation(annotation: Any) -> ast.expr:
+        return annotation.value if isinstance(annotation, ast.Subscript) else annotation
+
+    @staticmethod
+    @validate_call
     def assert_python_sources_equal(generated: Path, expected: Path):
         LOGGER.info(f"Output path: {generated}")
         ast1 = ParsedAST(generated)
@@ -35,24 +42,24 @@ class ParsedAST:
         LOGGER.info(
             f'"Comparing:\n{"Expected":9}: {ast2.classes.keys()}\n{"Got":9}: {ast1.classes.keys()}'
         )
-        for a, b in zip(ast1.classes.keys(), ast2.classes.keys()):
+        for c1, c2 in zip(ast1.classes.keys(), ast2.classes.keys()):
             assert (
-                a == b
-            ), f'Missmatch {a} vs {b}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
+                c1 == c2
+            ), f'Mismatch {c1} vs {c2}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
         for a, b in zip(ast1.classes.values(), ast2.classes.values()):
             # Compare classes
             assert len(a.body) == len(b.body)
             for a2, b2 in zip(a.body, b.body):
                 # Compare class members
-                annotation_a: ast.Name = getattr(a2, "annotation", None)
-                annotation_b: ast.Name = getattr(b2, "annotation", None)
+                annotation_a = getattr(a2, "annotation", None)
+                annotation_b = getattr(b2, "annotation", None)
                 # Compare annotation
                 assert (annotation_a is None) == (annotation_b is None)
                 if annotation_a is not None:
                     # Compare annotated type
-                    assert getattr(annotation_a, "id", None) == getattr(
-                        annotation_b, "id", None
-                    )
+                    assert getattr(
+                        ast1.get_annotation(annotation_a), "id", None
+                    ) == getattr(ast2.get_annotation(annotation_b), "id", None)
         assert len(ast1.body) == len(ast2.body)
 
 
@@ -157,7 +164,6 @@ def reset_optparse():
             "examples/openconfig/expected.py",
             [
                 "-t=openconfig-interfaces/interfaces/interface/config",
-                "-i=examples/cisco",
             ],
             id="openconfig",
         ),

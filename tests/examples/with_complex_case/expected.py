@@ -1,37 +1,59 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional, Union
+from typing import Union
 
-from pydantic import BaseModel, Field
-
-
-class IntervalLeaf(BaseModel):
-    __root__: Annotated[int, Field(ge=0, le=65535)]
-
-
-class IntervalCase(BaseModel):
-    interval: Annotated[IntervalLeaf, Field(alias="interfaces:interval")] = 30
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+from typing_extensions import Annotated
 
 
 class DailyLeaf(BaseModel):
     pass
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
 
 
-class TimeOfDayLeaf(BaseModel):
-    __root__: str
-
-
-class DailyCase(BaseModel):
-    daily: Annotated[Optional[DailyLeaf], Field(alias="interfaces:daily")] = None
-    time_of_day: Annotated[TimeOfDayLeaf, Field(alias="interfaces:time-of-day")] = "1am"
+class IntervalLeaf(RootModel[int]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[int, Field(ge=0, le=65535, title="IntervalLeaf")]
 
 
 class ManualLeaf(BaseModel):
     pass
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+
+
+class TimeOfDayLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    root: Annotated[str, Field(title="Time-of-dayLeaf")]
+
+
+class DailyCase(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    daily: Annotated[DailyLeaf, Field(None, alias="interfaces:daily")]
+    time_of_day: Annotated[TimeOfDayLeaf, Field("1am", alias="interfaces:time-of-day")]
+
+
+class IntervalCase(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    interval: Annotated[IntervalLeaf, Field(30, alias="interfaces:interval")]
 
 
 class ManualCase(BaseModel):
-    manual: Annotated[Optional[ManualLeaf], Field(alias="interfaces:manual")] = None
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    manual: Annotated[ManualLeaf, Field(None, alias="interfaces:manual")]
 
 
 class Model(BaseModel):
@@ -41,34 +63,31 @@ class Model(BaseModel):
     ## Tips
     Initialization:
     - all values have to be set via keyword arguments
-    - if a class contains only a `__root__` field, it can be initialized as follows:
-        - `member=MyNode(__root__=<value>)`
+    - if a class contains only a `root` field, it can be initialized as follows:
+        - `member=MyNode(root=<value>)`
         - `member=<value>`
 
     Serialziation:
-    - use `exclude_defaults=True` to
-    - use `by_alias=True` to ensure qualified names are used ()
+    - `exclude_defaults=True` omits fields set to their default value (recommended)
+    - `by_alias=True` ensures qualified names are used (necessary)
     """
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
     how: Annotated[
-        Optional[Union[IntervalCase, DailyCase, ManualCase]],
-        Field(alias="interfaces:how"),
-    ] = None
-
-
-from pydantic import BaseConfig, Extra
-
-BaseConfig.allow_population_by_field_name = True
-BaseConfig.smart_union = True  # See Pydantic issue#2135 / pull#2092
-BaseConfig.extra = Extra.forbid
+        Union[IntervalCase, DailyCase, ManualCase], Field(None, alias="interfaces:how")
+    ]
 
 
 if __name__ == "__main__":
-    model = Model(
+    model = Model(  # type: ignore[call-arg]
         # <Initialize model here>
     )
 
-    restconf_payload = model.json(exclude_defaults=True, by_alias=True)
+    restconf_payload = model.model_dump_json(
+        exclude_defaults=True, by_alias=True, indent=2
+    )
 
     print(f"Generated output: {restconf_payload}")
 

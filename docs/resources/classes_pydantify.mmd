@@ -1,5 +1,6 @@
 classDiagram
   class BaseModel {
+    model_config
   }
   class CaseNode {
     _output_model
@@ -18,8 +19,49 @@ classDiagram
     __call__() Any
     __init__(self, maps_to: Callable[..., Node]) None
   }
-  class Config {
-    schema_extra(schema: dict[str, Any], model: type[BaseModel]) None
+  class ConfigDict {
+    alias_generator : Callable[[str], str] | AliasGenerator | None
+    allow_inf_nan
+    arbitrary_types_allowed
+    cache_strings : bool | Literal['all', 'keys', 'none']
+    coerce_numbers_to_str
+    defer_build
+    experimental_defer_build_mode : tuple[Literal['model', 'type_adapter'], ...]
+    extra : ExtraValues | None
+    field_title_generator : Callable[[str, FieldInfo | ComputedFieldInfo], str] | None
+    from_attributes
+    frozen
+    hide_input_in_errors
+    ignored_types : tuple[type, ...]
+    json_encoders : dict[type[object], JsonEncoder] | None
+    json_schema_extra : JsonDict | JsonSchemaExtraCallable | None
+    json_schema_mode_override : Literal['validation', 'serialization', None]
+    json_schema_serialization_defaults_required
+    loc_by_alias
+    model_title_generator : Callable[[type], str] | None
+    plugin_settings : dict[str, object] | None
+    populate_by_name
+    protected_namespaces : tuple[str, ...]
+    regex_engine : Literal['rust-regex', 'python-re']
+    revalidate_instances : Literal['always', 'never', 'subclass-instances']
+    schema_generator : type[_GenerateSchema] | None
+    ser_json_bytes : Literal['utf8', 'base64', 'hex']
+    ser_json_inf_nan : Literal['null', 'constants', 'strings']
+    ser_json_timedelta : Literal['iso8601', 'float']
+    str_max_length : int | None
+    str_min_length
+    str_strip_whitespace
+    str_to_lower
+    str_to_upper
+    strict
+    title : str | None
+    use_attribute_docstrings
+    use_enum_values
+    val_json_bytes : Literal['utf8', 'base64', 'hex']
+    validate_assignment
+    validate_default
+    validate_return
+    validation_error_cause
   }
   class ContainerNode {
     _output_model
@@ -27,11 +69,11 @@ classDiagram
     name() str
   }
   class GeneratedClass {
-    class_name : str | UndefinedType
-    cls : Type[BaseModel] | UndefinedType
-    field_annotation : Optional[Type | None]
-    field_info : FieldInfo | UndefinedType
-    __init__(self, class_name: str | UndefinedType, cls: Type[BaseModel] | UndefinedType, field_info: FieldInfo | UndefinedType, field_annotation: Type | None) None
+    class_name : str | PydanticUndefinedType
+    cls : Type[BaseModel] | Type[RootModel] | PydanticUndefinedType
+    field_annotation : Type | None
+    field_info : FieldInfo | PydanticUndefinedType
+    __init__(self, class_name: str | PydanticUndefinedType, cls: Type[BaseModel] | Type[RootModel] | PydanticUndefinedType, field_info: FieldInfo | PydanticUndefinedType, field_annotation: Type | None) None
     assert_is_valid()
     to_field() Tuple[Type[BaseModel] | Type, FieldInfo]
   }
@@ -40,14 +82,14 @@ classDiagram
     __init__(stm: LeafLeaflistStatement) None
     get_base_class() type | Node | Enum
     name() str
-    to_pydantic_model() type[BaseModel]
+    to_pydantic_model() type[BaseModel | RootModel]
   }
   class LeafNode {
     _output_model
     __init__(stm: LeafLeaflistStatement) None
     get_base_class() type | Node | Enum
     name() str
-    to_pydantic_model() type[BaseModel]
+    to_pydantic_model() type[BaseModel | RootModel]
   }
   class ListNode {
     _output_model
@@ -57,8 +99,8 @@ classDiagram
   }
   class ModelGenerator {
     include_verification_code
-    input_dir
-    output_dir
+    input_dir : Path
+    output_dir : Path
     standalone
     trim_path : Optional[str]
     __generate(modules: List[ModSubmodStatement], fd: TextIOWrapper)
@@ -76,7 +118,7 @@ classDiagram
     _output_model
     __init__(stm: ModSubmodStatement) None
     name() str
-    to_pydantic_model() type[BaseModel]
+    to_pydantic_model() type[BaseModel] | type[RootModel]
   }
   class Node {
     _name : Optional[str]
@@ -102,8 +144,8 @@ classDiagram
     get_output_class() GeneratedClass
     get_qualified_name() str
     make_unique_name(suffix: str)
-    name() str
-    to_pydantic_model() Type[BaseModel]
+    name()* str
+    to_pydantic_model() Type[BaseModel] | Type[RootModel]
   }
   class NodeFactory {
     _ignored_types : List[str]
@@ -115,59 +157,15 @@ classDiagram
   }
   class NotImplementedException {
   }
-  class Path {
-    __slots__
-    _accessor
-    __enter__()
-    __exit__(t, v, tb)
-    __new__()
-    _make_child_relpath(part)
-    absolute()
-    chmod(mode)
-    cwd()
-    exists()
-    expanduser()
-    glob(pattern)
-    group()
-    hardlink_to(target)
-    home()
-    is_block_device()
-    is_char_device()
-    is_dir()
-    is_fifo()
-    is_file()
-    is_mount()
-    is_socket()
-    is_symlink()
-    iterdir()
-    lchmod(mode)
-    link_to(target)
-    lstat()
-    mkdir(mode, parents, exist_ok)
-    open(mode, buffering, encoding, errors, newline)
-    owner()
-    read_bytes()
-    read_text(encoding, errors)
-    readlink()
-    rename(target)
-    replace(target)
-    resolve(strict)
-    rglob(pattern)
-    rmdir()
-    samefile(other_path)
-    stat()
-    symlink_to(target, target_is_directory)
-    touch(mode, exist_ok)
-    unlink(missing_ok)
-    write_bytes(data)
-    write_text(data, encoding, errors, newline)
-  }
   class Pydantify {
     handle_comments
     multiple_modules
     __init__()
     add_output_format(fmts: Dict[str, PyangPlugin])
     emit(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper)
+  }
+  class RootModel {
+    model_config
   }
   class Statement {
     __slots__
@@ -200,7 +198,7 @@ classDiagram
     __init__(stm: TypedefStatement) None
     get_base_class() type | Node | Enum
     name() str
-    to_pydantic_model() type[BaseModel]
+    to_pydantic_model() type[RootModel]
   }
   class TypeResolver {
     __mapping : Dict[Statement, Node]
@@ -217,339 +215,361 @@ classDiagram
     copy_yang_files(input_root: Path, output_dir: Path) None
     track_from_pos(pos: Position) None
   }
-  class _NormalAccessor {
-    chmod
-    expanduser
-    getcwd
-    link
-    listdir
-    mkdir
-    open
-    readlink
-    realpath
-    rename
-    replace
-    rmdir
-    scandir
-    stat
-    symlink
-    unlink
-    group(path)
-    owner(path)
-    touch(path, mode, exist_ok)
-  }
   class bool {
-    __abs__()
-    __add__()
-    __and__()
-    __bool__()
-    __ceil__()
-    __delattr__()
-    __dir__()
-    __divmod__()
-    __eq__()
-    __float__()
-    __floor__()
-    __floordiv__()
-    __format__()
-    __ge__()
-    __getattribute__()
-    __getnewargs__()
-    __gt__()
-    __hash__()
-    __index__()
-    __init__()
-    __int__()
-    __invert__()
-    __le__()
-    __lshift__()
-    __lt__()
-    __mod__()
-    __mul__()
-    __ne__()
-    __neg__()
-    __new__()
-    __or__()
-    __pos__()
-    __pow__()
-    __radd__()
-    __rand__()
-    __rdivmod__()
-    __reduce__()
-    __reduce_ex__()
-    __repr__()
-    __rfloordiv__()
-    __rlshift__()
-    __rmod__()
-    __rmul__()
-    __ror__()
-    __round__()
-    __rpow__()
-    __rrshift__()
-    __rshift__()
-    __rsub__()
-    __rtruediv__()
-    __rxor__()
-    __setattr__()
-    __sizeof__()
-    __str__()
-    __sub__()
-    __subclasshook__()
-    __truediv__()
-    __trunc__()
-    __xor__()
-    as_integer_ratio()
-    bit_count()
-    bit_length()
-    conjugate()
-    to_bytes()
+    __abs__()*
+    __add__()*
+    __and__()*
+    __bool__()*
+    __ceil__()*
+    __delattr__()*
+    __dir__()*
+    __divmod__()*
+    __eq__()*
+    __float__()*
+    __floor__()*
+    __floordiv__()*
+    __format__()*
+    __ge__()*
+    __getattribute__()*
+    __getnewargs__()*
+    __gt__()*
+    __hash__()*
+    __index__()*
+    __init__()*
+    __int__()*
+    __invert__()*
+    __le__()*
+    __lshift__()*
+    __lt__()*
+    __mod__()*
+    __mul__()*
+    __ne__()*
+    __neg__()*
+    __new__()*
+    __or__()*
+    __pos__()*
+    __pow__()*
+    __radd__()*
+    __rand__()*
+    __rdivmod__()*
+    __reduce__()*
+    __reduce_ex__()*
+    __repr__()*
+    __rfloordiv__()*
+    __rlshift__()*
+    __rmod__()*
+    __rmul__()*
+    __ror__()*
+    __round__()*
+    __rpow__()*
+    __rrshift__()*
+    __rshift__()*
+    __rsub__()*
+    __rtruediv__()*
+    __rxor__()*
+    __setattr__()*
+    __sizeof__()*
+    __str__()*
+    __sub__()*
+    __subclasshook__()*
+    __truediv__()*
+    __trunc__()*
+    __xor__()*
+    as_integer_ratio()*
+    bit_count()*
+    bit_length()*
+    conjugate()*
+    to_bytes()*
   }
   class denominator {
   }
   class imag {
   }
+  class int {
+    __abs__()*
+    __add__()*
+    __and__()*
+    __bool__()*
+    __ceil__()*
+    __delattr__()*
+    __dir__()*
+    __divmod__()*
+    __eq__()*
+    __float__()*
+    __floor__()*
+    __floordiv__()*
+    __format__()*
+    __ge__()*
+    __getattribute__()*
+    __getnewargs__()*
+    __gt__()*
+    __hash__()*
+    __index__()*
+    __init__()*
+    __int__()*
+    __invert__()*
+    __le__()*
+    __lshift__()*
+    __lt__()*
+    __mod__()*
+    __mul__()*
+    __ne__()*
+    __neg__()*
+    __new__()*
+    __or__()*
+    __pos__()*
+    __pow__()*
+    __radd__()*
+    __rand__()*
+    __rdivmod__()*
+    __reduce__()*
+    __reduce_ex__()*
+    __repr__()*
+    __rfloordiv__()*
+    __rlshift__()*
+    __rmod__()*
+    __rmul__()*
+    __ror__()*
+    __round__()*
+    __rpow__()*
+    __rrshift__()*
+    __rshift__()*
+    __rsub__()*
+    __rtruediv__()*
+    __rxor__()*
+    __setattr__()*
+    __sizeof__()*
+    __str__()*
+    __sub__()*
+    __subclasshook__()*
+    __truediv__()*
+    __trunc__()*
+    __xor__()*
+    as_integer_ratio()*
+    bit_count()*
+    bit_length()*
+    conjugate()*
+    to_bytes()*
+  }
   class list {
-    __add__()
-    __contains__()
-    __delattr__()
-    __delitem__()
-    __dir__()
-    __eq__()
-    __format__()
-    __ge__()
-    __getattribute__()
-    __getitem__()
-    __gt__()
-    __iadd__()
-    __imul__()
-    __init__()
-    __iter__()
-    __le__()
-    __len__()
-    __lt__()
-    __mul__()
-    __ne__()
-    __new__()
-    __reduce__()
-    __reduce_ex__()
-    __repr__()
-    __reversed__()
-    __rmul__()
-    __setattr__()
-    __setitem__()
-    __sizeof__()
-    __str__()
-    __subclasshook__()
-    append()
-    clear()
-    copy()
-    count()
-    extend()
-    index()
-    insert()
-    pop()
-    remove()
-    reverse()
-    sort()
+    __add__()*
+    __contains__()*
+    __delattr__()*
+    __delitem__()*
+    __dir__()*
+    __eq__()*
+    __format__()*
+    __ge__()*
+    __getattribute__()*
+    __getitem__()*
+    __gt__()*
+    __iadd__()*
+    __imul__()*
+    __init__()*
+    __iter__()*
+    __le__()*
+    __len__()*
+    __lt__()*
+    __mul__()*
+    __ne__()*
+    __new__()*
+    __reduce__()*
+    __reduce_ex__()*
+    __repr__()*
+    __reversed__()*
+    __rmul__()*
+    __setattr__()*
+    __setitem__()*
+    __sizeof__()*
+    __str__()*
+    __subclasshook__()*
+    append()*
+    clear()*
+    copy()*
+    count()*
+    extend()*
+    index()*
+    insert()*
+    pop()*
+    remove()*
+    reverse()*
+    sort()*
   }
   class numerator {
   }
   class object {
-    __delattr__()
-    __dir__()
-    __eq__()
-    __format__()
-    __ge__()
-    __getattribute__()
-    __gt__()
-    __hash__()
-    __init__()
-    __le__()
-    __lt__()
-    __ne__()
-    __new__()
-    __reduce__()
-    __reduce_ex__()
-    __repr__()
-    __setattr__()
-    __sizeof__()
-    __str__()
-    __subclasshook__()
+    __delattr__()*
+    __dir__()*
+    __eq__()*
+    __format__()*
+    __ge__()*
+    __getattribute__()*
+    __gt__()*
+    __hash__()*
+    __init__()*
+    __le__()*
+    __lt__()*
+    __ne__()*
+    __new__()*
+    __reduce__()*
+    __reduce_ex__()*
+    __repr__()*
+    __setattr__()*
+    __sizeof__()*
+    __str__()*
+    __subclasshook__()*
   }
   class real {
   }
-  class staticmethod {
-    __call__()
-    __delattr__()
-    __dir__()
-    __eq__()
-    __format__()
-    __ge__()
-    __get__()
-    __getattribute__()
-    __gt__()
-    __hash__()
-    __init__()
-    __le__()
-    __lt__()
-    __ne__()
-    __new__()
-    __reduce__()
-    __reduce_ex__()
-    __repr__()
-    __setattr__()
-    __sizeof__()
-    __str__()
-    __subclasshook__()
-  }
   class str {
-    __add__()
-    __contains__()
-    __delattr__()
-    __dir__()
-    __eq__()
-    __format__()
-    __ge__()
-    __getattribute__()
-    __getitem__()
-    __getnewargs__()
-    __gt__()
-    __hash__()
-    __init__()
-    __iter__()
-    __le__()
-    __len__()
-    __lt__()
-    __mod__()
-    __mul__()
-    __ne__()
-    __new__()
-    __reduce__()
-    __reduce_ex__()
-    __repr__()
-    __rmod__()
-    __rmul__()
-    __setattr__()
-    __sizeof__()
-    __str__()
-    __subclasshook__()
+    __add__()*
+    __contains__()*
+    __delattr__()*
+    __dir__()*
+    __eq__()*
+    __format__()*
+    __ge__()*
+    __getattribute__()*
+    __getitem__()*
+    __getnewargs__()*
+    __gt__()*
+    __hash__()*
+    __init__()*
+    __iter__()*
+    __le__()*
+    __len__()*
+    __lt__()*
+    __mod__()*
+    __mul__()*
+    __ne__()*
+    __new__()*
+    __reduce__()*
+    __reduce_ex__()*
+    __repr__()*
+    __rmod__()*
+    __rmul__()*
+    __setattr__()*
+    __sizeof__()*
+    __str__()*
+    __subclasshook__()*
     capitalize()
-    casefold()
+    casefold()*
     center(width, fillchar)
     count(sub, start, end)
     decode(encoding, errors)
     encode(encoding, errors)
-    endswith()
-    expandtabs()
+    endswith()*
+    expandtabs()*
     find(sub, start, end)
     format()
-    format_map()
+    format_map()*
     index(sub, start, end)
-    isalnum()
-    isalpha()
-    isascii()
-    isdecimal()
-    isdigit()
-    isidentifier()
-    islower()
-    isnumeric()
-    isprintable()
-    isspace()
-    istitle()
-    isupper()
+    isalnum()*
+    isalpha()*
+    isascii()*
+    isdecimal()*
+    isdigit()*
+    isidentifier()*
+    islower()*
+    isnumeric()*
+    isprintable()*
+    isspace()*
+    istitle()*
+    isupper()*
     join(iterable)
     ljust(width, fillchar)
     lower()
     lstrip(chars)
-    partition()
-    removeprefix()
-    removesuffix()
+    partition()*
+    removeprefix()*
+    removesuffix()*
     replace(old, new, count)
-    rfind()
-    rindex()
+    rfind()*
+    rindex()*
     rjust(width, fillchar)
-    rpartition()
-    rsplit()
+    rpartition()*
+    rsplit()*
     rstrip(chars)
-    split()
-    splitlines()
-    startswith()
+    split()*
+    splitlines()*
+    startswith()*
     strip(chars)
     swapcase()
     title()
-    translate()
+    translate()*
     upper()
-    zfill()
+    zfill()*
   }
   class tuple {
-    __add__()
-    __contains__()
-    __delattr__()
-    __dir__()
-    __eq__()
-    __format__()
-    __ge__()
-    __getattribute__()
-    __getitem__()
-    __getnewargs__()
-    __gt__()
-    __hash__()
-    __init__()
-    __iter__()
-    __le__()
-    __len__()
-    __lt__()
-    __mul__()
-    __ne__()
-    __new__()
-    __reduce__()
-    __reduce_ex__()
-    __repr__()
-    __rmul__()
-    __setattr__()
-    __sizeof__()
-    __str__()
-    __subclasshook__()
-    count()
-    index()
+    __add__()*
+    __contains__()*
+    __delattr__()*
+    __dir__()*
+    __eq__()*
+    __format__()*
+    __ge__()*
+    __getattribute__()*
+    __getitem__()*
+    __getnewargs__()*
+    __gt__()*
+    __hash__()*
+    __init__()*
+    __iter__()*
+    __le__()*
+    __len__()*
+    __lt__()*
+    __mul__()*
+    __ne__()*
+    __new__()*
+    __reduce__()*
+    __reduce_ex__()*
+    __repr__()*
+    __rmul__()*
+    __setattr__()*
+    __sizeof__()*
+    __str__()*
+    __subclasshook__()*
+    count()*
+    index()*
   }
   class type {
     __init__
-    __call__()
-    __delattr__()
-    __dir__()
-    __eq__()
-    __format__()
-    __ge__()
-    __getattribute__()
-    __gt__()
-    __hash__()
-    __init__()
-    __instancecheck__()
-    __le__()
-    __lt__()
-    __ne__()
-    __new__()
-    __or__()
-    __reduce__()
-    __reduce_ex__()
-    __repr__()
-    __ror__()
-    __setattr__()
-    __sizeof__()
-    __str__()
-    __subclasscheck__()
-    __subclasses__()
-    __subclasshook__()
-    mro()
+    __call__()*
+    __delattr__()*
+    __dir__()*
+    __eq__()*
+    __format__()*
+    __ge__()*
+    __getattribute__()*
+    __gt__()*
+    __hash__()*
+    __init__()*
+    __instancecheck__()*
+    __le__()*
+    __lt__()*
+    __ne__()*
+    __new__()*
+    __or__()*
+    __reduce__()*
+    __reduce_ex__()*
+    __repr__()*
+    __ror__()*
+    __setattr__()*
+    __sizeof__()*
+    __str__()*
+    __subclasscheck__()*
+    __subclasses__()*
+    __subclasshook__()*
+    mro()*
   }
   NoneType --|> object
+  bool --|> int
+  int --|> object
   denominator --|> object
   imag --|> object
   numerator --|> object
   real --|> object
   list --|> object
-  staticmethod --|> object
   str --|> object
   tuple --|> object
   type --|> object
@@ -569,31 +589,43 @@ classDiagram
   TypeResolver --|> object
   ModelGenerator --|> object
   YANGSourcesTracker --|> object
-  NoneType --* Statement : i_module
-  NoneType --* Statement : parent
   NoneType --* Statement : ext_mod
-  NoneType --* Statement : arg
-  bool --* Statement : i_uses_top
+  bool --* ConfigDict : str_to_lower
+  bool --* ConfigDict : str_to_upper
+  bool --* ConfigDict : str_strip_whitespace
+  bool --* ConfigDict : frozen
+  bool --* ConfigDict : populate_by_name
+  bool --* ConfigDict : use_enum_values
+  bool --* ConfigDict : validate_assignment
+  bool --* ConfigDict : arbitrary_types_allowed
+  bool --* ConfigDict : from_attributes
+  bool --* ConfigDict : loc_by_alias
+  bool --* ConfigDict : allow_inf_nan
+  bool --* ConfigDict : strict
+  bool --* ConfigDict : validate_default
+  bool --* ConfigDict : validate_return
+  bool --* ConfigDict : hide_input_in_errors
+  bool --* ConfigDict : defer_build
+  bool --* ConfigDict : json_schema_serialization_defaults_required
+  bool --* ConfigDict : coerce_numbers_to_str
+  bool --* ConfigDict : validation_error_cause
+  bool --* ConfigDict : use_attribute_docstrings
   bool --* Node : mandatory
   bool --* Pydantify : multiple_modules
   bool --* Pydantify : handle_comments
   bool --* ModelGenerator : include_verification_code
   bool --* ModelGenerator : standalone
+  int --* ConfigDict : str_min_length
   list --* Statement : i_children
   list --* Statement : substmts
   list --* Statement : substmts
   list --* Statement : i_uses
   list --* Statement : i_uses
-  staticmethod --* _NormalAccessor : expanduser
-  staticmethod --* _NormalAccessor : realpath
   str --* Node : arg
   str --* Node : keyword
-  tuple --* Path : __slots__
   tuple --* Statement : __slots__
-  Path --* ModelGenerator : input_dir
-  Path --* ModelGenerator : output_dir
-  _NormalAccessor --* Path : _accessor
-  Statement --* Node : raw_statement
+  ConfigDict --* BaseModel : model_config
+  ConfigDict --* RootModel : model_config
   GeneratedClass --* Node : _output_model
   GeneratedClass --* CaseNode : _output_model
   GeneratedClass --* ChoiceNode : _output_model
@@ -603,3 +635,5 @@ classDiagram
   GeneratedClass --* ListNode : _output_model
   GeneratedClass --* ModuleNode : _output_model
   GeneratedClass --* TypeDefNode : _output_model
+  bool --o Statement : i_uses_top
+  Statement --o Node : raw_statement
