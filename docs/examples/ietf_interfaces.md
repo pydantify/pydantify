@@ -84,7 +84,7 @@ The output depends on the network device. This example uses a Cisco CSR1k with t
 
 The received response from the device includes data from the *ietf-ip* model, which augment the *ietf-interfaces* model. Because the build model does not have these fields, the model configuration must be set to **ignore** extra fields.
 
-```python title="restconf.py" linenums="30"
+```python title="restconf.py" linenums="28"
 --8<-- "examples/ietf-interfaces/restconf.py:30:36"
 ```
 
@@ -123,7 +123,7 @@ As with all Python objects, you can access them and make evaluations.
 
     For now, to access the value of the leaf object, the variable `root` needs to be used. Hopefully we can improve this in future versions.
 
-```python title="restconf.py" linenums="41"
+```python title="restconf.py" linenums="39"
 --8<-- "examples/ietf-interfaces/restconf.py:41:47"
 ```
 
@@ -139,7 +139,7 @@ Interface GigabitEthernet3 is disabled
 
 This example takes the second interface, changes the interface to enable, and updates the description.
 
-```python title="restconf.py" linenums="50"
+```python title="restconf.py" linenums="48"
 --8<-- "examples/ietf-interfaces/restconf.py:50:57"
 ```
 
@@ -156,7 +156,7 @@ Taking a look at only this level of the tree, the generated output contains the 
 
 For an easy configuration update, a new model can be created only containing the changed interface.
 
-```python title="restconf.py" linenums="61"
+```python title="restconf.py" linenums="59"
 --8<-- "examples/ietf-interfaces/restconf.py:61:62"
 ```
 
@@ -185,7 +185,7 @@ Using the newly created model from the top, a *PATCH* request can be sent to the
 
     It is recommended to use the option `exlude_defaults=True` not to send unnecessary data.
 
-```python title="restconf.py" linenums="66"
+```python title="restconf.py" linenums="64"
 --8<-- "examples/ietf-interfaces/restconf.py:66:69"
 ```
 
@@ -204,6 +204,6 @@ To address the interface directly using the URL, to not only update but also be 
 
 Now the URL must include the interface like `ietf-interfaces:interfaces/interface=GigabitEthernet2`.
 
-```python title="restconf.py" linenums="74"
+```python title="restconf.py" linenums="72"
 --8<-- "examples/ietf-interfaces/restconf.py:74:81"
 ```
