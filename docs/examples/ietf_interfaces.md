@@ -2,7 +2,7 @@
 
 !!! warning
 
-    *Pydantify* is still in an alpha state and many parts can hopefully be improved in future versions. 
+    *Pydantify* is still in an alpha state and many parts can hopefully be improved in future versions.
 
 ## YANG Model
 Using *pyang* the model can be validated and displayed as a tree.
@@ -13,7 +13,7 @@ Using *pyang* the model can be validated and displayed as a tree.
 ```
 !!! note
 
-    Only the model *ietf-interfaces* is used without any models like *ietf-ip*, which augment the *ietf-interfaces* model. 
+    Only the model *ietf-interfaces* is used without any models like *ietf-ip*, which augment the *ietf-interfaces* model.
 
 ## Create pydantic model
 
@@ -37,7 +37,7 @@ The generated module will be in the file `out/out.py`. We can move and rename it
 Using *requests*, or any other HTTP library, the data can be retrieved in JSON format.
 
 ```python title="restconf.py" linenums="24"
---8<-- "examples/ietf-interfaces/restconf.py:24:26"
+--8<-- "examples/ietf-interfaces/restconf.py:24:25"
 ```
 
 The output depends on the network device. This example uses a Cisco CSR1k with three interfaces.
@@ -82,10 +82,10 @@ The output depends on the network device. This example uses a Cisco CSR1k with t
 }
 ```
 
-The received response from the device includes data from the *ietf-ip* model, which augment the *ietf-interfaces* model. Because the build model does not have these fields, the model configuration must be set to **ignore** extra fields.
+The received response from the device includes data from the *ietf-ip* model, which augment the *ietf-interfaces* model. Because the build model does not have these fields, the model configuration must be set to **ignore** extra fields (default). [Pydantic Configuration extra](https://docs.pydantic.dev/latest/api/config/#pydantic.config.ConfigDict.extra)
 
-```python title="restconf.py" linenums="28"
---8<-- "examples/ietf-interfaces/restconf.py:30:36"
+```python title="restconf.py" linenums="30"
+--8<-- "examples/ietf-interfaces/restconf.py:30:34"
 ```
 
 Now the model is filled with the received data. By using the option `by_alias=True`, all keys contain the model prefix in the output.
@@ -124,7 +124,7 @@ As with all Python objects, you can access them and make evaluations.
     For now, to access the value of the leaf object, the variable `root` needs to be used. Hopefully we can improve this in future versions.
 
 ```python title="restconf.py" linenums="39"
---8<-- "examples/ietf-interfaces/restconf.py:41:47"
+--8<-- "examples/ietf-interfaces/restconf.py:39:45"
 ```
 
 The first interface is the management interface and is enabled; the other two are disabled.
@@ -140,7 +140,7 @@ Interface GigabitEthernet3 is disabled
 This example takes the second interface, changes the interface to enable, and updates the description.
 
 ```python title="restconf.py" linenums="48"
---8<-- "examples/ietf-interfaces/restconf.py:50:57"
+--8<-- "examples/ietf-interfaces/restconf.py:48:52"
 ```
 
 Taking a look at only this level of the tree, the generated output contains the changes.
@@ -156,8 +156,8 @@ Taking a look at only this level of the tree, the generated output contains the 
 
 For an easy configuration update, a new model can be created only containing the changed interface.
 
-```python title="restconf.py" linenums="59"
---8<-- "examples/ietf-interfaces/restconf.py:61:62"
+```python title="restconf.py" linenums="57"
+--8<-- "examples/ietf-interfaces/restconf.py:57:57"
 ```
 
 Now the output contains all layers of the YANG tree starting at the root interfaces field.
@@ -185,8 +185,8 @@ Using the newly created model from the top, a *PATCH* request can be sent to the
 
     It is recommended to use the option `exlude_defaults=True` not to send unnecessary data.
 
-```python title="restconf.py" linenums="64"
---8<-- "examples/ietf-interfaces/restconf.py:66:69"
+```python title="restconf.py" linenums="62"
+--8<-- "examples/ietf-interfaces/restconf.py:62:65"
 ```
 
 To address the interface directly using the URL, to not only update but also be able to replace the configuration, the data structure needs not a map containing a list of interfaces but a map containing a map looking like this:
@@ -204,6 +204,6 @@ To address the interface directly using the URL, to not only update but also be 
 
 Now the URL must include the interface like `ietf-interfaces:interfaces/interface=GigabitEthernet2`.
 
-```python title="restconf.py" linenums="72"
---8<-- "examples/ietf-interfaces/restconf.py:74:81"
+```python title="restconf.py" linenums="70"
+--8<-- "examples/ietf-interfaces/restconf.py:70:77"
 ```
