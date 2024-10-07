@@ -14,7 +14,7 @@ logger = logging.getLogger("pydantify")
 
 
 def main():
-    from .run import run
+    from pyang.scripts.pyang_tool import run
 
     # Parse user-give settings
     sys.argv[1:] = parse_cli_arguments()
