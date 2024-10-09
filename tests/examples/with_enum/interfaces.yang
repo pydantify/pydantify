@@ -1,0 +1,38 @@
+module interfaces {
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+
+  description 'Example demonstarating enume';
+
+  typedef admin-state {
+    type enumeration {
+      enum enable {
+        value 1;
+      }
+      enum disable {
+        value 2;
+      }
+    }
+    description
+      "general admin-state option.";
+  }
+
+
+  list interfaces {
+    key "name";
+    description "List of configured device interfaces";
+
+    leaf name {
+      type string;
+      description "Interface name";
+    }
+    leaf admin-state {
+      type admin-state;
+      default "enable";
+      description "The configured, desired state of the interface";
+    }
+
+  }
+}
