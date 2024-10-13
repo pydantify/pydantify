@@ -11,15 +11,15 @@ class NameLeaf(RootModel[str]):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    root: Annotated[str, Field(title='NameLeaf')]
+    root: Annotated[str, Field(title="NameLeaf")]
     """
     Interface name
     """
 
 
 class EnumerationEnum(Enum):
-    enable = 'enable'
-    disable = 'disable'
+    enable = "enable"
+    disable = "disable"
 
 
 class AdminStateType(RootModel[EnumerationEnum]):
@@ -36,7 +36,7 @@ class AdminStateLeaf(RootModel[AdminStateType]):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    root: Annotated[AdminStateType, Field(title='Admin-stateLeaf')]
+    root: Annotated[AdminStateType, Field(title="Admin-stateLeaf")]
     """
     The configured, desired state of the interface
     """
@@ -50,9 +50,9 @@ class InterfacesListEntry(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    name: Annotated[NameLeaf, Field(None, alias='interfaces:name')]
+    name: Annotated[NameLeaf, Field(None, alias="interfaces:name")]
     admin_state: Annotated[
-        AdminStateLeaf, Field(AdminStateLeaf("enable"), alias='interfaces:admin-state')
+        AdminStateLeaf, Field(AdminStateLeaf("enable"), alias="interfaces:admin-state")
     ]
 
 
@@ -76,7 +76,7 @@ class Model(BaseModel):
         populate_by_name=True,
     )
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias='interfaces:interfaces')
+        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
     ]
 
 
