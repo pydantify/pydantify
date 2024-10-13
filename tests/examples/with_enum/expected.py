@@ -17,16 +17,16 @@ class NameLeaf(RootModel[str]):
     """
 
 
-class AdminStateEnum(Enum):
-    enable = "enable"
-    disable = "disable"
+class EnumerationEnum(Enum):
+    enable = 'enable'
+    disable = 'disable'
 
 
-class AdminStateType(RootModel[AdminStateEnum]):
+class AdminStateType(RootModel[EnumerationEnum]):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    root: AdminStateEnum
+    root: EnumerationEnum
     """
     general admin-state option.
     """
