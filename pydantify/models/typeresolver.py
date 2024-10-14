@@ -105,7 +105,8 @@ class TypeResolver:
                 )
             case EnumTypeSpec.__qualname__:
                 return Enum(
-                    Node.ensure_unique_name(f"{spec.name}Enum"), dict(spec.enums)
+                    Node.ensure_unique_name(f"{spec.name}Enum"),
+                    {x: x for x, _ in spec.enums},
                 )  # TODO: make separate node type
             case PathTypeSpec.__qualname__:
                 target_statement = getattr(spec, "i_target_node")
