@@ -65,7 +65,7 @@ It looks like Pydantify could not find the entry point. Could it be that your mo
       $ pydantify --path=system/ntp srlinux-yang-models/srlinux-yang-models/srl_nokia/models/system/srl_nokia-system.yang srlinux-yang-models/srlinux-yang-models/srl_nokia/models/system/srl_nokia-ntp.yang -p srlinux-yang-models/
       ```
 
-## PydanticSerializationError object has no attribute 'root'
+## PydanticSerializationError `object has no attribute 'root'`
 
 This error indicates that an object parameter is being set directly instead of using the `RootModel` object.
 
@@ -110,3 +110,20 @@ This error indicates that an object parameter is being set directly instead of u
       from out import ServerListEntry
       server = ServerListEntry(address="10.0.0.1")
       ```
+
+
+## PydanticSerializationError `'NoneType' object has no attribute 'root'`
+
+This error occurs when optional RootModel attributes are set to None and need to be excluded when dumping the model.
+
+
+??? example
+
+
+      When dumping a model, the default values should be excluded using the `exclude_defaults=True` option:
+
+      ```python
+      model.model_dump_json(exclude_defaults=True, by_alias=True, indent=2)
+      ```
+
+      By setting `exclude_defaults=True`, any attributes with default values of `None` will be excluded from the dumped model. This helps avoid the `'NoneType' object has no attribute 'root'` error.
