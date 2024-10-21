@@ -64,3 +64,49 @@ It looks like Pydantify could not find the entry point. Could it be that your mo
       ```
       $ pydantify --path=system/ntp srlinux-yang-models/srlinux-yang-models/srl_nokia/models/system/srl_nokia-system.yang srlinux-yang-models/srlinux-yang-models/srl_nokia/models/system/srl_nokia-ntp.yang -p srlinux-yang-models/
       ```
+
+## PydanticSerializationError object has no attribute 'root'
+
+This error indicates that an object parameter is being set directly instead of using the `RootModel` object.
+
+
+??? example
+
+
+      For this example, let's consider a simplified `ServerListEntry` object with an address attribute:
+
+
+      ```python
+      class ServerListEntry(BaseModel):
+         """
+         List of NTP servers to use for system clock synchronization
+         """
+
+         model_config = ConfigDict(
+            populate_by_name=True,
+         )
+         address: Annotated[AddressLeaf, Field(None, alias='srl_nokia-ntp:address')]
+      ```
+
+      The following code snippet is not working as expected because the `address` type is `AddressLeaf`, and directly assigning a string breaks the model validation:
+
+      ```python
+      from out import ServerListEntry
+      server = ServerListEntry()
+      server.address='10.0.0.1'
+      ```
+
+      To assign a value, an `AddressLeaf` object is needed:
+
+      ```python
+      from out import ServerListEntry, AddressLeaf
+      server = ServerListEntry()
+      server.address = AddressLeaf("10.0.0.1")
+      ```
+
+      When creating an instance of the `ServerListEntry` object, the string can be passed directly to the constructor because `AddressLeaf` is a `RootModel` object:
+
+      ```python
+      from out import ServerListEntry
+      server = ServerListEntry(address="10.0.0.1")
+      ```
