@@ -8,7 +8,7 @@ class Counter1Leaf(RootModel[int]):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    root: Annotated[int, Field(ge=-200, le=30, title='Counter2Leaf')]
+    root: Annotated[int, Field(ge=-200, le=30, title="Counter2Leaf")]
     """
     Pkt Counter 1
     """
@@ -18,7 +18,7 @@ class NameLeaf(RootModel[str]):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    root: Annotated[str, Field(title='NameLeaf')]
+    root: Annotated[str, Field(title="NameLeaf")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
@@ -32,8 +32,8 @@ class InterfacesContainer(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    name: Annotated[NameLeaf, Field(alias='interfaces:name')]
-    counter1: Annotated[Counter1Leaf, Field(None, alias='interfaces:counter2')]
+    name: Annotated[NameLeaf, Field(alias="interfaces:name")]
+    counter1: Annotated[Counter1Leaf, Field(None, alias="interfaces:counter2")]
 
 
 class Model(BaseModel):
@@ -56,7 +56,7 @@ class Model(BaseModel):
         populate_by_name=True,
     )
     interfaces: Annotated[
-        InterfacesContainer, Field(None, alias='interfaces:interfaces')
+        InterfacesContainer, Field(None, alias="interfaces:interfaces")
     ]
 
 

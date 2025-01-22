@@ -98,8 +98,12 @@ class TypeResolver:
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
-                min_value = spec.min.value if isinstance(spec.min, Decimal64Value) else spec.min
-                max_value = spec.max.value if isinstance(spec.max, Decimal64Value) else spec.max
+                min_value = (
+                    spec.min.value if isinstance(spec.min, Decimal64Value) else spec.min
+                )
+                max_value = (
+                    spec.max.value if isinstance(spec.max, Decimal64Value) else spec.max
+                )
                 return conint(ge=min_value, le=max_value)
             case LengthTypeSpec.__qualname__:
                 return constr(
