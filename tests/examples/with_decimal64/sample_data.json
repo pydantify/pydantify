@@ -2,8 +2,7 @@
     "interfaces": {
         "interfaces": {
             "name": "Nice",
-            "counter1": 25,
-            "counter2": 25
+            "counter1": 25
         }
     }
 }

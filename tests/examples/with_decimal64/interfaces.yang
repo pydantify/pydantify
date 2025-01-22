@@ -15,16 +15,11 @@ module interfaces {
         description
             "Interface name. Example value: GigabitEthernet 0/0/0";
     }
+
     leaf counter1 {
-        type decimal64;
-        config "false";
-        description
-            "Pkt Counter";
-    }
-    leaf counter2 {
         type decimal64 {
           range "-20..3";
-          fraction-digits 2;
+          fraction-digits 1;
         }
         config "false";
         description
