@@ -1,56 +1,9 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
-
-
-class IpLeafList(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="IpLeafList")]
-    """
-    List of interface IPs
-    """
-
-
-class NameLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="NameLeaf")]
-    """
-    Interface name
-    """
-
-
-class VlanIdType(RootModel[int]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[int, Field(ge=1, le=4094)]
-
-
-class TaggedLeafList(RootModel[VlanIdType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[VlanIdType, Field(title="TaggedLeafList")]
-    """
-    List of tagged VLANs
-    """
-
-
-class UntaggedLeaf(RootModel[VlanIdType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[VlanIdType, Field(title="UntaggedLeaf")]
-    """
-    Untagged VLAN
-    """
 
 
 class InterfacesListEntry(BaseModel):
@@ -60,17 +13,31 @@ class InterfacesListEntry(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    name: Annotated[NameLeaf, Field(None, alias="interfaces:name")]
-    ip: Annotated[List[IpLeafList], Field([], alias="interfaces:ip")]
+    name: Annotated[Optional[str], Field(alias="interfaces:name", title="NameLeaf")] = (
+        None
+    )
+    """
+    Interface name
+    """
+    ip: Annotated[Optional[List[str]], Field(alias="interfaces:ip")] = []
     """
     List of interface IPs
     """
-    tagged: Annotated[List[TaggedLeafList], Field([], alias="interfaces:tagged")]
+    tagged: Annotated[
+        Optional[List[int]], Field(alias="interfaces:tagged", ge=1, le=4094)
+    ] = []
     """
     List of tagged VLANs
     """
-    untagged: Annotated[UntaggedLeaf, Field(None, alias="interfaces:untagged")]
+    untagged: Annotated[
+        Optional[int],
+        Field(alias="interfaces:untagged", ge=1, le=4094, title="UntaggedLeaf"),
+    ] = None
+    """
+    Untagged VLAN
+    """
 
 
 class Model(BaseModel):
@@ -91,10 +58,11 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
-    ]
+        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":

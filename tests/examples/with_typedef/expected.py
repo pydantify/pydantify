@@ -1,65 +1,9 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
-
-
-class DottedQuadType(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-        regex_engine="python-re",
-    )
-    root: Annotated[
-        str,
-        Field(
-            pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$"
-        ),
-    ]
-    """
-    Four octets written as decimal numbers and separated with the '.' (full stop) character.
-    """
-
-
-class EnabledLeaf(RootModel[bool]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[bool, Field(title="EnabledLeaf")]
-    """
-    Enable or disable the interface. Example value: true
-    """
-
-
-class NameLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="NameLeaf")]
-    """
-    Interface name. Example value: GigabitEthernet 0/0/0
-    """
-
-
-class SubnetMaskLeaf(RootModel[DottedQuadType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[DottedQuadType, Field(title="Subnet-maskLeaf")]
-    """
-    Interface subnet mask. Example value: 255.255.255.0
-    """
-
-
-class AddressLeaf(RootModel[DottedQuadType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[DottedQuadType, Field(title="AddressLeaf")]
-    """
-    Interface IP address. Example value: 10.10.10.1
-    """
 
 
 class InterfaceListEntry(BaseModel):
@@ -69,18 +13,50 @@ class InterfaceListEntry(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    name: Annotated[NameLeaf, Field(alias="interfaces:name")]
-    address: Annotated[AddressLeaf, Field(alias="interfaces:address")]
-    subnet_mask: Annotated[SubnetMaskLeaf, Field(alias="interfaces:subnet-mask")]
-    enabled: Annotated[EnabledLeaf, Field(False, alias="interfaces:enabled")]
+    name: Annotated[str, Field(alias="interfaces:name", title="NameLeaf")]
+    """
+    Interface name. Example value: GigabitEthernet 0/0/0
+    """
+    address: Annotated[
+        str,
+        Field(
+            alias="interfaces:address",
+            pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
+            title="AddressLeaf",
+        ),
+    ]
+    """
+    Interface IP address. Example value: 10.10.10.1
+    """
+    subnet_mask: Annotated[
+        str,
+        Field(
+            alias="interfaces:subnet-mask",
+            pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
+            title="Subnet-maskLeaf",
+        ),
+    ]
+    """
+    Interface subnet mask. Example value: 255.255.255.0
+    """
+    enabled: Annotated[
+        Optional[bool], Field(alias="interfaces:enabled", title="EnabledLeaf")
+    ] = False
+    """
+    Enable or disable the interface. Example value: true
+    """
 
 
 class InterfacesContainer(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    interface: Annotated[List[InterfaceListEntry], Field(alias="interfaces:interface")]
+    interface: Annotated[
+        Optional[List[InterfaceListEntry]], Field(alias="interfaces:interface")
+    ] = None
 
 
 class Model(BaseModel):
@@ -101,10 +77,11 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     interfaces: Annotated[
-        InterfacesContainer, Field(None, alias="interfaces:interfaces")
-    ]
+        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":

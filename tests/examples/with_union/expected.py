@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
@@ -9,18 +9,9 @@ from typing_extensions import Annotated
 class UnionLeafLeaf1(RootModel[int]):
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     root: Annotated[int, Field(ge=-2147483648, le=2147483647, title="Union_leafLeaf")]
-    """
-    Number or 'unbounded'
-    """
-
-
-class UnionLeafLeaf(RootModel[Union[UnionLeafLeaf1, str]]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[Union[UnionLeafLeaf1, str], Field(title="Union_leafLeaf")]
     """
     Number or 'unbounded'
     """
@@ -33,8 +24,15 @@ class InterfacesContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    union_leaf: Annotated[UnionLeafLeaf, Field(alias="interfaces:union_leaf")]
+    union_leaf: Annotated[
+        Union[UnionLeafLeaf1, str],
+        Field(alias="interfaces:union_leaf", title="Union_leafLeaf"),
+    ]
+    """
+    Number or 'unbounded'
+    """
 
 
 class Model(BaseModel):
@@ -55,10 +53,11 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     interfaces: Annotated[
-        InterfacesContainer, Field(None, alias="interfaces:interfaces")
-    ]
+        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":

@@ -3,8 +3,9 @@ import logging
 import sys
 from io import TextIOWrapper
 from pathlib import Path
-from typing import List, Type, Optional
+from typing import Any, List, Type, Optional
 
+from collections import defaultdict
 from datamodel_code_generator.model import pydantic_v2
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 from pyang.context import Context
@@ -120,6 +121,9 @@ class ModelGenerator:
                 sys.exit(0)
             mod = ModelRoot(module)
             json = cls.custom_dump(mod.to_pydantic_model())
+            extra_template_data: defaultdict[str, dict[str, Any]] = defaultdict(dict)
+            extra_template_data["#all#"]["config"] = {}
+            extra_template_data["#all#"]["config"]["regex_engine"] = '"python-re"'
             parser = JsonSchemaParser(
                 json,
                 data_model_type=pydantic_v2.BaseModel,
@@ -134,9 +138,11 @@ class ModelGenerator:
                 use_field_description=True,
                 aliases=Node.alias_mapping,
                 reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
-                strict_nullable=True,
+                strict_nullable=False,
                 allow_population_by_field_name=True,
                 allow_extra_fields=False,
+                collapse_root_models=True,
+                extra_template_data=extra_template_data,
             )
             result = parser.parse()
             # Keep mypy happy

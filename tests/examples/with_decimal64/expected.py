@@ -1,27 +1,9 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
-
-
-class Counter1Leaf(RootModel[int]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[int, Field(ge=-200, le=30, title="Counter2Leaf")]
-    """
-    Pkt Counter 1
-    """
-
-
-class NameLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="NameLeaf")]
-    """
-    Interface name. Example value: GigabitEthernet 0/0/0
-    """
 
 
 class InterfacesContainer(BaseModel):
@@ -31,9 +13,19 @@ class InterfacesContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    name: Annotated[NameLeaf, Field(alias="interfaces:name")]
-    counter1: Annotated[Counter1Leaf, Field(None, alias="interfaces:counter2")]
+    name: Annotated[str, Field(alias="interfaces:name", title="NameLeaf")]
+    """
+    Interface name. Example value: GigabitEthernet 0/0/0
+    """
+    counter1: Annotated[
+        Optional[int],
+        Field(alias="interfaces:counter1", ge=-200, le=30, title="Counter1Leaf"),
+    ] = None
+    """
+    Pkt Counter 1
+    """
 
 
 class Model(BaseModel):
@@ -54,14 +46,15 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     interfaces: Annotated[
-        InterfacesContainer, Field(None, alias="interfaces:interfaces")
-    ]
+        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":
-    model = Model(
+    model = Model(  # type: ignore[call-arg]
         # <Initialize model here>
     )
 

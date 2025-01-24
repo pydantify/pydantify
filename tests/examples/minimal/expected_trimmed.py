@@ -1,17 +1,7 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 from typing_extensions import Annotated
-
-
-class AddressLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="AddressLeaf")]
-    """
-    Interface IP address. Example value: 10.10.10.1
-    """
 
 
 class Model(BaseModel):
@@ -32,8 +22,12 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    address: Annotated[AddressLeaf, Field(alias="interfaces:address")]
+    address: Annotated[str, Field(alias="interfaces:address", title="AddressLeaf")]
+    """
+    Interface IP address. Example value: 10.10.10.1
+    """
 
 
 if __name__ == "__main__":

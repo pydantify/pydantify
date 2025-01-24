@@ -1,162 +1,15 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
 
 
-class CellIndexType(RootModel[int]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[int, Field(ge=-9223372036854775808, le=9223372036854775807)]
-    """
-    Type for indexing tape cells.
-    """
-
-
-class CoordLeaf(RootModel[CellIndexType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[CellIndexType, Field(title="CoordLeaf")]
-    """
-    Coordinate (index) of the tape cell.
-    """
-
-
-class HeadPositionLeaf(RootModel[CellIndexType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[CellIndexType, Field(title="Head-positionLeaf")]
-    """
-    Position of tape read/write head.
-    """
-
-
-class LabelLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="LabelLeaf")]
-    """
-    An arbitrary label of the transition rule.
-    """
-
-
-class StateIndexType(RootModel[int]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[int, Field(ge=0, le=65535)]
-    """
-    Type for indexing states of the control unit.
-    """
-
-
-class StateLeaf(RootModel[StateIndexType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[StateIndexType, Field(title="StateLeaf")]
-    """
-    Current state of the control unit.
-    The initial state is 0.
-    """
-
-
-class StateLeaf2(RootModel[StateIndexType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[StateIndexType, Field(title="StateLeaf2")]
-    """
-    Current state of the control unit.
-    """
-
-
-class StateLeaf3(RootModel[StateIndexType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[StateIndexType, Field(title="StateLeaf3")]
-    """
-    New state of the control unit. If this leaf is not
-    present, the state doesn't change.
-    """
-
-
-class TapeSymbolType(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(max_length=1, min_length=0)]
-    """
-    Type of symbols appearing in tape cells.
-    A blank is represented as an empty string where necessary.
-    """
-
-
 class EnumerationEnum(Enum):
-    integer_0 = 0
-    integer_1 = 1
-
-
-class HeadDirType(RootModel[EnumerationEnum]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: EnumerationEnum
-    """
-    Possible directions for moving the read/write head, one cell
-    to the left or right (default).
-    """
-
-
-class HeadMoveLeaf(RootModel[HeadDirType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[HeadDirType, Field(title="Head-moveLeaf")]
-    """
-    Move the head one cell to the left or right
-    """
-
-
-class SymbolLeaf(RootModel[TapeSymbolType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[TapeSymbolType, Field(title="SymbolLeaf")]
-    """
-    Symbol appearing in the tape cell.
-    Blank (empty string) is not allowed here because the
-    'cell' list only contains non-blank cells.
-    """
-
-
-class SymbolLeaf2(RootModel[TapeSymbolType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[TapeSymbolType, Field(title="SymbolLeaf2")]
-    """
-    Symbol read from the tape cell.
-    """
-
-
-class SymbolLeaf3(RootModel[TapeSymbolType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[TapeSymbolType, Field(title="SymbolLeaf3")]
-    """
-    Symbol to be written to the tape cell. If this leaf is
-    not present, the symbol doesn't change.
-    """
+    left = "left"
+    right = "right"
 
 
 class CellListEntry(BaseModel):
@@ -166,9 +19,34 @@ class CellListEntry(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    coord: Annotated[CoordLeaf, Field(None, alias="turing-machine:coord")]
-    symbol: Annotated[SymbolLeaf, Field(None, alias="turing-machine:symbol")]
+    coord: Annotated[
+        Optional[int],
+        Field(
+            alias="turing-machine:coord",
+            ge=-9223372036854775808,
+            le=9223372036854775807,
+            title="CoordLeaf",
+        ),
+    ] = None
+    """
+    Coordinate (index) of the tape cell.
+    """
+    symbol: Annotated[
+        Optional[str],
+        Field(
+            alias="turing-machine:symbol",
+            max_length=1,
+            min_length=0,
+            title="SymbolLeaf",
+        ),
+    ] = None
+    """
+    Symbol appearing in the tape cell.
+    Blank (empty string) is not allowed here because the
+    'cell' list only contains non-blank cells.
+    """
 
 
 class InputContainer(BaseModel):
@@ -178,9 +56,26 @@ class InputContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    state: Annotated[StateLeaf2, Field(alias="turing-machine:state")]
-    symbol: Annotated[SymbolLeaf2, Field(alias="turing-machine:symbol")]
+    state: Annotated[
+        int, Field(alias="turing-machine:state", ge=0, le=65535, title="StateLeaf2")
+    ]
+    """
+    Current state of the control unit.
+    """
+    symbol: Annotated[
+        str,
+        Field(
+            alias="turing-machine:symbol",
+            max_length=1,
+            min_length=0,
+            title="SymbolLeaf2",
+        ),
+    ]
+    """
+    Symbol read from the tape cell.
+    """
 
 
 class OutputContainer(BaseModel):
@@ -190,10 +85,36 @@ class OutputContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    state: Annotated[StateLeaf3, Field(None, alias="turing-machine:state")]
-    symbol: Annotated[SymbolLeaf3, Field(None, alias="turing-machine:symbol")]
-    head_move: Annotated[HeadMoveLeaf, Field("right", alias="turing-machine:head-move")]
+    state: Annotated[
+        Optional[int],
+        Field(alias="turing-machine:state", ge=0, le=65535, title="StateLeaf3"),
+    ] = None
+    """
+    New state of the control unit. If this leaf is not
+    present, the state doesn't change.
+    """
+    symbol: Annotated[
+        Optional[str],
+        Field(
+            alias="turing-machine:symbol",
+            max_length=1,
+            min_length=0,
+            title="SymbolLeaf3",
+        ),
+    ] = None
+    """
+    Symbol to be written to the tape cell. If this leaf is
+    not present, the symbol doesn't change.
+    """
+    head_move: Annotated[
+        Optional[EnumerationEnum],
+        Field(alias="turing-machine:head-move", title="Head-moveLeaf"),
+    ] = "right"
+    """
+    Move the head one cell to the left or right
+    """
 
 
 class TapeContainer(BaseModel):
@@ -203,8 +124,11 @@ class TapeContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    cell: Annotated[List[CellListEntry], Field(alias="turing-machine:cell")]
+    cell: Annotated[
+        Optional[List[CellListEntry]], Field(alias="turing-machine:cell")
+    ] = None
 
 
 class DeltaListEntry(BaseModel):
@@ -214,10 +138,20 @@ class DeltaListEntry(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    label: Annotated[LabelLeaf, Field(None, alias="turing-machine:label")]
-    input: Annotated[InputContainer, Field(None, alias="turing-machine:input")]
-    output: Annotated[OutputContainer, Field(None, alias="turing-machine:output")]
+    label: Annotated[
+        Optional[str], Field(alias="turing-machine:label", title="LabelLeaf")
+    ] = None
+    """
+    An arbitrary label of the transition rule.
+    """
+    input: Annotated[Optional[InputContainer], Field(alias="turing-machine:input")] = (
+        None
+    )
+    output: Annotated[
+        Optional[OutputContainer], Field(alias="turing-machine:output")
+    ] = None
 
 
 class TransitionFunctionContainer(BaseModel):
@@ -228,8 +162,11 @@ class TransitionFunctionContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    delta: Annotated[List[DeltaListEntry], Field(alias="turing-machine:delta")]
+    delta: Annotated[
+        Optional[List[DeltaListEntry]], Field(alias="turing-machine:delta")
+    ] = None
 
 
 class TuringMachineContainer(BaseModel):
@@ -239,16 +176,32 @@ class TuringMachineContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    state: Annotated[StateLeaf, Field(alias="turing-machine:state")]
+    state: Annotated[
+        int, Field(alias="turing-machine:state", ge=0, le=65535, title="StateLeaf")
+    ]
+    """
+    Current state of the control unit.
+    The initial state is 0.
+    """
     head_position: Annotated[
-        HeadPositionLeaf, Field(alias="turing-machine:head-position")
+        int,
+        Field(
+            alias="turing-machine:head-position",
+            ge=-9223372036854775808,
+            le=9223372036854775807,
+            title="Head-positionLeaf",
+        ),
     ]
-    tape: Annotated[TapeContainer, Field(None, alias="turing-machine:tape")]
+    """
+    Position of tape read/write head.
+    """
+    tape: Annotated[Optional[TapeContainer], Field(alias="turing-machine:tape")] = None
     transition_function: Annotated[
-        TransitionFunctionContainer,
-        Field(None, alias="turing-machine:transition-function"),
-    ]
+        Optional[TransitionFunctionContainer],
+        Field(alias="turing-machine:transition-function"),
+    ] = None
 
 
 class Model(BaseModel):
@@ -269,10 +222,11 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     turing_machine: Annotated[
-        TuringMachineContainer, Field(None, alias="turing-machine:turing-machine")
-    ]
+        Optional[TuringMachineContainer], Field(alias="turing-machine:turing-machine")
+    ] = None
 
 
 if __name__ == "__main__":

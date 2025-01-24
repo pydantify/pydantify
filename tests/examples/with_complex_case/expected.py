@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
@@ -10,50 +10,46 @@ class DailyLeaf(BaseModel):
     pass
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-
-
-class IntervalLeaf(RootModel[int]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[int, Field(ge=0, le=65535, title="IntervalLeaf")]
 
 
 class ManualLeaf(BaseModel):
     pass
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-
-
-class TimeOfDayLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="Time-of-dayLeaf")]
 
 
 class DailyCase(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    daily: Annotated[DailyLeaf, Field(None, alias="interfaces:daily")]
-    time_of_day: Annotated[TimeOfDayLeaf, Field("1am", alias="interfaces:time-of-day")]
+    daily: Annotated[Optional[DailyLeaf], Field(alias="interfaces:daily")] = None
+    time_of_day: Annotated[
+        Optional[str], Field(alias="interfaces:time-of-day", title="Time-of-dayLeaf")
+    ] = "1am"
 
 
 class IntervalCase(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    interval: Annotated[IntervalLeaf, Field(30, alias="interfaces:interval")]
+    interval: Annotated[
+        Optional[int],
+        Field(alias="interfaces:interval", ge=0, le=65535, title="IntervalLeaf"),
+    ] = 30
 
 
 class ManualCase(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    manual: Annotated[ManualLeaf, Field(None, alias="interfaces:manual")]
+    manual: Annotated[Optional[ManualLeaf], Field(alias="interfaces:manual")] = None
 
 
 class Model(BaseModel):
@@ -74,10 +70,12 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     how: Annotated[
-        Union[IntervalCase, DailyCase, ManualCase], Field(None, alias="interfaces:how")
-    ]
+        Optional[Union[IntervalCase, DailyCase, ManualCase]],
+        Field(alias="interfaces:how"),
+    ] = None
 
 
 if __name__ == "__main__":

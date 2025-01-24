@@ -1,37 +1,9 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
-
-
-class AddressLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="AddressLeaf")]
-    """
-    Interface IP address. Example value: 10.10.10.1
-    """
-
-
-class NameLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="NameLeaf")]
-    """
-    Interface name. Example value: GigabitEthernet 0/0/0
-    """
-
-
-class PortLeaf(RootModel[int]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[int, Field(ge=0, le=65535, title="PortLeaf")]
-    """
-    Port number. Example value: 8080
-    """
 
 
 class InterfacesContainer(BaseModel):
@@ -41,10 +13,22 @@ class InterfacesContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    name: Annotated[NameLeaf, Field(alias="interfaces:name")]
-    address: Annotated[AddressLeaf, Field(alias="interfaces:address")]
-    port: Annotated[PortLeaf, Field(alias="interfaces:port")]
+    name: Annotated[str, Field(alias="interfaces:name", title="NameLeaf")]
+    """
+    Interface name. Example value: GigabitEthernet 0/0/0
+    """
+    address: Annotated[str, Field(alias="interfaces:address", title="AddressLeaf")]
+    """
+    Interface IP address. Example value: 10.10.10.1
+    """
+    port: Annotated[
+        int, Field(alias="interfaces:port", ge=0, le=65535, title="PortLeaf")
+    ]
+    """
+    Port number. Example value: 8080
+    """
 
 
 class Model(BaseModel):
@@ -65,10 +49,11 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     interfaces: Annotated[
-        InterfacesContainer, Field(None, alias="interfaces:interfaces")
-    ]
+        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":
