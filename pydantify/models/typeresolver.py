@@ -24,6 +24,7 @@ from pyang.types import (
     LeafrefTypeSpec,
     UnionTypeSpec,
     Decimal64TypeSpec,
+    Decimal64Value,
 )
 from pydantic import Field
 from pydantic.types import conbytes, confloat, conint, constr
@@ -97,7 +98,13 @@ class TypeResolver:
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
-                return conint(ge=spec.min, le=spec.max)
+                min_value = (
+                    spec.min.value if isinstance(spec.min, Decimal64Value) else spec.min
+                )
+                max_value = (
+                    spec.max.value if isinstance(spec.max, Decimal64Value) else spec.max
+                )
+                return conint(ge=min_value, le=max_value)
             case LengthTypeSpec.__qualname__:
                 return constr(
                     min_length=spec.min,

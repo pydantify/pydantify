@@ -191,6 +191,12 @@ def reset_optparse():
             [],
             id="enum",
         ),
+        param(
+            "examples/with_decimal64/interfaces.yang",
+            "examples/with_decimal64/expected.py",
+            [],
+            id="decimal64",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
