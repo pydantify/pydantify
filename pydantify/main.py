@@ -78,6 +78,13 @@ def parse_cli_arguments() -> List[str]:
         default=f"{os.getcwd()}/out/",
     )
     parser.add_argument(
+        "-f",
+        "--output-file",
+        dest="output_file",
+        help='The name of the output file. Defaults to "out.py".',
+        default="out.py",
+    )
+    parser.add_argument(
         "input_file",
         action="store",
         help="The YANG file containing the entrypoint to the model to evaluate.",
@@ -114,7 +121,7 @@ def parse_cli_arguments() -> List[str]:
     os.makedirs(output_dir, exist_ok=True)  # Create output directory if not exists
     with open(output_dir / "__init__.py", "a"):  # Create init file if not exists
         pass
-    relay_args.append(f"--output={output_dir}/out.py")
+    relay_args.append(f"--output={output_dir}/{args.output_file}")
 
     relay_args.append(f"--plugindir={Path(__file__).parent}/plugins")
     relay_args.append("--format=pydantic")
