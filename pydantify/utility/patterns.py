@@ -10,6 +10,10 @@ translation_map = {
     r"\P{N}": r"\D",  # All Numbers
     r"\p{Nd}": r"\d",  # decimal digit
     r"\P{Nd}": r"\D",  # decimal digit
+    r"\p{C}": r"[\x00-\x1F\x7F-\x9F]",  # invisible control characters and unused code points
+    r"\P{C}": r"[^\x00-\x1F\x7F-\x9F]",  # invisible control characters and unused code points
+    r"\p{P}": r"[!\"'#$%&\"()*+,\-./:;<=>?@[\\\]^_`{|}~]",  # punctuation
+    r"\P{P}": r"[^!\"'#$%&\"()*+,\-./:;<=>?@[\\\]^_`{|}~]",  # punctuation
 }
 
 
