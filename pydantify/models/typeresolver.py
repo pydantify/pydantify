@@ -24,7 +24,6 @@ from pyang.types import (
     LeafrefTypeSpec,
     UnionTypeSpec,
     Decimal64TypeSpec,
-    Decimal64Value,
 )
 from pydantic import Field
 from pydantic.types import conbytes, confloat, conint, constr
@@ -98,13 +97,11 @@ class TypeResolver:
 
         match (spec.__class__.__qualname__):
             case RangeTypeSpec.__qualname__:
-                min_value = (
-                    spec.min.value if isinstance(spec.min, Decimal64Value) else spec.min
-                )
-                max_value = (
-                    spec.max.value if isinstance(spec.max, Decimal64Value) else spec.max
-                )
-                return conint(ge=min_value, le=max_value)
+                if isinstance(spec.base, Decimal64TypeSpec):
+                    spec.base.min = spec.min
+                    spec.base.max = spec.max
+                    return cls.__resolve_type_spec(spec.base)
+                return conint(ge=spec.min, le=spec.max)
             case LengthTypeSpec.__qualname__:
                 return constr(
                     min_length=spec.min,
@@ -128,9 +125,23 @@ class TypeResolver:
                     le=spec.max,
                 )
             case Decimal64TypeSpec.__qualname__:
+                # Workaround until pyang.type.Decimal64Value contains fd
+                # prefered way: `spec.min.value * 10**-spec.min.fd`
+                def conv_to_float(decimal_string: str):
+                    if decimal_string.startswith("-."):
+                        return float("-0" + decimal_string[1:])
+                    if decimal_string.startswith(".-"):
+                        return float("-0." + decimal_string[2:])
+                    if decimal_string.startswith("."):
+                        return float("0" + decimal_string)
+                    return float(decimal_string)
+
+                min_value = conv_to_float(spec.min.s)
+                max_value = conv_to_float(spec.max.s)
+
                 return confloat(
-                    ge=spec.min.value,
-                    le=spec.max.value,
+                    ge=min_value,
+                    le=max_value,
                 )
             case StringTypeSpec.__qualname__:
                 return str
