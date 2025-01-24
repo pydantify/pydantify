@@ -1,23 +1,9 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
-
-
-class Name2Leaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="Name2Leaf")]
-
-
-class NameLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="NameLeaf")]
 
 
 class Ethernet2Case(BaseModel):
@@ -27,8 +13,11 @@ class Ethernet2Case(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    name2: Annotated[Name2Leaf, Field(None, alias="interfaces:name2")]
+    name2: Annotated[
+        Optional[str], Field(alias="interfaces:name2", title="Name2Leaf")
+    ] = None
 
 
 class EthernetContainer(BaseModel):
@@ -38,15 +27,21 @@ class EthernetContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    name: Annotated[NameLeaf, Field(None, alias="interfaces:name")]
+    name: Annotated[Optional[str], Field(alias="interfaces:name", title="NameLeaf")] = (
+        None
+    )
 
 
 class EthernetCase(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    ethernet: Annotated[EthernetContainer, Field(None, alias="interfaces:ethernet")]
+    ethernet: Annotated[
+        Optional[EthernetContainer], Field(alias="interfaces:ethernet")
+    ] = None
 
 
 class Model(BaseModel):
@@ -67,11 +62,12 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     interface_type: Annotated[
-        Union[EthernetCase, Ethernet2Case],
-        Field(None, alias="interfaces:interface-type"),
-    ]
+        Optional[Union[EthernetCase, Ethernet2Case]],
+        Field(alias="interfaces:interface-type"),
+    ] = None
 
 
 if __name__ == "__main__":

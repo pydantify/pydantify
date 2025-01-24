@@ -1,40 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
-
-
-class IpLeafList(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="IpLeafList")]
-    """
-    List of interface IPs
-    """
-
-
-class NameLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="NameLeaf")]
-    """
-    Interface name
-    """
-
-
-class TpidLeaf(RootModel[Any]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[Any, Field(title="TpidLeaf")]
-    """
-    Optionally set the tag protocol identifier field (TPID) that
-    is accepted on the VLAN
-    """
 
 
 class InterfacesListEntry(BaseModel):
@@ -44,13 +13,25 @@ class InterfacesListEntry(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    name: Annotated[NameLeaf, Field(None, alias="interfaces:name")]
-    ip: Annotated[List[IpLeafList], Field([], alias="interfaces:ip")]
+    name: Annotated[Optional[str], Field(alias="interfaces:name", title="NameLeaf")] = (
+        None
+    )
+    """
+    Interface name
+    """
+    ip: Annotated[Optional[List[str]], Field(alias="interfaces:ip")] = []
     """
     List of interface IPs
     """
-    tpid: Annotated[TpidLeaf, Field("TPID_0X8100", alias="interfaces:tpid")]
+    tpid: Annotated[Optional[Any], Field(alias="interfaces:tpid", title="TpidLeaf")] = (
+        "TPID_0X8100"
+    )
+    """
+    Optionally set the tag protocol identifier field (TPID) that
+    is accepted on the VLAN
+    """
 
 
 class Model(BaseModel):
@@ -71,10 +52,11 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
-    ]
+        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":

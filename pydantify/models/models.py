@@ -182,7 +182,9 @@ class ListNode(Node):
             class_name=self.name(),
             cls=output_class,
             field_annotation=List[output_class],  # type: ignore
-            field_info=Field(..., alias=self.get_qualified_name()),
+            field_info=Field(  # type: ignore[arg-type]
+                ... if self.mandatory else None, alias=self.get_qualified_name()
+            ),
         )
 
     def name(self) -> str:

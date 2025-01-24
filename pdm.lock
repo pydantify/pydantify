@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform"]
 lock_version = "4.5.0"
-content_hash = "sha256:b82901f0b90101a0e033f4a2c462234286c7ffba17ea356747871cb43c80ff69"
+content_hash = "sha256:f068ecfdc14edbcb0cb7bd6ead65409f377cdc0d410fceab4acbab31f56dd904"
 
 [[metadata.targets]]
 requires_python = ">=3.10"
@@ -214,8 +214,8 @@ files = [
 
 [[package]]
 name = "datamodel-code-generator"
-version = "0.25.8"
-requires_python = "<4.0,>=3.7"
+version = "0.26.5"
+requires_python = "<4.0,>=3.8"
 summary = "Datamodel Code Generator"
 dependencies = [
     "argcomplete<4.0,>=1.10",
@@ -233,8 +233,8 @@ dependencies = [
     "toml<1.0.0,>=0.10.0; python_version < \"3.11\"",
 ]
 files = [
-    {file = "datamodel_code_generator-0.25.8-py3-none-any.whl", hash = "sha256:f9b216efad84d8dcb517273d2728875b6052b7e8dc4e5c13a597441cef236f6e"},
-    {file = "datamodel_code_generator-0.25.8.tar.gz", hash = "sha256:b7838122b8133dae6e46f36a1cf25c0ccc66745da057988f490d00ab71121de7"},
+    {file = "datamodel_code_generator-0.26.5-py3-none-any.whl", hash = "sha256:e32f986b9914a2b45093947043aa0192d704650be93151f78acf5c95676601ce"},
+    {file = "datamodel_code_generator-0.26.5.tar.gz", hash = "sha256:c4a94a7dbf7972129882732d9bcee44c9ae090f57c82edd58d237b9d48c40dd0"},
 ]
 
 [[package]]

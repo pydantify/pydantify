@@ -1,45 +1,15 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
 
 
-class NameLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="NameLeaf")]
-    """
-    Interface name
-    """
-
-
 class EnumerationEnum(Enum):
     enable = "enable"
     disable = "disable"
-
-
-class AdminStateType(RootModel[EnumerationEnum]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: EnumerationEnum
-    """
-    general admin-state option.
-    """
-
-
-class AdminStateLeaf(RootModel[AdminStateType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[AdminStateType, Field(title="Admin-stateLeaf")]
-    """
-    The configured, desired state of the interface
-    """
 
 
 class InterfacesListEntry(BaseModel):
@@ -49,11 +19,21 @@ class InterfacesListEntry(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    name: Annotated[NameLeaf, Field(None, alias="interfaces:name")]
+    name: Annotated[Optional[str], Field(alias="interfaces:name", title="NameLeaf")] = (
+        None
+    )
+    """
+    Interface name
+    """
     admin_state: Annotated[
-        AdminStateLeaf, Field(AdminStateLeaf("enable"), alias="interfaces:admin-state")
-    ]
+        Optional[EnumerationEnum],
+        Field(alias="interfaces:admin-state", title="Admin-stateLeaf"),
+    ] = "enable"
+    """
+    The configured, desired state of the interface
+    """
 
 
 class Model(BaseModel):
@@ -74,14 +54,15 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
-    ]
+        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":
-    model = Model(
+    model = Model(  # type: ignore[call-arg]
         # <Initialize model here>
     )
 

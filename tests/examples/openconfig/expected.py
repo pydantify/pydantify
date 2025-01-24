@@ -1,96 +1,24 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
 
 
-class DescriptionLeaf(RootModel[str]):
+class ConfigContainer(BaseModel):
+    """
+    Configurable items at the global, physical interface
+    level
+    """
+
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    root: Annotated[str, Field(title="DescriptionLeaf")]
-    """
-    A textual description of the interface.
-
-    A server implementation MAY map this leaf to the ifAlias
-    MIB object.  Such an implementation needs to use some
-    mechanism to handle the differences in size and characters
-    allowed between this leaf and ifAlias.  The definition of
-    such a mechanism is outside the scope of this document.
-
-    Since ifAlias is defined to be stored in non-volatile
-    storage, the MIB implementation MUST map ifAlias to the
-    value of 'description' in the persistently stored
-    datastore.
-
-    Specifically, if the device supports ':startup', when
-    ifAlias is read the device MUST return the value of
-    'description' in the 'startup' datastore, and when it is
-    written, it MUST be written to the 'running' and 'startup'
-    datastores.  Note that it is up to the implementation to
-
-    decide whether to modify this single leaf in 'startup' or
-    perform an implicit copy-config from 'running' to
-    'startup'.
-
-    If the device does not support ':startup', ifAlias MUST
-    be mapped to the 'description' leaf in the 'running'
-    datastore.
-    """
-
-
-class EnabledLeaf(RootModel[bool]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[bool, Field(title="EnabledLeaf")]
-    """
-    This leaf contains the configured, desired state of the
-    interface.
-
-    Systems that implement the IF-MIB use the value of this
-    leaf in the 'running' datastore to set
-    IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
-    has been initialized, as described in RFC 2863.
-
-    Changes in this leaf in the 'running' datastore are
-    reflected in ifAdminStatus, but if ifAdminStatus is
-    changed over SNMP, this leaf is not affected.
-    """
-
-
-class LoopbackModeLeaf(RootModel[bool]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[bool, Field(title="Loopback-modeLeaf")]
-    """
-    When set to true, the interface is logically looped back,
-    such that packets that are forwarded via the interface
-    are received on the same interface.
-    """
-
-
-class MtuLeaf(RootModel[int]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[int, Field(ge=0, le=65535, title="MtuLeaf")]
-    """
-    Set the max transmission unit size in octets
-    for the physical interface.  If this is not set, the mtu is
-    set to the operational default -- e.g., 1514 bytes on an
-    Ethernet interface.
-    """
-
-
-class NameLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="NameLeaf")]
+    name: Annotated[
+        Optional[str], Field(alias="openconfig-interfaces:name", title="NameLeaf")
+    ] = None
     """
     The name of the interface.
 
@@ -125,13 +53,7 @@ class NameLeaf(RootModel[str]):
     the system, it is instantiated with the same name in the
     /interfaces/interface[name]/state list.
     """
-
-
-class TypeLeaf(RootModel[Any]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[Any, Field(title="TypeLeaf")]
+    type: Annotated[Any, Field(alias="openconfig-interfaces:type", title="TypeLeaf")]
     """
     The type of the interface.
 
@@ -147,27 +69,74 @@ class TypeLeaf(RootModel[Any]):
     A NETCONF server MUST reply with an rpc-error with the
     error-tag 'invalid-value' in this case.
     """
-
-
-class ConfigContainer(BaseModel):
+    mtu: Annotated[
+        Optional[int],
+        Field(alias="openconfig-interfaces:mtu", ge=0, le=65535, title="MtuLeaf"),
+    ] = None
     """
-    Configurable items at the global, physical interface
-    level
+    Set the max transmission unit size in octets
+    for the physical interface.  If this is not set, the mtu is
+    set to the operational default -- e.g., 1514 bytes on an
+    Ethernet interface.
     """
-
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    name: Annotated[NameLeaf, Field(None, alias="openconfig-interfaces:name")]
-    type: Annotated[TypeLeaf, Field(alias="openconfig-interfaces:type")]
-    mtu: Annotated[MtuLeaf, Field(None, alias="openconfig-interfaces:mtu")]
     loopback_mode: Annotated[
-        LoopbackModeLeaf, Field(False, alias="openconfig-interfaces:loopback-mode")
-    ]
+        Optional[bool],
+        Field(alias="openconfig-interfaces:loopback-mode", title="Loopback-modeLeaf"),
+    ] = False
+    """
+    When set to true, the interface is logically looped back,
+    such that packets that are forwarded via the interface
+    are received on the same interface.
+    """
     description: Annotated[
-        DescriptionLeaf, Field(None, alias="openconfig-interfaces:description")
-    ]
-    enabled: Annotated[EnabledLeaf, Field(True, alias="openconfig-interfaces:enabled")]
+        Optional[str],
+        Field(alias="openconfig-interfaces:description", title="DescriptionLeaf"),
+    ] = None
+    """
+    A textual description of the interface.
+
+    A server implementation MAY map this leaf to the ifAlias
+    MIB object.  Such an implementation needs to use some
+    mechanism to handle the differences in size and characters
+    allowed between this leaf and ifAlias.  The definition of
+    such a mechanism is outside the scope of this document.
+
+    Since ifAlias is defined to be stored in non-volatile
+    storage, the MIB implementation MUST map ifAlias to the
+    value of 'description' in the persistently stored
+    datastore.
+
+    Specifically, if the device supports ':startup', when
+    ifAlias is read the device MUST return the value of
+    'description' in the 'startup' datastore, and when it is
+    written, it MUST be written to the 'running' and 'startup'
+    datastores.  Note that it is up to the implementation to
+
+    decide whether to modify this single leaf in 'startup' or
+    perform an implicit copy-config from 'running' to
+    'startup'.
+
+    If the device does not support ':startup', ifAlias MUST
+    be mapped to the 'description' leaf in the 'running'
+    datastore.
+    """
+    enabled: Annotated[
+        Optional[bool],
+        Field(alias="openconfig-interfaces:enabled", title="EnabledLeaf"),
+    ] = True
+    """
+    This leaf contains the configured, desired state of the
+    interface.
+
+    Systems that implement the IF-MIB use the value of this
+    leaf in the 'running' datastore to set
+    IF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry
+    has been initialized, as described in RFC 2863.
+
+    Changes in this leaf in the 'running' datastore are
+    reflected in ifAdminStatus, but if ifAdminStatus is
+    changed over SNMP, this leaf is not affected.
+    """
 
 
 class Model(BaseModel):
@@ -188,10 +157,11 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     config: Annotated[
-        ConfigContainer, Field(None, alias="openconfig-interfaces:config")
-    ]
+        Optional[ConfigContainer], Field(alias="openconfig-interfaces:config")
+    ] = None
 
 
 if __name__ == "__main__":

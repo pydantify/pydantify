@@ -10,7 +10,7 @@ dependencies = [
     "pydantic==2.9.0",
     "pyang==2.6.1",
     "psutil>=6.0.0",
-    "datamodel-code-generator==0.25.8",
+    "datamodel-code-generator==0.26.5",
     "requests>=2.32.3",
     "typing-extensions>=4.12.2",
     "setuptools>=74.0.0",

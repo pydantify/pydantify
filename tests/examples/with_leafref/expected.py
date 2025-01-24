@@ -1,39 +1,9 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
-
-
-class IpLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title="IpLeaf")]
-    """
-    Interface IP
-    """
-
-
-class NameLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: str
-    """
-    Interface name
-    """
-
-
-class TestLeaf(RootModel[int]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[int, Field(ge=0, le=255, title="TestLeaf")]
-    """
-    Test node
-    """
 
 
 class InterfacesListEntry(BaseModel):
@@ -43,19 +13,21 @@ class InterfacesListEntry(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    test: Annotated[TestLeaf, Field(None, alias="interfaces:test")]
-    name: Annotated[NameLeaf, Field(None, alias="interfaces:name")]
-    ip: Annotated[IpLeaf, Field(None, alias="interfaces:ip")]
-
-
-class MgmtInterfaceLeaf(RootModel[NameLeaf]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[NameLeaf, Field(title="Mgmt-interfaceLeaf")]
+    test: Annotated[
+        Optional[int], Field(alias="interfaces:test", ge=0, le=255, title="TestLeaf")
+    ] = None
     """
-    Dedicated management interface
+    Test node
+    """
+    name: Annotated[Optional[str], Field(alias="interfaces:name")] = None
+    """
+    Interface name
+    """
+    ip: Annotated[Optional[str], Field(alias="interfaces:ip", title="IpLeaf")] = None
+    """
+    Interface IP
     """
 
 
@@ -77,13 +49,18 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
-    ]
+        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
+    ] = None
     mgmt_interface: Annotated[
-        MgmtInterfaceLeaf, Field(None, alias="interfaces:mgmt-interface")
-    ]
+        Optional[str],
+        Field(alias="interfaces:mgmt-interface", title="Mgmt-interfaceLeaf"),
+    ] = None
+    """
+    Dedicated management interface
+    """
 
 
 if __name__ == "__main__":
