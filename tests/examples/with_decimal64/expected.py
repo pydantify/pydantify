@@ -20,8 +20,8 @@ class InterfacesContainer(BaseModel):
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     counter1: Annotated[
-        Optional[int],
-        Field(alias="interfaces:counter1", ge=-200, le=30, title="Counter1Leaf"),
+        Optional[float],
+        Field(alias="interfaces:counter1", ge=-20.0, le=3.0, title="Counter1Leaf"),
     ] = None
     """
     Pkt Counter 1
