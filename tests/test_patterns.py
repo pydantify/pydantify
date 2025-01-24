@@ -36,6 +36,26 @@ from pydantify.utility.patterns import convert_pattern
             r"\D\D",
             id="no numbers",
         ),
+        param(
+            r"\p{C}",
+            r"[\x00-\x1F\x7F-\x9F]",
+            id="control characters",
+        ),
+        param(
+            r"\P{C}",
+            r"[^\x00-\x1F\x7F-\x9F]",
+            id="no control characters",
+        ),
+        param(
+            r"\p{P}",
+            r"[!\"'#$%&\"()*+,\-./:;<=>?@[\\\]^_`{|}~]",
+            id="punctuation",
+        ),
+        param(
+            r"\P{P}",
+            r"[^!\"'#$%&\"()*+,\-./:;<=>?@[\\\]^_`{|}~]",
+            id="no punctuation",
+        ),
     ],
 )
 def test_pattern(input: str, expected: str):
