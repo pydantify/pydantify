@@ -190,6 +190,10 @@ class TypeResolver:
             case UnionTypeSpec.__qualname__:
                 union = tuple([cls.__resolve_type_statement(typ) for typ in spec.types])
                 return Union[union]  # type: ignore
+            case BitTypeSpec.__qualname__:
+                # Crafting a pattern like: ^(flag1|flag2|flag3|\s)*$
+                pattern = "^(" + "|".join([b[0] for b in spec.bits]) + "|\\s)*$"
+                return constr(pattern=pattern)
         assert False, f'Spec "{spec.__class__.__qualname__}" not yet implemented.'
 
     @classmethod

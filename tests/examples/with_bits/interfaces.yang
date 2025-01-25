@@ -1,0 +1,37 @@
+module interfaces {
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+
+  description 'Example using just leafs, containers and modules';
+
+  typedef mybits-type {
+    type bits {
+      bit disable-nagle {
+        position 0;
+      }
+      bit auto-sense-speed {
+        position 1;
+      }
+      bit ten-mb-only {
+        position 2;
+      }
+    }
+  }
+
+  container interfaces {
+    description 'Just a simple example of a container.';
+
+    leaf name {
+        type string;
+        mandatory "true";
+        description
+            "Interface name. Example value: GigabitEthernet 0/0/0";
+    }
+
+    leaf mybits {
+       type mybits-type;
+    }
+  }
+}
