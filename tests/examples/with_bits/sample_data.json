@@ -1,0 +1,8 @@
+{
+    "interfaces": {
+        "interfaces": {
+            "name": "Nice",
+            "mybits": "disable-nagle ten-mb-only"
+        }
+    }
+}
