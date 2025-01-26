@@ -203,6 +203,12 @@ def reset_optparse():
             [],
             id="bits",
         ),
+        param(
+            "examples/with_leafref2/keychains.yang",
+            "examples/with_leafref2/expected.py",
+            [],
+            id="leafref2",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):

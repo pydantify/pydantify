@@ -113,7 +113,22 @@ class TypeResolver:
                     {x: x for x, _ in spec.enums},
                 )  # TODO: make separate node type
             case PathTypeSpec.__qualname__:
-                target_statement = getattr(spec, "i_target_node")
+                target_statement = getattr(spec, "i_target_node", None)
+
+                if not target_statement:
+                    """
+                    Workaround until pyang supports leafref in Union
+                    https://github.com/mbj4668/pyang/issues/724
+                    """
+                    from pyang.statements import v_reference_leaf_leafref
+
+                    pyang_ctx = spec.i_source_stmt.top.i_ctx
+                    stmt = spec.i_source_stmt.parent.parent.copy()
+                    stmt.i_leafref = spec
+                    stmt.i_leafref_expanded = False
+                    v_reference_leaf_leafref(pyang_ctx, stmt)
+                    target_statement = getattr(spec, "i_target_node", None)
+
                 if cls.__mapping.get(target_statement, None) is None:
                     NodeFactory.generate(target_statement)
                 node = cls.__mapping.get(target_statement)
