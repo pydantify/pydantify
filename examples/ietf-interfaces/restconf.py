@@ -39,8 +39,8 @@ print(
 for interface in model.interfaces.interface:
     print(
         "Interface {name} is {status}".format(
-            name=interface.name.root,
-            status="enabled" if interface.enabled.root else "disabled",
+            name=interface.name,
+            status="enabled" if interface.enabled else "disabled",
         )
     )
 
@@ -48,8 +48,8 @@ print("#" * 17, "Change status and description for the second interface", "#" * 
 from ietf_interfaces import DescriptionLeaf, EnabledLeaf, InterfacesContainer
 
 interface = model.interfaces.interface[1]
-interface.enabled = EnabledLeaf(root=True)
-interface.description = DescriptionLeaf(root="https://pydantify.github.io/pydantify/")
+interface.enabled = True
+interface.description = "https://pydantify.github.io/pydantify/"
 print(interface.model_dump_json(exclude_defaults=True, by_alias=True, indent=2))
 
 

@@ -1,44 +1,9 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
-
-
-class AddressLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title='AddressLeaf')]
-    """
-    Endpoint address. IP or FQDN
-    """
-
-
-class DescriptionLeaf(RootModel[str]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[str, Field(title='DescriptionLeaf')]
-    """
-    Endpoint description
-    """
-
-
-class PortType(RootModel[int]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[int, Field(ge=1, le=65535)]
-
-
-class PortLeaf(RootModel[PortType]):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
-    root: Annotated[PortType, Field(title='PortLeaf')]
-    """
-    Port number between 1 and 65535
-    """
 
 
 class EndpointContainer(BaseModel):
@@ -48,12 +13,24 @@ class EndpointContainer(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    address: Annotated[AddressLeaf, Field(alias='my-endpoint:address')]
-    port: Annotated[PortLeaf, Field(alias='my-endpoint:port')]
-    description: Annotated[
-        DescriptionLeaf, Field(None, alias='my-endpoint:description')
+    address: Annotated[str, Field(alias='my-endpoint:address', title='AddressLeaf')]
+    """
+    Endpoint address. IP or FQDN
+    """
+    port: Annotated[
+        int, Field(alias='my-endpoint:port', ge=1, le=65535, title='PortLeaf')
     ]
+    """
+    Port number between 1 and 65535
+    """
+    description: Annotated[
+        Optional[str], Field(alias='my-endpoint:description', title='DescriptionLeaf')
+    ] = None
+    """
+    Endpoint description
+    """
 
 
 class Model(BaseModel):
@@ -74,8 +51,11 @@ class Model(BaseModel):
 
     model_config = ConfigDict(
         populate_by_name=True,
+        regex_engine="python-re",
     )
-    endpoint: Annotated[EndpointContainer, Field(None, alias='my-endpoint:endpoint')]
+    endpoint: Annotated[
+        Optional[EndpointContainer], Field(alias='my-endpoint:endpoint')
+    ] = None
 
 
 if __name__ == "__main__":

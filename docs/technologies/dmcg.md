@@ -12,6 +12,3 @@ Some notable features include:
 - support for annotating classes via Python docstrings for ease of use within IDEs
 - ability to re-use and reference other classes within the schema (meaning two classes containing a field of the same type do not lead to said type appearing twice in the output model)
 - ability to rename classes and fields in order to not cause syntax errors, while still allowing initialization by the original name through pydantic's `alias` attribute
-
-
-As of September 2022, datamodel-code-generator only supports pydantic V1, however the developer has been made aware of the impending V2 update in issue [#803](https://github.com/koxudaxi/datamodel-code-generator/issues/803).

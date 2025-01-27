@@ -29,6 +29,8 @@ options:
                         Defaults to the input file's folder.
   -o OUTPUT_DIR, --output-dir OUTPUT_DIR
                         The directory that should be used to store the output model. Defaults to "$CWD/out".
+  -f OUTPUT_FILE, --output-file OUTPUT_FILE
+                        The name of the output file. Defaults to "out.py".
   -t TRIM_PATH, --trim-path TRIM_PATH
                         Get only the specified branch of the whole tree.
 
