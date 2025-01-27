@@ -1,0 +1,74 @@
+module keychains {
+  yang-version 1.1;
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains";
+
+  prefix keychains;
+
+  description 'Example taken from srl_nokia-keychains.yang';
+
+  typedef keychain-type {
+    type enumeration {
+      enum isis {
+        description
+          "Keychain intended to be used for authentication of IS-IS PDUs";
+      }
+      enum ospf {
+        description
+          "Keychain intended to be used for authentication of OSPFv2 messages";
+      }
+    }
+  }
+
+  list keychain {
+    max-elements 1024;
+    key "name";
+    description
+      "List of system keychains";
+
+    leaf name {
+      type string;
+      description
+        "The user configured name for the keychain";
+    }
+
+    leaf type {
+      type keychain-type;
+      description
+        "Specifies the intended use of the keychain
+
+          The type constrains the set of crypto algorithms that are available to use with each key in the keychain. It is also used to ensure that this keychain is only used by protocols for which it is intended.";
+    }
+
+    leaf active-key-for-send {
+      config false;
+      description
+        "Provides the key index of the currently active Keychain key";
+      type union {
+        type enumeration {
+          enum none {
+            description
+              "No send key is usable";
+          }
+        }
+        type leafref {
+          path "../key/index";
+        }
+      }
+    }
+
+    list key {
+      key "index";
+      description
+        "List of keys in the keychain";
+      leaf index {
+        type uint8;
+        description
+          "Each key in a keychain requires a unique identifier, the index value specifies this identifier";
+        must "( (../../type = 'isis') or (../../type = 'macsec')  or . = 1)" {
+          error-message "Only ISIS or MACSec supports keychains with key index not 1";
+        }
+      }
+    }
+  }
+}
