@@ -32,7 +32,7 @@ The generated module will be in the file `out/out.py`. We can move and rename it
     --8<-- "examples/ietf-interfaces/ietf_interfaces.py"
     ```
 
-## Pars JSON data into the model
+## Parse JSON data into the model
 
 Using *requests*, or any other HTTP library, the data can be retrieved in JSON format.
 
@@ -118,10 +118,6 @@ Now the model is filled with the received data. By using the option `by_alias=Tr
 ```
 
 As with all Python objects, you can access them and make evaluations.
-
-??? info "`root`"
-
-    For now, to access the value of the leaf object, the variable `root` needs to be used. Hopefully we can improve this in future versions.
 
 ```python title="restconf.py" linenums="39"
 --8<-- "examples/ietf-interfaces/restconf.py:39:45"

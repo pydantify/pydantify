@@ -1,8 +1,8 @@
 from pathlib import Path
-from endpoint import Model, EndpointContainer, AddressLeaf, PortLeaf
+from endpoint import Model, EndpointContainer
 
-port = PortLeaf(root=8080)
-host = AddressLeaf(root="localhost")
+port = 8080
+host = "localhost"
 
 endpoint1 = Model(endpoint=EndpointContainer(address=host, port=port))
 json_output = endpoint1.model_dump_json(indent=2, exclude_none=True)
