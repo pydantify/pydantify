@@ -201,7 +201,7 @@ class TypeResolver:
                 #     raise Exception(f"No node {name} not found with prefix {prefix}")
 
                 # return find_identityref(spec)
-                return object
+                return str
             case UnionTypeSpec.__qualname__:
                 union = tuple([cls.__resolve_type_statement(typ) for typ in spec.types])
                 return Union[union]  # type: ignore

@@ -209,6 +209,12 @@ def reset_optparse():
             [],
             id="leafref2",
         ),
+        param(
+            "examples/with_identity_default_list/ciphers.yang",
+            "examples/with_identity_default_list/expected.py",
+            [],
+            id="identity default list",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
