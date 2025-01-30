@@ -1,35 +1,50 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
 
 
-class InterfacesListEntry(BaseModel):
+class ServerProfileListEntry(BaseModel):
     """
-    List of configured device interfaces
+    List of configured TLS server profiles
     """
 
     model_config = ConfigDict(
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="interfaces:name", title="NameLeaf")] = (
-        None
+    name: Annotated[Optional[str], Field(alias="ciphers:name")] = None
+    """
+    Name of the TLS server-profile
+    """
+    cipher_list: Annotated[Optional[List[str]], Field(alias="ciphers:cipher-list")] = [
+        "ecdhe-ecdsa-aes256-gcm-sha384",
+        "ecdhe-ecdsa-aes128-gcm-sha256",
+        "ecdhe-rsa-aes256-gcm-sha384",
+        "ecdhe-rsa-aes128-gcm-sha256",
+    ]
+    """
+    List of ciphers to use when negotiating TLS 1.2 with clients
+
+    TLS 1.3 cipher suites are always enabled:
+        tls_aes_256_gcm_sha384, tls_aes_128_gcm_sha256, tls_chacha20_poly1305_sha256
+    """
+
+
+class TlsContainer(BaseModel):
+    """
+    Top-level container for TLS configuration and state
+    """
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
     )
-    """
-    Interface name
-    """
-    ip: Annotated[Optional[List[str]], Field(alias="interfaces:ip")] = []
-    """
-    List of interface IPs
-    """
-    tpid: Annotated[Optional[str], Field(alias="interfaces:tpid")] = "TPID_0X8100"
-    """
-    Optionally set the tag protocol identifier field (TPID) that
-    is accepted on the VLAN
-    """
+    server_profile: Annotated[
+        Optional[List[ServerProfileListEntry]], Field(alias="ciphers:server-profile")
+    ] = None
 
 
 class Model(BaseModel):
@@ -52,13 +67,11 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    interfaces: Annotated[
-        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
-    ] = None
+    tls: Annotated[Optional[TlsContainer], Field(alias="ciphers:tls")] = None
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

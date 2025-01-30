@@ -95,13 +95,22 @@ class Node(ABC):
         self.comments: str | None = __class__.__extract_comments(stm)
         self.description: str | None = __class__.__extract_description(stm)
 
+        def convert_default_values(stm_default: Any) -> Any:
+            if isinstance(stm_default, Decimal64Value):
+                return stm_default.value
+            elif (
+                isinstance(stm_default, Statement) and stm_default.keyword == "identity"
+            ):
+                return stm_default.arg
+            else:
+                return stm_default
+
         default = getattr(self.raw_statement, "i_default", PydanticUndefined)
-        if isinstance(default, Decimal64Value):
-            self.default = default.value
-        elif isinstance(default, Statement) and default.keyword == "identity":
-            self.default = default.arg
+        if isinstance(default, List):
+            self.default = [convert_default_values(x) for x in default]
         else:
-            self.default = default
+            self.default = convert_default_values(default)
+
         self._name: Optional[str] = None
 
         self._output_model: GeneratedClass = GeneratedClass()

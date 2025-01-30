@@ -1,0 +1,69 @@
+module ciphers {
+  yang-version 1.1;
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix ciph;
+
+  description 'Example taken from srl_nokia-tls';
+
+  identity cipher-type {
+    description
+      "Base identity for cipher types";
+  }
+
+  identity ecdhe-rsa-aes256-gcm-sha384 {
+    base cipher-type;
+  }
+
+  identity ecdhe-ecdsa-aes256-gcm-sha384 {
+    base cipher-type;
+  }
+
+  identity ecdhe-rsa-aes256-sha384 {
+    base cipher-type;
+  }
+
+  identity ecdhe-ecdsa-aes256-sha384 {
+    base cipher-type;
+  }
+
+  identity ecdhe-rsa-aes128-gcm-sha256 {
+    base cipher-type;
+  }
+
+  identity ecdhe-ecdsa-aes128-gcm-sha256 {
+    base cipher-type;
+  }
+
+  container tls {
+    description
+        "Top-level container for TLS configuration and state";
+    list server-profile {
+      description
+        "List of configured TLS server profiles";
+      key "name";
+      leaf name {
+        type string;
+        description
+          "Name of the TLS server-profile";
+      }
+
+      leaf-list cipher-list {
+        ordered-by user;
+        type identityref {
+          base cipher-type;
+        }
+        default "ecdhe-ecdsa-aes256-gcm-sha384";
+        default "ecdhe-ecdsa-aes128-gcm-sha256";
+        default "ecdhe-rsa-aes256-gcm-sha384";
+        default "ecdhe-rsa-aes128-gcm-sha256";
+        description
+          "List of ciphers to use when negotiating TLS 1.2 with clients
+
+           TLS 1.3 cipher suites are always enabled:
+               tls_aes_256_gcm_sha384, tls_aes_128_gcm_sha256, tls_chacha20_poly1305_sha256";
+      }
+    }
+  }
+}
