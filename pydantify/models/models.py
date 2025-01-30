@@ -35,7 +35,7 @@ class TypeDefNode(Node):
             field_info=Field(
                 self.default if self.default is not None or not self.mandatory else ...,
                 alias=self.get_qualified_name(),
-            ),
+            ),  # type: ignore[arg-type]
             cls=self.to_pydantic_model(),
         )
 
@@ -68,7 +68,7 @@ class LeafNode(Node):
                 self.default if self.default is not None or not self.mandatory else ...,
                 description=self.description,
                 alias=self.get_qualified_name(),
-            ),
+            ),  # type: ignore[arg-type]
             cls=self.to_pydantic_model(),
         )
 
@@ -215,7 +215,7 @@ class LeafListNode(Node):
                 self.default if self.default is not None or not self.mandatory else ...,
                 description=self.description,
                 alias=self.get_qualified_name(),
-            ),
+            ),  # type: ignore[arg-type]
         )
 
     def name(self) -> str:
