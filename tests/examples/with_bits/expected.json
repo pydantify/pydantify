@@ -1,0 +1,42 @@
+{
+  "$defs": {
+    "InterfacesContainer": {
+      "description": "Just a simple example of a container.",
+      "properties": {
+        "interfaces:name": {
+          "$ref": "#/$defs/NameLeaf"
+        },
+        "interfaces:mybits": {
+          "$ref": "#/$defs/MybitsLeaf",
+          "default": null
+        }
+      },
+      "required": [
+        "interfaces:name"
+      ],
+      "title": "InterfacesContainer",
+      "type": "object"
+    },
+    "Mybits-typeType": {
+      "pattern": "^(disable-nagle|auto-sense-speed|ten-mb-only|\\s)*$",
+      "type": "string"
+    },
+    "MybitsLeaf": {
+      "$ref": "#/$defs/Mybits-typeType"
+    },
+    "NameLeaf": {
+      "description": "Interface name. Example value: GigabitEthernet 0/0/0",
+      "type": "string"
+    }
+  },
+  "description": "Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.\n\n## Tips\nInitialization:\n- all values have to be set via keyword arguments\n- if a class contains only a `root` field, it can be initialized as follows:\n    - `member=MyNode(root=<value>)`\n    - `member=<value>`\n\nSerialziation:\n- `exclude_defaults=True` omits fields set to their default value (recommended)\n- `by_alias=True` ensures qualified names are used (necessary)",
+  "properties": {
+    "interfaces:interfaces": {
+      "$ref": "#/$defs/InterfacesContainer",
+      "default": null
+    }
+  },
+  "title": "Model",
+  "type": "object"
+}
+

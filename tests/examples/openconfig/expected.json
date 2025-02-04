@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "ConfigContainer": {
+      "description": "Configurable items at the global, physical interface\nlevel",
+      "properties": {
+        "openconfig-interfaces:name": {
+          "$ref": "#/$defs/NameLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:type": {
+          "$ref": "#/$defs/TypeLeaf"
+        },
+        "openconfig-interfaces:mtu": {
+          "$ref": "#/$defs/MtuLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:loopback-mode": {
+          "$ref": "#/$defs/Loopback-modeLeaf",
+          "default": false
+        },
+        "openconfig-interfaces:description": {
+          "$ref": "#/$defs/DescriptionLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:enabled": {
+          "$ref": "#/$defs/EnabledLeaf",
+          "default": true
+        }
+      },
+      "required": [
+        "openconfig-interfaces:type"
+      ],
+      "title": "ConfigContainer",
+      "type": "object"
+    },
+    "DescriptionLeaf": {
+      "description": "A textual description of the interface.\n\nA server implementation MAY map this leaf to the ifAlias\nMIB object.  Such an implementation needs to use some\nmechanism to handle the differences in size and characters\nallowed between this leaf and ifAlias.  The definition of\nsuch a mechanism is outside the scope of this document.\n\nSince ifAlias is defined to be stored in non-volatile\nstorage, the MIB implementation MUST map ifAlias to the\nvalue of 'description' in the persistently stored\ndatastore.\n\nSpecifically, if the device supports ':startup', when\nifAlias is read the device MUST return the value of\n'description' in the 'startup' datastore, and when it is\nwritten, it MUST be written to the 'running' and 'startup'\ndatastores.  Note that it is up to the implementation to\n\ndecide whether to modify this single leaf in 'startup' or\nperform an implicit copy-config from 'running' to\n'startup'.\n\nIf the device does not support ':startup', ifAlias MUST\nbe mapped to the 'description' leaf in the 'running'\ndatastore.",
+      "type": "string"
+    },
+    "EnabledLeaf": {
+      "description": "This leaf contains the configured, desired state of the\ninterface.\n\nSystems that implement the IF-MIB use the value of this\nleaf in the 'running' datastore to set\nIF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry\nhas been initialized, as described in RFC 2863.\n\nChanges in this leaf in the 'running' datastore are\nreflected in ifAdminStatus, but if ifAdminStatus is\nchanged over SNMP, this leaf is not affected.",
+      "type": "boolean"
+    },
+    "Loopback-modeLeaf": {
+      "description": "When set to true, the interface is logically looped back,\nsuch that packets that are forwarded via the interface\nare received on the same interface.",
+      "type": "boolean"
+    },
+    "MtuLeaf": {
+      "description": "Set the max transmission unit size in octets\nfor the physical interface.  If this is not set, the mtu is\nset to the operational default -- e.g., 1514 bytes on an\nEthernet interface.",
+      "maximum": 65535,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "NameLeaf": {
+      "description": "The name of the interface.\n\nA device MAY restrict the allowed values for this leaf,\npossibly depending on the type of the interface.\nFor system-controlled interfaces, this leaf is the\ndevice-specific name of the interface.  The 'config false'\nlist interfaces/interface[name]/state contains the currently\nexisting interfaces on the device.\n\nIf a client tries to create configuration for a\nsystem-controlled interface that is not present in the\ncorresponding state list, the server MAY reject\nthe request if the implementation does not support\npre-provisioning of interfaces or if the name refers to\nan interface that can never exist in the system.  A\nNETCONF server MUST reply with an rpc-error with the\nerror-tag 'invalid-value' in this case.\n\nThe IETF model in RFC 7223 provides YANG features for the\nfollowing (i.e., pre-provisioning and arbitrary-names),\nhowever they are omitted here:\n\n If the device supports pre-provisioning of interface\n configuration, the 'pre-provisioning' feature is\n advertised.\n\n If the device allows arbitrarily named user-controlled\n interfaces, the 'arbitrary-names' feature is advertised.\n\nWhen a configured user-controlled interface is created by\nthe system, it is instantiated with the same name in the\n/interfaces/interface[name]/state list.",
+      "type": "string"
+    },
+    "TypeLeaf": {
+      "description": "The type of the interface.\n\nWhen an interface entry is created, a server MAY\ninitialize the type leaf with a valid value, e.g., if it\nis possible to derive the type from the name of the\ninterface.\n\nIf a client tries to set the type of an interface to a\nvalue that can never be used by the system, e.g., if the\ntype is not supported or if the type does not match the\nname of the interface, the server MUST reject the request.\nA NETCONF server MUST reply with an rpc-error with the\nerror-tag 'invalid-value' in this case.",
+      "type": "string"
+    }
+  },
+  "description": "Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.\n\n## Tips\nInitialization:\n- all values have to be set via keyword arguments\n- if a class contains only a `root` field, it can be initialized as follows:\n    - `member=MyNode(root=<value>)`\n    - `member=<value>`\n\nSerialziation:\n- `exclude_defaults=True` omits fields set to their default value (recommended)\n- `by_alias=True` ensures qualified names are used (necessary)",
+  "properties": {
+    "openconfig-interfaces:config": {
+      "$ref": "#/$defs/ConfigContainer",
+      "default": null
+    }
+  },
+  "title": "Model",
+  "type": "object"
+}
+
