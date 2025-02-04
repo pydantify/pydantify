@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Type, Optional
 
 from collections import defaultdict
 from datamodel_code_generator.model import pydantic_v2
+from datamodel_code_generator.parser.base import Result
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 from pyang.context import Context
 from pyang.statements import ModSubmodStatement, Statement
@@ -112,7 +113,7 @@ class ModelGenerator:
             pass
 
     @staticmethod
-    def __generate_pydantic(json: str) -> str:
+    def __generate_pydantic(json: str) -> str | dict[tuple[str, ...], Result]:
         """Generates pydantic models"""
         extra_template_data: defaultdict[str, dict[str, Any]] = defaultdict(dict)
         extra_template_data["#all#"]["config"] = {}
