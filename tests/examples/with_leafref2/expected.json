@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "Active-key-for-sendLeaf": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/enumerationEnum2"
+        },
+        {
+          "$ref": "#/$defs/IndexLeaf"
+        }
+      ],
+      "description": "Provides the key index of the currently active Keychain key"
+    },
+    "IndexLeaf": {
+      "description": "Each key in a keychain requires a unique identifier, the index value specifies this identifier",
+      "maximum": 255,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "KeyListEntry": {
+      "description": "List of keys in the keychain",
+      "properties": {
+        "keychains:index": {
+          "$ref": "#/$defs/IndexLeaf",
+          "default": null
+        }
+      },
+      "title": "KeyListEntry",
+      "type": "object"
+    },
+    "Keychain-typeType": {
+      "$ref": "#/$defs/enumerationEnum"
+    },
+    "KeychainListEntry": {
+      "description": "List of system keychains",
+      "properties": {
+        "keychains:name": {
+          "$ref": "#/$defs/NameLeaf",
+          "default": null
+        },
+        "keychains:type": {
+          "$ref": "#/$defs/TypeLeaf",
+          "default": null,
+          "description": "Specifies the intended use of the keychain\n\n The type constrains the set of crypto algorithms that are available to use with each key in the keychain. It is also used to ensure that this keychain is only used by protocols for which it is intended."
+        },
+        "keychains:active-key-for-send": {
+          "$ref": "#/$defs/Active-key-for-sendLeaf",
+          "default": null
+        },
+        "keychains:key": {
+          "default": null,
+          "items": {
+            "$ref": "#/$defs/KeyListEntry"
+          },
+          "type": "array"
+        }
+      },
+      "title": "KeychainListEntry",
+      "type": "object"
+    },
+    "NameLeaf": {
+      "description": "The user configured name for the keychain",
+      "type": "string"
+    },
+    "TypeLeaf": {
+      "$ref": "#/$defs/Keychain-typeType",
+      "description": "Specifies the intended use of the keychain\n\nThe type constrains the set of crypto algorithms that are available to use with each key in the keychain. It is also used to ensure that this keychain is only used by protocols for which it is intended."
+    },
+    "enumerationEnum": {
+      "enum": [
+        "isis",
+        "ospf"
+      ],
+      "title": "enumerationEnum",
+      "type": "string"
+    },
+    "enumerationEnum2": {
+      "enum": [
+        "none"
+      ],
+      "title": "enumerationEnum2",
+      "type": "string"
+    }
+  },
+  "description": "Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.\n\n## Tips\nInitialization:\n- all values have to be set via keyword arguments\n- if a class contains only a `root` field, it can be initialized as follows:\n    - `member=MyNode(root=<value>)`\n    - `member=<value>`\n\nSerialziation:\n- `exclude_defaults=True` omits fields set to their default value (recommended)\n- `by_alias=True` ensures qualified names are used (necessary)",
+  "properties": {
+    "keychains:keychain": {
+      "default": null,
+      "items": {
+        "$ref": "#/$defs/KeychainListEntry"
+      },
+      "type": "array"
+    }
+  },
+  "title": "Model",
+  "type": "object"
+}
+

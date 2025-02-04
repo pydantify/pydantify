@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "AddressLeaf": {
+      "$ref": "#/$defs/Dotted-quadType",
+      "description": "Interface IP address. Example value: 10.10.10.1"
+    },
+    "Dotted-quadType": {
+      "description": "Four octets written as decimal numbers and separated with the '.' (full stop) character.",
+      "pattern": "^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
+      "type": "string"
+    },
+    "EnabledLeaf": {
+      "description": "Enable or disable the interface. Example value: true",
+      "type": "boolean"
+    },
+    "InterfaceListEntry": {
+      "description": "Regular IPv4 address with subnet",
+      "properties": {
+        "interfaces:name": {
+          "$ref": "#/$defs/NameLeaf"
+        },
+        "interfaces:address": {
+          "$ref": "#/$defs/AddressLeaf"
+        },
+        "interfaces:subnet-mask": {
+          "$ref": "#/$defs/Subnet-maskLeaf"
+        },
+        "interfaces:enabled": {
+          "$ref": "#/$defs/EnabledLeaf",
+          "default": false
+        }
+      },
+      "required": [
+        "interfaces:name",
+        "interfaces:address",
+        "interfaces:subnet-mask"
+      ],
+      "title": "InterfaceListEntry",
+      "type": "object"
+    },
+    "InterfacesContainer": {
+      "properties": {
+        "interfaces:interface": {
+          "default": null,
+          "items": {
+            "$ref": "#/$defs/InterfaceListEntry"
+          },
+          "type": "array"
+        }
+      },
+      "title": "InterfacesContainer",
+      "type": "object"
+    },
+    "NameLeaf": {
+      "description": "Interface name. Example value: GigabitEthernet 0/0/0",
+      "type": "string"
+    },
+    "Subnet-maskLeaf": {
+      "$ref": "#/$defs/Dotted-quadType",
+      "description": "Interface subnet mask. Example value: 255.255.255.0"
+    }
+  },
+  "description": "Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.\n\n## Tips\nInitialization:\n- all values have to be set via keyword arguments\n- if a class contains only a `root` field, it can be initialized as follows:\n    - `member=MyNode(root=<value>)`\n    - `member=<value>`\n\nSerialziation:\n- `exclude_defaults=True` omits fields set to their default value (recommended)\n- `by_alias=True` ensures qualified names are used (necessary)",
+  "properties": {
+    "interfaces:interfaces": {
+      "$ref": "#/$defs/InterfacesContainer",
+      "default": null
+    }
+  },
+  "title": "Model",
+  "type": "object"
+}
+

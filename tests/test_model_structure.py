@@ -1,4 +1,5 @@
 import ast
+import json
 import logging
 import os
 import sys
@@ -227,3 +228,141 @@ def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Pa
     )
     print("Temp file: " + str(tmp_path / "out.py"))
     ParsedAST.assert_python_sources_equal(tmp_path / "out.py", expected)
+
+
+@pytest.mark.parametrize(
+    ("input_dir", "expected_file", "args"),
+    [
+        param(
+            "examples/minimal/interfaces.yang",
+            "examples/minimal/expected.json",
+            ["-j"],
+            id="minimal",
+        ),
+        param(
+            "examples/minimal/interfaces.yang",
+            "examples/minimal/expected_trimmed.json",
+            ["-j", "-t=/interfaces/interfaces/address"],
+            id="minimal_trimmed",
+        ),
+        param(
+            "examples/minimal/interfaces.yang",
+            "examples/minimal/expected_trimmed.json",
+            ["-j", "-t=interfaces/interfaces/address"],
+            id="minimal_trimmed without leading /",
+        ),
+        param(
+            "examples/with_typedef/interfaces.yang",
+            "examples/with_typedef/expected.json",
+            ["-j"],
+            id="typedef",
+        ),
+        param(
+            "examples/with_leafref/interfaces.yang",
+            "examples/with_leafref/expected.json",
+            ["-j"],
+            id="leafref",
+        ),
+        param(
+            "examples/with_restrictions/interfaces.yang",
+            "examples/with_restrictions/expected.json",
+            ["-j"],
+            id="restrictions",
+        ),
+        param(
+            "examples/with_uses/interfaces.yang",
+            "examples/with_uses/expected.json",
+            ["-j"],
+            id="uses",
+        ),
+        param(
+            "examples/with_case/interfaces.yang",
+            "examples/with_case/expected.json",
+            ["-j"],
+            id="case",
+        ),
+        param(
+            "examples/with_complex_case/interfaces.yang",
+            "examples/with_complex_case/expected.json",
+            ["-j"],
+            id="complex case",
+        ),
+        param(
+            "examples/turing-machine/turing-machine.yang",
+            "examples/turing-machine/expected.json",
+            ["-j"],
+            id="turing machine",
+        ),
+        param(
+            "examples/openconfig/openconfig-interfaces.yang",
+            "examples/openconfig/expected.json",
+            [
+                "-j",
+                "-t=openconfig-interfaces/interfaces/interface/config",
+            ],
+            id="openconfig",
+        ),
+        param(
+            "examples/with_leaflist/interfaces.yang",
+            "examples/with_leaflist/expected.json",
+            ["-j"],
+            id="leaf-list",
+        ),
+        param(
+            "examples/with_union/interfaces.yang",
+            "examples/with_union/expected.json",
+            ["-j"],
+            id="type union",
+        ),
+        param(
+            "examples/with_identity_default/interfaces.yang",
+            "examples/with_identity_default/expected.json",
+            ["-j"],
+            id="identity default",
+        ),
+        param(
+            "examples/with_enum/interfaces.yang",
+            "examples/with_enum/expected.json",
+            ["-j"],
+            id="enum",
+        ),
+        param(
+            "examples/with_decimal64/interfaces.yang",
+            "examples/with_decimal64/expected.json",
+            ["-j"],
+            id="decimal64",
+        ),
+        param(
+            "examples/with_bits/interfaces.yang",
+            "examples/with_bits/expected.json",
+            ["-j"],
+            id="bits",
+        ),
+        param(
+            "examples/with_leafref2/keychains.yang",
+            "examples/with_leafref2/expected.json",
+            ["-j"],
+            id="leafref2",
+        ),
+        param(
+            "examples/with_identity_default_list/ciphers.yang",
+            "examples/with_identity_default_list/expected.json",
+            ["-j"],
+            id="identity default list",
+        ),
+    ],
+)
+def test_json_schema(
+    input_dir: str, expected_file: str, args: List[str], tmp_path: Path
+):
+    input_folder = Path(__package__) / input_dir
+    expected = Path(__package__) / expected_file
+    run_pydantify(
+        input_file=input_folder,
+        output_folder=tmp_path,
+        args=args,
+    )
+    print("Temp file: " + str(tmp_path / "out.json"))
+    expected_json = json.loads(Path(expected).read_text())
+    tmp_json = json.loads(Path(tmp_path / "out.json").read_text())
+    assert tmp_json == expected_json

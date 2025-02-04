@@ -1,0 +1,69 @@
+{
+  "$defs": {
+    "InterfacesListEntry": {
+      "description": "List of configured device interfaces",
+      "properties": {
+        "interfaces:name": {
+          "$ref": "#/$defs/NameLeaf",
+          "default": null
+        },
+        "interfaces:ip": {
+          "default": [],
+          "description": "List of interface IPs",
+          "items": {
+            "$ref": "#/$defs/IpLeafList"
+          },
+          "type": "array"
+        },
+        "interfaces:tagged": {
+          "default": [],
+          "description": "List of tagged VLANs",
+          "items": {
+            "$ref": "#/$defs/TaggedLeafList"
+          },
+          "type": "array"
+        },
+        "interfaces:untagged": {
+          "$ref": "#/$defs/UntaggedLeaf",
+          "default": null
+        }
+      },
+      "title": "InterfacesListEntry",
+      "type": "object"
+    },
+    "IpLeafList": {
+      "description": "List of interface IPs",
+      "type": "string"
+    },
+    "NameLeaf": {
+      "description": "Interface name",
+      "type": "string"
+    },
+    "TaggedLeafList": {
+      "$ref": "#/$defs/Vlan_idType",
+      "description": "List of tagged VLANs"
+    },
+    "UntaggedLeaf": {
+      "$ref": "#/$defs/Vlan_idType",
+      "description": "Untagged VLAN"
+    },
+    "Vlan_idType": {
+      "maximum": 4094,
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "description": "Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.\n\n## Tips\nInitialization:\n- all values have to be set via keyword arguments\n- if a class contains only a `root` field, it can be initialized as follows:\n    - `member=MyNode(root=<value>)`\n    - `member=<value>`\n\nSerialziation:\n- `exclude_defaults=True` omits fields set to their default value (recommended)\n- `by_alias=True` ensures qualified names are used (necessary)",
+  "properties": {
+    "interfaces:interfaces": {
+      "default": null,
+      "items": {
+        "$ref": "#/$defs/InterfacesListEntry"
+      },
+      "type": "array"
+    }
+  },
+  "title": "Model",
+  "type": "object"
+}
+

@@ -3,10 +3,11 @@ import logging
 import sys
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Any, List, Type, Optional
+from typing import Any, Dict, List, Type, Optional
 
 from collections import defaultdict
 from datamodel_code_generator.model import pydantic_v2
+from datamodel_code_generator.parser.base import Result
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
 from pyang.context import Context
 from pyang.statements import ModSubmodStatement, Statement
@@ -64,6 +65,7 @@ class ModelGenerator:
     output_dir: Path
     standalone: bool = False
     trim_path: Optional[str] = None
+    json_schema_output: bool
 
     @classmethod
     def generate(
@@ -77,7 +79,69 @@ class ModelGenerator:
         cls.__generate(modules, fd)
         fd.write("\n\n")
 
-        # Add initialization helper-code
+        # Add initialization helper-code if Pydantic models generated
+        if cls.json_schema_output is False:
+            cls.__generate_helper_code(fd)
+
+    @classmethod
+    def __generate(
+        cls: Type[Self], modules: List[ModSubmodStatement], fd: TextIOWrapper
+    ):
+        """Generates and yields"""
+
+        for module in modules:
+            if cls.trim_path is not None:
+                split_path = cls.split_path(cls.trim_path)
+                module = cls.trim(module, split_path)
+            if module is None:
+                logger.error("Invalid module. Exiting.")
+                sys.exit(0)
+            mod = ModelRoot(module)
+            schema = cls.custom_dump(mod.to_pydantic_model())
+            result = (
+                json.dumps(schema, indent=2)
+                if cls.json_schema_output is True
+                else cls.__generate_pydantic(json.dumps(schema))
+            )
+            # Keep mypy happy
+            if isinstance(result, str):
+                fd.write(result)
+            else:
+                logger.warning(
+                    f"Expected string but got {type(result)} whilst parsing JSON"
+                )
+            pass
+
+    @staticmethod
+    def __generate_pydantic(json: str) -> str | dict[tuple[str, ...], Result]:
+        """Generates pydantic models"""
+        extra_template_data: defaultdict[str, dict[str, Any]] = defaultdict(dict)
+        extra_template_data["#all#"]["config"] = {}
+        extra_template_data["#all#"]["config"]["regex_engine"] = '"python-re"'
+        parser = JsonSchemaParser(
+            json,
+            data_model_type=pydantic_v2.BaseModel,
+            data_model_root_type=pydantic_v2.RootModel,
+            data_type_manager_type=pydantic_v2.DataTypeManager,
+            data_model_field_type=pydantic_v2.DataModelField,
+            snake_case_field=True,
+            apply_default_values_for_required_fields=True,
+            use_annotated=True,
+            field_constraints=True,
+            use_schema_description=True,
+            use_field_description=True,
+            aliases=Node.alias_mapping,
+            reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
+            strict_nullable=False,
+            allow_population_by_field_name=True,
+            allow_extra_fields=False,
+            collapse_root_models=True,
+            extra_template_data=extra_template_data,
+        )
+        return parser.parse()
+
+    @classmethod
+    def __generate_helper_code(cls: Type[Self], fd: TextIOWrapper) -> None:
         if cls.standalone:
             fd.write(function_to_source_code(restconf_patch_request))
             fd.write("\n\n")
@@ -107,54 +171,6 @@ class ModelGenerator:
         )
 
     @classmethod
-    def __generate(
-        cls: Type[Self], modules: List[ModSubmodStatement], fd: TextIOWrapper
-    ):
-        """Generates and yields"""
-
-        for module in modules:
-            if cls.trim_path is not None:
-                split_path = cls.split_path(cls.trim_path)
-                module = cls.trim(module, split_path)
-            if module is None:
-                logger.error("Invalid module. Exiting.")
-                sys.exit(0)
-            mod = ModelRoot(module)
-            json = cls.custom_dump(mod.to_pydantic_model())
-            extra_template_data: defaultdict[str, dict[str, Any]] = defaultdict(dict)
-            extra_template_data["#all#"]["config"] = {}
-            extra_template_data["#all#"]["config"]["regex_engine"] = '"python-re"'
-            parser = JsonSchemaParser(
-                json,
-                data_model_type=pydantic_v2.BaseModel,
-                data_model_root_type=pydantic_v2.RootModel,
-                data_type_manager_type=pydantic_v2.DataTypeManager,
-                data_model_field_type=pydantic_v2.DataModelField,
-                snake_case_field=True,
-                apply_default_values_for_required_fields=True,
-                use_annotated=True,
-                field_constraints=True,
-                use_schema_description=True,
-                use_field_description=True,
-                aliases=Node.alias_mapping,
-                reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
-                strict_nullable=False,
-                allow_population_by_field_name=True,
-                allow_extra_fields=False,
-                collapse_root_models=True,
-                extra_template_data=extra_template_data,
-            )
-            result = parser.parse()
-            # Keep mypy happy
-            if isinstance(result, str):
-                fd.write(result)
-            else:
-                logger.warning(
-                    f"Expected string but got {type(result)} whilst parsing JSON"
-                )
-            pass
-
-    @classmethod
     def split_path(cls: Type[Self], path: str) -> List[str]:
         return [p for p in path.split("/") if p != ""]
 
@@ -180,6 +196,5 @@ class ModelGenerator:
         return None
 
     @classmethod
-    def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> str:
-        schema = model.model_json_schema(by_alias=True)
-        return json.dumps(schema)
+    def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> Dict[str, Any]:
+        return model.model_json_schema(by_alias=True)
