@@ -1,0 +1,207 @@
+{
+  "$defs": {
+    "Cell-indexType": {
+      "description": "Type for indexing tape cells.",
+      "maximum": 9223372036854775807,
+      "minimum": -9223372036854775808,
+      "type": "integer"
+    },
+    "CellListEntry": {
+      "description": "List of non-blank cells.",
+      "properties": {
+        "turing-machine:coord": {
+          "$ref": "#/$defs/CoordLeaf",
+          "default": null
+        },
+        "turing-machine:symbol": {
+          "$ref": "#/$defs/SymbolLeaf",
+          "default": null
+        }
+      },
+      "title": "CellListEntry",
+      "type": "object"
+    },
+    "CoordLeaf": {
+      "$ref": "#/$defs/Cell-indexType",
+      "description": "Coordinate (index) of the tape cell."
+    },
+    "DeltaListEntry": {
+      "description": "The list of transition rules.",
+      "properties": {
+        "turing-machine:label": {
+          "$ref": "#/$defs/LabelLeaf",
+          "default": null
+        },
+        "turing-machine:input": {
+          "$ref": "#/$defs/InputContainer",
+          "default": null
+        },
+        "turing-machine:output": {
+          "$ref": "#/$defs/OutputContainer",
+          "default": null
+        }
+      },
+      "title": "DeltaListEntry",
+      "type": "object"
+    },
+    "Head-dirType": {
+      "$ref": "#/$defs/enumerationEnum",
+      "description": "Possible directions for moving the read/write head, one cell\nto the left or right (default)."
+    },
+    "Head-moveLeaf": {
+      "$ref": "#/$defs/Head-dirType",
+      "description": "Move the head one cell to the left or right"
+    },
+    "Head-positionLeaf": {
+      "$ref": "#/$defs/Cell-indexType",
+      "description": "Position of tape read/write head."
+    },
+    "InputContainer": {
+      "description": "Input parameters (arguments) of the transition rule.",
+      "properties": {
+        "turing-machine:state": {
+          "$ref": "#/$defs/StateLeaf2"
+        },
+        "turing-machine:symbol": {
+          "$ref": "#/$defs/SymbolLeaf2"
+        }
+      },
+      "required": [
+        "turing-machine:state",
+        "turing-machine:symbol"
+      ],
+      "title": "InputContainer",
+      "type": "object"
+    },
+    "LabelLeaf": {
+      "description": "An arbitrary label of the transition rule.",
+      "type": "string"
+    },
+    "OutputContainer": {
+      "description": "Output values of the transition rule.",
+      "properties": {
+        "turing-machine:state": {
+          "$ref": "#/$defs/StateLeaf3",
+          "default": null
+        },
+        "turing-machine:symbol": {
+          "$ref": "#/$defs/SymbolLeaf3",
+          "default": null
+        },
+        "turing-machine:head-move": {
+          "$ref": "#/$defs/Head-moveLeaf",
+          "default": "right"
+        }
+      },
+      "title": "OutputContainer",
+      "type": "object"
+    },
+    "State-indexType": {
+      "description": "Type for indexing states of the control unit.",
+      "maximum": 65535,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "StateLeaf": {
+      "$ref": "#/$defs/State-indexType",
+      "description": "Current state of the control unit.\nThe initial state is 0."
+    },
+    "StateLeaf2": {
+      "$ref": "#/$defs/State-indexType",
+      "description": "Current state of the control unit."
+    },
+    "StateLeaf3": {
+      "$ref": "#/$defs/State-indexType",
+      "description": "New state of the control unit. If this leaf is not\npresent, the state doesn't change."
+    },
+    "SymbolLeaf": {
+      "$ref": "#/$defs/Tape-symbolType",
+      "description": "Symbol appearing in the tape cell.\nBlank (empty string) is not allowed here because the\n'cell' list only contains non-blank cells."
+    },
+    "SymbolLeaf2": {
+      "$ref": "#/$defs/Tape-symbolType",
+      "description": "Symbol read from the tape cell."
+    },
+    "SymbolLeaf3": {
+      "$ref": "#/$defs/Tape-symbolType",
+      "description": "Symbol to be written to the tape cell. If this leaf is\nnot present, the symbol doesn't change."
+    },
+    "Tape-symbolType": {
+      "description": "Type of symbols appearing in tape cells.\nA blank is represented as an empty string where necessary.",
+      "maxLength": 1,
+      "minLength": 0,
+      "type": "string"
+    },
+    "TapeContainer": {
+      "description": "The contents of the tape.",
+      "properties": {
+        "turing-machine:cell": {
+          "default": null,
+          "items": {
+            "$ref": "#/$defs/CellListEntry"
+          },
+          "type": "array"
+        }
+      },
+      "title": "TapeContainer",
+      "type": "object"
+    },
+    "Transition-functionContainer": {
+      "description": "The Turing Machine is configured by specifying the\ntransition function.",
+      "properties": {
+        "turing-machine:delta": {
+          "default": null,
+          "items": {
+            "$ref": "#/$defs/DeltaListEntry"
+          },
+          "type": "array"
+        }
+      },
+      "title": "Transition-functionContainer",
+      "type": "object"
+    },
+    "Turing-machineContainer": {
+      "description": "State data and configuration of a Turing Machine.",
+      "properties": {
+        "turing-machine:state": {
+          "$ref": "#/$defs/StateLeaf"
+        },
+        "turing-machine:head-position": {
+          "$ref": "#/$defs/Head-positionLeaf"
+        },
+        "turing-machine:tape": {
+          "$ref": "#/$defs/TapeContainer",
+          "default": null
+        },
+        "turing-machine:transition-function": {
+          "$ref": "#/$defs/Transition-functionContainer",
+          "default": null
+        }
+      },
+      "required": [
+        "turing-machine:state",
+        "turing-machine:head-position"
+      ],
+      "title": "Turing-machineContainer",
+      "type": "object"
+    },
+    "enumerationEnum": {
+      "enum": [
+        "left",
+        "right"
+      ],
+      "title": "enumerationEnum",
+      "type": "string"
+    }
+  },
+  "description": "Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.\n\n## Tips\nInitialization:\n- all values have to be set via keyword arguments\n- if a class contains only a `root` field, it can be initialized as follows:\n    - `member=MyNode(root=<value>)`\n    - `member=<value>`\n\nSerialziation:\n- `exclude_defaults=True` omits fields set to their default value (recommended)\n- `by_alias=True` ensures qualified names are used (necessary)",
+  "properties": {
+    "turing-machine:turing-machine": {
+      "$ref": "#/$defs/Turing-machineContainer",
+      "default": null
+    }
+  },
+  "title": "Model",
+  "type": "object"
+}
+

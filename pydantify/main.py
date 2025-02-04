@@ -81,8 +81,8 @@ def parse_cli_arguments() -> List[str]:
         "-f",
         "--output-file",
         dest="output_file",
-        help='The name of the output file. Defaults to "out.py".',
-        default="out.py",
+        help='The name of the output file. Defaults to "out.py" for Pydantic output or "out.json" for JSON schema output.',
+        default=None,
     )
     parser.add_argument(
         "input_file",
@@ -96,6 +96,14 @@ def parse_cli_arguments() -> List[str]:
         help="Get only the specified branch of the whole tree.",
         default=None,
     )
+    parser.add_argument(
+        "-j",
+        "--json-schema",
+        action="store_true",
+        dest="json_schema_output",
+        help="Output JSON schema instead of Pydantic models",
+        default=False,
+    )
     relay_args: List[str] = []
 
     # Parse
@@ -105,6 +113,8 @@ def parse_cli_arguments() -> List[str]:
     logger.setLevel(logging.DEBUG if args.verbose else logging.INFO)
     ModelGenerator.include_verification_code = args.verify
     ModelGenerator.standalone = args.standalone
+    ModelGenerator.json_schema_output = args.json_schema_output
+    default_output_file = "out.json" if args.json_schema_output else "out.py"
 
     input_dir = (
         Path(args.input_file).absolute().parent
@@ -119,10 +129,12 @@ def parse_cli_arguments() -> List[str]:
     output_dir = Path(args.output_dir).absolute()
     ModelGenerator.output_dir = output_dir
     os.makedirs(output_dir, exist_ok=True)  # Create output directory if not exists
-    with open(output_dir / "__init__.py", "a"):  # Create init file if not exists
-        pass
-    relay_args.append(f"--output={output_dir}/{args.output_file}")
-
+    if args.json_schema_output is False:
+        with open(output_dir / "__init__.py", "a"):  # Create init file if not exists
+            pass
+    relay_args.append(
+        f"--output={output_dir}/{args.output_file if args.output_file is not None else default_output_file}"
+    )
     relay_args.append(f"--plugindir={Path(__file__).parent}/plugins")
     relay_args.append("--format=pydantic")
 
