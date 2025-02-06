@@ -97,7 +97,10 @@ class ModelGenerator:
                 logger.error("Invalid module. Exiting.")
                 sys.exit(0)
             mod = ModelRoot(module)
-            schema = cls.custom_dump(mod.to_pydantic_model())
+            pydantic_model = mod.to_pydantic_model()
+            if pydantic_model is None:
+                continue
+            schema = cls.custom_dump(pydantic_model)
             result = (
                 json.dumps(schema, indent=2)
                 if cls.json_schema_output is True
