@@ -270,7 +270,7 @@ class ModelRoot:
     def __init__(self, stm: type[Statement]):
         self.root_node: Node | None = NodeFactory.generate(stm)
 
-    def to_pydantic_model(self) -> type[BaseModel]:
+    def to_pydantic_model(self) -> type[BaseModel] | None:
         fields: Dict
         if isinstance(self.root_node, ModuleNode):
             # Take only children, as
@@ -294,4 +294,4 @@ Serialziation:
 - `exclude_defaults=True` omits fields set to their default value (recommended)
 - `by_alias=True` ensures qualified names are used (necessary)
 """
-        return output_model
+        return output_model if fields else None
