@@ -6,6 +6,17 @@ from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
 
 
+class TaggedLeafList(RootModel[int]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[int, Field(ge=1, le=4094)]
+    """
+    List of tagged VLANs
+    """
+
+
 class InterfacesListEntry(BaseModel):
     """
     List of configured device interfaces
@@ -15,9 +26,7 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="interfaces:name", title="NameLeaf")] = (
-        None
-    )
+    name: Annotated[Optional[str], Field(alias="interfaces:name")] = None
     """
     Interface name
     """
@@ -26,14 +35,13 @@ class InterfacesListEntry(BaseModel):
     List of interface IPs
     """
     tagged: Annotated[
-        Optional[List[int]], Field(alias="interfaces:tagged", ge=1, le=4094)
+        Optional[List[TaggedLeafList]], Field(alias="interfaces:tagged")
     ] = []
     """
     List of tagged VLANs
     """
     untagged: Annotated[
-        Optional[int],
-        Field(alias="interfaces:untagged", ge=1, le=4094, title="UntaggedLeaf"),
+        Optional[int], Field(alias="interfaces:untagged", ge=1, le=4094)
     ] = None
     """
     Untagged VLAN
