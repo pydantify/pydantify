@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from enum import Enum
-from typing import Any, Dict, List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 from pyang.statements import (
     ChoiceStatement,
@@ -14,11 +14,9 @@ from pyang.statements import (
     TypedefStatement,
 )
 from pydantic import create_model
-from pydantic.fields import Field
+from pydantic.fields import Field, FieldInfo
 
-from . import BaseModel, GeneratedClass, Node, RootModel
-from . import NodeFactory
-from . import TypeResolver
+from . import BaseModel, GeneratedClass, Node, NodeFactory, RootModel, TypeResolver
 
 if TYPE_CHECKING:
     __class__: type
@@ -177,6 +175,20 @@ class ListNode(Node):
         assert isinstance(stm, ListStatement)
         super().__init__(stm)
 
+        keys: List[str] = self.__extract_keys(stm)
+        if keys:
+            for ch in self.children:
+                if ch.arg in keys and isinstance(
+                    ch._output_model.field_info, FieldInfo
+                ):
+                    ch.mandatory = True
+                    new_field_info = Field(
+                        ...,
+                        alias=ch._output_model.field_info.alias,
+                        description=ch._output_model.field_info.description,
+                    )
+                    ch._output_model.field_info = new_field_info
+
         output_class = self.to_pydantic_model()
         self._output_model = GeneratedClass(
             class_name=self.name(),
@@ -186,6 +198,12 @@ class ListNode(Node):
                 ... if self.mandatory else None, alias=self.get_qualified_name()
             ),
         )
+
+    @staticmethod
+    def __extract_keys(stm: Statement) -> List[str]:
+        """Returns the values of the key field."""
+        key_stms = stm.search_one("key")
+        return key_stms.arg.split() if key_stms is not None else []
 
     def name(self) -> str:
         return self.make_unique_name(suffix="ListEntry")

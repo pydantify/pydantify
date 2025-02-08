@@ -4,9 +4,9 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Tuple, Type, TYPE_CHECKING, Optional
-from datamodel_code_generator.reference import FieldNameResolver
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type
 
+from datamodel_code_generator.reference import FieldNameResolver
 from pyang.statements import (
     Statement,
 )
@@ -86,7 +86,7 @@ class Node(ABC):
     def __init__(self, stm: Statement):
         self.children: List[Node] = __class__.extract_statement_list(stm, "i_children")
         self.mandatory: bool = stm.search_one("mandatory", "true") or any(
-            (ch for ch in self.children if ch.mandatory == True)
+            (ch for ch in self.children if ch.mandatory is True)
         )
         self.arg: str = stm.arg
         self.keyword: str = stm.keyword

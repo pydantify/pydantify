@@ -4,8 +4,7 @@
       "description": "List of configured device interfaces",
       "properties": {
         "interfaces:name": {
-          "$ref": "#/$defs/NameLeaf",
-          "default": null
+          "$ref": "#/$defs/NameLeaf"
         },
         "interfaces:ip": {
           "default": [],
@@ -20,6 +19,9 @@
           "default": "TPID_0X8100"
         }
       },
+      "required": [
+        "interfaces:name"
+      ],
       "title": "InterfacesListEntry",
       "type": "object"
     },

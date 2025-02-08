@@ -10,14 +10,16 @@
       "description": "List of non-blank cells.",
       "properties": {
         "turing-machine:coord": {
-          "$ref": "#/$defs/CoordLeaf",
-          "default": null
+          "$ref": "#/$defs/CoordLeaf"
         },
         "turing-machine:symbol": {
           "$ref": "#/$defs/SymbolLeaf",
           "default": null
         }
       },
+      "required": [
+        "turing-machine:coord"
+      ],
       "title": "CellListEntry",
       "type": "object"
     },
@@ -29,8 +31,7 @@
       "description": "The list of transition rules.",
       "properties": {
         "turing-machine:label": {
-          "$ref": "#/$defs/LabelLeaf",
-          "default": null
+          "$ref": "#/$defs/LabelLeaf"
         },
         "turing-machine:input": {
           "$ref": "#/$defs/InputContainer",
@@ -41,6 +42,9 @@
           "default": null
         }
       },
+      "required": [
+        "turing-machine:label"
+      ],
       "title": "DeltaListEntry",
       "type": "object"
     },

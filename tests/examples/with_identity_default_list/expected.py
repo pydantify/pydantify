@@ -15,7 +15,7 @@ class ServerProfileListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="ciphers:name")] = None
+    name: Annotated[str, Field(alias="ciphers:name")]
     """
     Name of the TLS server-profile
     """

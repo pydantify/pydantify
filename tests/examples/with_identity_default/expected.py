@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 from typing_extensions import Annotated
@@ -15,9 +15,7 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="interfaces:name", title="NameLeaf")] = (
-        None
-    )
+    name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name
     """
@@ -58,7 +56,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

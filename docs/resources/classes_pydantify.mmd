@@ -26,7 +26,6 @@ classDiagram
     cache_strings : bool | Literal['all', 'keys', 'none']
     coerce_numbers_to_str
     defer_build
-    experimental_defer_build_mode : tuple[Literal['model', 'type_adapter'], ...]
     extra : ExtraValues | None
     field_title_generator : Callable[[str, FieldInfo | ComputedFieldInfo], str] | None
     from_attributes
@@ -41,7 +40,7 @@ classDiagram
     model_title_generator : Callable[[type], str] | None
     plugin_settings : dict[str, object] | None
     populate_by_name
-    protected_namespaces : tuple[str, ...]
+    protected_namespaces : tuple[str | Pattern[str], ...]
     regex_engine : Literal['rust-regex', 'python-re']
     revalidate_instances : Literal['always', 'never', 'subclass-instances']
     schema_generator : type[_GenerateSchema] | None
@@ -93,6 +92,7 @@ classDiagram
   }
   class ListNode {
     _output_model
+    __extract_keys(stm: Statement) List[str]
     __init__(stm: ListStatement) None
     name() str
     to_pydantic_model() type[BaseModel]
@@ -100,11 +100,14 @@ classDiagram
   class ModelGenerator {
     include_verification_code
     input_dir : Path
+    json_schema_output
     output_dir : Path
     standalone
     trim_path : Optional[str]
     __generate(modules: List[ModSubmodStatement], fd: TextIOWrapper)
-    custom_dump(model: Type[BaseModel]) str
+    __generate_helper_code(fd: TextIOWrapper) None
+    __generate_pydantic(json: str) str | dict[tuple[str, ...], Result]
+    custom_dump(model: Type[BaseModel]) Dict[str, Any]
     generate(ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper)
     split_path(path: str) List[str]
     trim(statement: Statement, path: List[str]) Statement | None
@@ -112,7 +115,7 @@ classDiagram
   class ModelRoot {
     root_node : Node | None
     __init__(stm: type[Statement])
-    to_pydantic_model() type[BaseModel]
+    to_pydantic_model() type[BaseModel] | None
   }
   class ModuleNode {
     _output_model
@@ -232,6 +235,7 @@ classDiagram
     __ge__()*
     __getattribute__()*
     __getnewargs__()*
+    __getstate__()*
     __gt__()*
     __hash__()*
     __index__()*
@@ -279,6 +283,7 @@ classDiagram
     bit_count()*
     bit_length()*
     conjugate()*
+    is_integer()*
     to_bytes()*
   }
   class denominator {
@@ -302,6 +307,7 @@ classDiagram
     __ge__()*
     __getattribute__()*
     __getnewargs__()*
+    __getstate__()*
     __gt__()*
     __hash__()*
     __index__()*
@@ -349,6 +355,7 @@ classDiagram
     bit_count()*
     bit_length()*
     conjugate()*
+    is_integer()*
     to_bytes()*
   }
   class list {
@@ -362,6 +369,7 @@ classDiagram
     __ge__()*
     __getattribute__()*
     __getitem__()*
+    __getstate__()*
     __gt__()*
     __iadd__()*
     __imul__()*
@@ -404,6 +412,7 @@ classDiagram
     __format__()*
     __ge__()*
     __getattribute__()*
+    __getstate__()*
     __gt__()*
     __hash__()*
     __init__()*
@@ -432,6 +441,7 @@ classDiagram
     __getattribute__()*
     __getitem__()*
     __getnewargs__()*
+    __getstate__()*
     __gt__()*
     __hash__()*
     __init__()*
@@ -511,6 +521,7 @@ classDiagram
     __getattribute__()*
     __getitem__()*
     __getnewargs__()*
+    __getstate__()*
     __gt__()*
     __hash__()*
     __init__()*
@@ -541,6 +552,7 @@ classDiagram
     __format__()*
     __ge__()*
     __getattribute__()*
+    __getstate__()*
     __gt__()*
     __hash__()*
     __init__()*
@@ -615,6 +627,7 @@ classDiagram
   bool --* Pydantify : handle_comments
   bool --* ModelGenerator : include_verification_code
   bool --* ModelGenerator : standalone
+  bool --* ModelGenerator : json_schema_output
   int --* ConfigDict : str_min_length
   list --* Statement : i_children
   list --* Statement : substmts
