@@ -14,7 +14,7 @@ from pyang.types import Decimal64Value
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import ConfigDict, create_model
 from pydantic import RootModel as PydanticRootModel
-from pydantic.fields import Field, FieldInfo
+from pydantic.fields import FieldInfo
 from pydantic_core import PydanticUndefined, PydanticUndefinedType
 
 from ..utility.yang_sources_tracker import YANGSourcesTracker
@@ -95,21 +95,6 @@ class Node(ABC):
         self.comments: str | None = __class__.__extract_comments(stm)
         self.description: str | None = __class__.__extract_description(stm)
 
-        if self.keyword == "list":
-            keys: List[str] = __class__.__extract_keys(stm)
-            if keys:
-                for ch in self.children:
-                    if ch.arg in keys and isinstance(
-                        ch._output_model.field_info, FieldInfo
-                    ):
-                        ch.mandatory = True
-                        new_field_info = Field(
-                            ...,
-                            alias=ch._output_model.field_info.alias,
-                            description=ch._output_model.field_info.description,
-                        )
-                        ch._output_model.field_info = new_field_info
-
         def convert_default_values(stm_default: Any) -> Any:
             if isinstance(stm_default, Decimal64Value):
                 return stm_default.value
@@ -176,12 +161,6 @@ class Node(ABC):
         """Returns the content of the "description" field, if present."""
         description = stm.search_one("description")
         return description.arg if description is not None else None
-
-    @staticmethod
-    def __extract_keys(stm: Statement) -> List[str]:
-        """Returns the values of the key field."""
-        key_stms = stm.search_one("key")
-        return key_stms.arg.split() if key_stms is not None else []
 
     def to_pydantic_model(self) -> Type[BaseModel] | Type[RootModel]:
         """Generates the output class representing this node."""
