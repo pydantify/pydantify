@@ -26,7 +26,7 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="interfaces:name")] = None
+    name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name
     """
@@ -74,7 +74,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

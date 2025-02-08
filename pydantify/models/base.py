@@ -4,9 +4,9 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Tuple, Type, TYPE_CHECKING, Optional
-from datamodel_code_generator.reference import FieldNameResolver
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type
 
+from datamodel_code_generator.reference import FieldNameResolver
 from pyang.statements import (
     Statement,
 )
@@ -14,7 +14,7 @@ from pyang.types import Decimal64Value
 from pydantic import BaseModel as PydanticBaseModel
 from pydantic import ConfigDict, create_model
 from pydantic import RootModel as PydanticRootModel
-from pydantic.fields import FieldInfo
+from pydantic.fields import Field, FieldInfo
 from pydantic_core import PydanticUndefined, PydanticUndefinedType
 
 from ..utility.yang_sources_tracker import YANGSourcesTracker
@@ -86,7 +86,7 @@ class Node(ABC):
     def __init__(self, stm: Statement):
         self.children: List[Node] = __class__.extract_statement_list(stm, "i_children")
         self.mandatory: bool = stm.search_one("mandatory", "true") or any(
-            (ch for ch in self.children if ch.mandatory == True)
+            (ch for ch in self.children if ch.mandatory is True)
         )
         self.arg: str = stm.arg
         self.keyword: str = stm.keyword
@@ -94,6 +94,21 @@ class Node(ABC):
         self.substmts: List[Statement] = stm.substmts
         self.comments: str | None = __class__.__extract_comments(stm)
         self.description: str | None = __class__.__extract_description(stm)
+
+        if self.keyword == "list":
+            keys: List[str] = __class__.__extract_keys(stm)
+            if keys:
+                for ch in self.children:
+                    if ch.arg in keys and isinstance(
+                        ch._output_model.field_info, FieldInfo
+                    ):
+                        ch.mandatory = True
+                        new_field_info = Field(
+                            ...,
+                            alias=ch._output_model.field_info.alias,
+                            description=ch._output_model.field_info.description,
+                        )
+                        ch._output_model.field_info = new_field_info
 
         def convert_default_values(stm_default: Any) -> Any:
             if isinstance(stm_default, Decimal64Value):
@@ -161,6 +176,12 @@ class Node(ABC):
         """Returns the content of the "description" field, if present."""
         description = stm.search_one("description")
         return description.arg if description is not None else None
+
+    @staticmethod
+    def __extract_keys(stm: Statement) -> List[str]:
+        """Returns the values of the key field."""
+        key_stms = stm.search_one("key")
+        return key_stms.arg.split() if key_stms is not None else []
 
     def to_pydantic_model(self) -> Type[BaseModel] | Type[RootModel]:
         """Generates the output class representing this node."""

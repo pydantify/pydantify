@@ -12,8 +12,7 @@
       "description": "List of configured TLS server profiles",
       "properties": {
         "ciphers:name": {
-          "$ref": "#/$defs/NameLeaf",
-          "default": null
+          "$ref": "#/$defs/NameLeaf"
         },
         "ciphers:cipher-list": {
           "default": [
@@ -29,6 +28,9 @@
           "type": "array"
         }
       },
+      "required": [
+        "ciphers:name"
+      ],
       "title": "Server-profileListEntry",
       "type": "object"
     },

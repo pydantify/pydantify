@@ -12,7 +12,7 @@ class IndexLeaf(RootModel[int]):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    root: Annotated[int, Field(ge=0, le=255, title="IndexLeaf")]
+    root: Annotated[int, Field(ge=0, le=255)]
     """
     Each key in a keychain requires a unique identifier, the index value specifies this identifier
     """
@@ -27,9 +27,7 @@ class KeyListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    index: Annotated[
-        Optional[int], Field(alias="keychains:index", ge=0, le=255, title="IndexLeaf")
-    ] = None
+    index: Annotated[int, Field(alias="keychains:index", ge=0, le=255)]
     """
     Each key in a keychain requires a unique identifier, the index value specifies this identifier
     """
@@ -53,15 +51,11 @@ class KeychainListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="keychains:name", title="NameLeaf")] = (
-        None
-    )
+    name: Annotated[str, Field(alias="keychains:name")]
     """
     The user configured name for the keychain
     """
-    type: Annotated[
-        Optional[EnumerationEnum], Field(alias="keychains:type", title="TypeLeaf")
-    ] = None
+    type: Annotated[Optional[EnumerationEnum], Field(alias="keychains:type")] = None
     """
     Specifies the intended use of the keychain
 
@@ -69,7 +63,7 @@ class KeychainListEntry(BaseModel):
     """
     active_key_for_send: Annotated[
         Optional[Union[EnumerationEnum2, IndexLeaf]],
-        Field(alias="keychains:active-key-for-send", title="Active-key-for-sendLeaf"),
+        Field(alias="keychains:active-key-for-send"),
     ] = None
     """
     Provides the key index of the currently active Keychain key

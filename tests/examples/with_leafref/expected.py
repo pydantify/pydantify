@@ -15,17 +15,15 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    test: Annotated[
-        Optional[int], Field(alias="interfaces:test", ge=0, le=255, title="TestLeaf")
-    ] = None
+    test: Annotated[Optional[int], Field(alias="interfaces:test", ge=0, le=255)] = None
     """
     Test node
     """
-    name: Annotated[Optional[str], Field(alias="interfaces:name")] = None
+    name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name
     """
-    ip: Annotated[Optional[str], Field(alias="interfaces:ip", title="IpLeaf")] = None
+    ip: Annotated[Optional[str], Field(alias="interfaces:ip")] = None
     """
     Interface IP
     """
@@ -55,8 +53,7 @@ class Model(BaseModel):
         Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
     ] = None
     mgmt_interface: Annotated[
-        Optional[str],
-        Field(alias="interfaces:mgmt-interface", title="Mgmt-interfaceLeaf"),
+        Optional[str], Field(alias="interfaces:mgmt-interface")
     ] = None
     """
     Dedicated management interface
@@ -64,7 +61,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

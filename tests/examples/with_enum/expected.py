@@ -21,15 +21,12 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="interfaces:name", title="NameLeaf")] = (
-        None
-    )
+    name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name
     """
     admin_state: Annotated[
-        Optional[EnumerationEnum],
-        Field(alias="interfaces:admin-state", title="Admin-stateLeaf"),
+        Optional[EnumerationEnum], Field(alias="interfaces:admin-state")
     ] = "enable"
     """
     The configured, desired state of the interface
@@ -62,7 +59,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

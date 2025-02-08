@@ -8,14 +8,16 @@
           "default": null
         },
         "interfaces:name": {
-          "$ref": "#/$defs/NameLeaf",
-          "default": null
+          "$ref": "#/$defs/NameLeaf"
         },
         "interfaces:ip": {
           "$ref": "#/$defs/IpLeaf",
           "default": null
         }
       },
+      "required": [
+        "interfaces:name"
+      ],
       "title": "InterfacesListEntry",
       "type": "object"
     },

@@ -37,7 +37,7 @@ classDiagram
   }
   class ModelRoot {
     root_node : Node | None
-    to_pydantic_model() type[BaseModel]
+    to_pydantic_model() type[BaseModel] | None
   }
   class ModuleNode {
     name() str

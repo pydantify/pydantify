@@ -49,6 +49,7 @@ options:
                         The name of the output file. Defaults to "out.py".
   -t TRIM_PATH, --trim-path TRIM_PATH
                         Get only the specified branch of the whole tree.
+  -j, --json-schema     Output JSON schema instead of Pydantic models
 
 NOTE: All unknown arguments will be passed to Pyang as-is and without guarantees.
 ```

@@ -22,25 +22,18 @@ class CellListEntry(BaseModel):
         regex_engine="python-re",
     )
     coord: Annotated[
-        Optional[int],
+        int,
         Field(
             alias="turing-machine:coord",
             ge=-9223372036854775808,
             le=9223372036854775807,
-            title="CoordLeaf",
         ),
-    ] = None
+    ]
     """
     Coordinate (index) of the tape cell.
     """
     symbol: Annotated[
-        Optional[str],
-        Field(
-            alias="turing-machine:symbol",
-            max_length=1,
-            min_length=0,
-            title="SymbolLeaf",
-        ),
+        Optional[str], Field(alias="turing-machine:symbol", max_length=1, min_length=0)
     ] = None
     """
     Symbol appearing in the tape cell.
@@ -58,20 +51,12 @@ class InputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    state: Annotated[
-        int, Field(alias="turing-machine:state", ge=0, le=65535, title="StateLeaf2")
-    ]
+    state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
     Current state of the control unit.
     """
     symbol: Annotated[
-        str,
-        Field(
-            alias="turing-machine:symbol",
-            max_length=1,
-            min_length=0,
-            title="SymbolLeaf2",
-        ),
+        str, Field(alias="turing-machine:symbol", max_length=1, min_length=0)
     ]
     """
     Symbol read from the tape cell.
@@ -88,29 +73,21 @@ class OutputContainer(BaseModel):
         regex_engine="python-re",
     )
     state: Annotated[
-        Optional[int],
-        Field(alias="turing-machine:state", ge=0, le=65535, title="StateLeaf3"),
+        Optional[int], Field(alias="turing-machine:state", ge=0, le=65535)
     ] = None
     """
     New state of the control unit. If this leaf is not
     present, the state doesn't change.
     """
     symbol: Annotated[
-        Optional[str],
-        Field(
-            alias="turing-machine:symbol",
-            max_length=1,
-            min_length=0,
-            title="SymbolLeaf3",
-        ),
+        Optional[str], Field(alias="turing-machine:symbol", max_length=1, min_length=0)
     ] = None
     """
     Symbol to be written to the tape cell. If this leaf is
     not present, the symbol doesn't change.
     """
     head_move: Annotated[
-        Optional[EnumerationEnum],
-        Field(alias="turing-machine:head-move", title="Head-moveLeaf"),
+        Optional[EnumerationEnum], Field(alias="turing-machine:head-move")
     ] = "right"
     """
     Move the head one cell to the left or right
@@ -140,9 +117,7 @@ class DeltaListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    label: Annotated[
-        Optional[str], Field(alias="turing-machine:label", title="LabelLeaf")
-    ] = None
+    label: Annotated[str, Field(alias="turing-machine:label")]
     """
     An arbitrary label of the transition rule.
     """
@@ -178,9 +153,7 @@ class TuringMachineContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    state: Annotated[
-        int, Field(alias="turing-machine:state", ge=0, le=65535, title="StateLeaf")
-    ]
+    state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
     Current state of the control unit.
     The initial state is 0.
@@ -191,7 +164,6 @@ class TuringMachineContainer(BaseModel):
             alias="turing-machine:head-position",
             ge=-9223372036854775808,
             le=9223372036854775807,
-            title="Head-positionLeaf",
         ),
     ]
     """
@@ -230,7 +202,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

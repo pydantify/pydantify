@@ -21,10 +21,12 @@
       "description": "List of keys in the keychain",
       "properties": {
         "keychains:index": {
-          "$ref": "#/$defs/IndexLeaf",
-          "default": null
+          "$ref": "#/$defs/IndexLeaf"
         }
       },
+      "required": [
+        "keychains:index"
+      ],
       "title": "KeyListEntry",
       "type": "object"
     },
@@ -35,8 +37,7 @@
       "description": "List of system keychains",
       "properties": {
         "keychains:name": {
-          "$ref": "#/$defs/NameLeaf",
-          "default": null
+          "$ref": "#/$defs/NameLeaf"
         },
         "keychains:type": {
           "$ref": "#/$defs/TypeLeaf",
@@ -55,6 +56,9 @@
           "type": "array"
         }
       },
+      "required": [
+        "keychains:name"
+      ],
       "title": "KeychainListEntry",
       "type": "object"
     },
