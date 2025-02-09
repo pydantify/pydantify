@@ -1,11 +1,11 @@
 import json
 import logging
 import sys
+from collections import defaultdict
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Any, Dict, List, Type, Optional
+from typing import Any, Dict, List, Literal, Optional, Type
 
-from collections import defaultdict
 from datamodel_code_generator.model import pydantic_v2
 from datamodel_code_generator.parser.base import Result
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
@@ -15,9 +15,12 @@ from pydantic import BaseModel
 from typing_extensions import Self
 
 from ..models import ModelRoot, Node
-from . import YANGSourcesTracker
-from . import function_content_to_source_code, function_to_source_code
 from ..utility import restconf_patch_request
+from . import (
+    YANGSourcesTracker,
+    function_content_to_source_code,
+    function_to_source_code,
+)
 
 logger = logging.getLogger("pydantify")
 
@@ -66,6 +69,7 @@ class ModelGenerator:
     standalone: bool = False
     trim_path: Optional[str] = None
     json_schema_output: bool
+    data_type: Literal["config", "state"] | None
 
     @classmethod
     def generate(

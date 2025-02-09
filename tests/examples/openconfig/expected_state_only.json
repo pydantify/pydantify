@@ -1,0 +1,644 @@
+{
+  "$defs": {
+    "Admin-statusLeaf": {
+      "$ref": "#/$defs/enumerationEnum",
+      "description": "The desired state of the interface.  In RFC 7223 this leaf\nhas the same read semantics as ifAdminStatus.  Here, it\nreflects the administrative state as set by enabling or\ndisabling the interface."
+    },
+    "Admin-statusLeaf2": {
+      "$ref": "#/$defs/enumerationEnum3",
+      "description": "The desired state of the interface.  In RFC 7223 this leaf\nhas the same read semantics as ifAdminStatus.  Here, it\nreflects the administrative state as set by enabling or\ndisabling the interface."
+    },
+    "Carrier-transitionsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "Number of times the interface state has transitioned\nbetween up and down since the time the device restarted\nor the last-clear time, whichever is most recent."
+    },
+    "Carrier-transitionsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "Number of times the interface state has transitioned\nbetween up and down since the time the device restarted\nor the last-clear time, whichever is most recent."
+    },
+    "Counter64Type": {
+      "description": "A 64-bit counter. A counter value is a monotonically increasing\nvalue which is used to express a count of a number of\noccurrences of a particular event or entity. When a counter64\nreaches its maximum value, 2^64-1, it loops to zero.\nDiscontinuities in a counter are generally triggered only when\nthe counter is reset to zero, through operator or system\nintervention.",
+      "maximum": 18446744073709551615,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "CountersContainer": {
+      "description": "A collection of interface-related statistics objects.",
+      "properties": {
+        "openconfig-interfaces:in-octets": {
+          "$ref": "#/$defs/In-octetsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:in-unicast-pkts": {
+          "$ref": "#/$defs/In-unicast-pktsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:in-broadcast-pkts": {
+          "$ref": "#/$defs/In-broadcast-pktsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:in-multicast-pkts": {
+          "$ref": "#/$defs/In-multicast-pktsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:in-discards": {
+          "$ref": "#/$defs/In-discardsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:in-errors": {
+          "$ref": "#/$defs/In-errorsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:in-unknown-protos": {
+          "$ref": "#/$defs/In-unknown-protosLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:in-fcs-errors": {
+          "$ref": "#/$defs/In-fcs-errorsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:out-octets": {
+          "$ref": "#/$defs/Out-octetsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:out-unicast-pkts": {
+          "$ref": "#/$defs/Out-unicast-pktsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:out-broadcast-pkts": {
+          "$ref": "#/$defs/Out-broadcast-pktsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:out-multicast-pkts": {
+          "$ref": "#/$defs/Out-multicast-pktsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:out-discards": {
+          "$ref": "#/$defs/Out-discardsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:out-errors": {
+          "$ref": "#/$defs/Out-errorsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:carrier-transitions": {
+          "$ref": "#/$defs/Carrier-transitionsLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:last-clear": {
+          "$ref": "#/$defs/Last-clearLeaf",
+          "default": null
+        }
+      },
+      "title": "CountersContainer",
+      "type": "object"
+    },
+    "CountersContainer2": {
+      "description": "A collection of interface-related statistics objects.",
+      "properties": {
+        "openconfig-interfaces:in-octets": {
+          "$ref": "#/$defs/In-octetsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:in-unicast-pkts": {
+          "$ref": "#/$defs/In-unicast-pktsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:in-broadcast-pkts": {
+          "$ref": "#/$defs/In-broadcast-pktsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:in-multicast-pkts": {
+          "$ref": "#/$defs/In-multicast-pktsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:in-discards": {
+          "$ref": "#/$defs/In-discardsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:in-errors": {
+          "$ref": "#/$defs/In-errorsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:in-unknown-protos": {
+          "$ref": "#/$defs/In-unknown-protosLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:in-fcs-errors": {
+          "$ref": "#/$defs/In-fcs-errorsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:out-octets": {
+          "$ref": "#/$defs/Out-octetsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:out-unicast-pkts": {
+          "$ref": "#/$defs/Out-unicast-pktsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:out-broadcast-pkts": {
+          "$ref": "#/$defs/Out-broadcast-pktsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:out-multicast-pkts": {
+          "$ref": "#/$defs/Out-multicast-pktsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:out-discards": {
+          "$ref": "#/$defs/Out-discardsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:out-errors": {
+          "$ref": "#/$defs/Out-errorsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:carrier-transitions": {
+          "$ref": "#/$defs/Carrier-transitionsLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:last-clear": {
+          "$ref": "#/$defs/Last-clearLeaf2",
+          "default": null
+        }
+      },
+      "title": "CountersContainer2",
+      "type": "object"
+    },
+    "DescriptionLeaf2": {
+      "description": "A textual description of the interface.\n\nA server implementation MAY map this leaf to the ifAlias\nMIB object.  Such an implementation needs to use some\nmechanism to handle the differences in size and characters\nallowed between this leaf and ifAlias.  The definition of\nsuch a mechanism is outside the scope of this document.\n\nSince ifAlias is defined to be stored in non-volatile\nstorage, the MIB implementation MUST map ifAlias to the\nvalue of 'description' in the persistently stored\ndatastore.\n\nSpecifically, if the device supports ':startup', when\nifAlias is read the device MUST return the value of\n'description' in the 'startup' datastore, and when it is\nwritten, it MUST be written to the 'running' and 'startup'\ndatastores.  Note that it is up to the implementation to\n\ndecide whether to modify this single leaf in 'startup' or\nperform an implicit copy-config from 'running' to\n'startup'.\n\nIf the device does not support ':startup', ifAlias MUST\nbe mapped to the 'description' leaf in the 'running'\ndatastore.",
+      "type": "string"
+    },
+    "DescriptionLeaf4": {
+      "description": "A textual description of the interface.\n\nA server implementation MAY map this leaf to the ifAlias\nMIB object.  Such an implementation needs to use some\nmechanism to handle the differences in size and characters\nallowed between this leaf and ifAlias.  The definition of\nsuch a mechanism is outside the scope of this document.\n\nSince ifAlias is defined to be stored in non-volatile\nstorage, the MIB implementation MUST map ifAlias to the\nvalue of 'description' in the persistently stored\ndatastore.\n\nSpecifically, if the device supports ':startup', when\nifAlias is read the device MUST return the value of\n'description' in the 'startup' datastore, and when it is\nwritten, it MUST be written to the 'running' and 'startup'\ndatastores.  Note that it is up to the implementation to\n\ndecide whether to modify this single leaf in 'startup' or\nperform an implicit copy-config from 'running' to\n'startup'.\n\nIf the device does not support ':startup', ifAlias MUST\nbe mapped to the 'description' leaf in the 'running'\ndatastore.",
+      "type": "string"
+    },
+    "DownLeaf2": {
+      "description": "Dampens advertisement when the interface transitions from\nup to down.  A zero value means dampening is turned off,\ni.e., immediate notification.",
+      "maximum": 4294967295,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "EnabledLeaf2": {
+      "description": "This leaf contains the configured, desired state of the\ninterface.\n\nSystems that implement the IF-MIB use the value of this\nleaf in the 'running' datastore to set\nIF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry\nhas been initialized, as described in RFC 2863.\n\nChanges in this leaf in the 'running' datastore are\nreflected in ifAdminStatus, but if ifAdminStatus is\nchanged over SNMP, this leaf is not affected.",
+      "type": "boolean"
+    },
+    "EnabledLeaf4": {
+      "description": "This leaf contains the configured, desired state of the\ninterface.\n\nSystems that implement the IF-MIB use the value of this\nleaf in the 'running' datastore to set\nIF-MIB.ifAdminStatus to 'up' or 'down' after an ifEntry\nhas been initialized, as described in RFC 2863.\n\nChanges in this leaf in the 'running' datastore are\nreflected in ifAdminStatus, but if ifAdminStatus is\nchanged over SNMP, this leaf is not affected.",
+      "type": "boolean"
+    },
+    "Hold-timeContainer": {
+      "description": "Top-level container for hold-time settings to enable\ndampening advertisements of interface transitions.",
+      "properties": {
+        "openconfig-interfaces:state": {
+          "$ref": "#/$defs/StateContainer2",
+          "default": null
+        }
+      },
+      "title": "Hold-timeContainer",
+      "type": "object"
+    },
+    "IfindexLeaf": {
+      "description": "System assigned number for each interface.  Corresponds to\nifIndex object in SNMP Interface MIB",
+      "maximum": 4294967295,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "IfindexLeaf2": {
+      "description": "System assigned number for each interface.  Corresponds to\nifIndex object in SNMP Interface MIB",
+      "maximum": 4294967295,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "In-broadcast-pktsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were addressed to a broadcast\naddress at this sub-layer.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-broadcast-pktsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were addressed to a broadcast\naddress at this sub-layer.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-discardsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of inbound packets that were chosen to be\ndiscarded even though no errors had been detected to\nprevent their being deliverable to a higher-layer\nprotocol.  One possible reason for discarding such a\npacket could be to free up buffer space.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-discardsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of inbound packets that were chosen to be\ndiscarded even though no errors had been detected to\nprevent their being deliverable to a higher-layer\nprotocol.  One possible reason for discarding such a\npacket could be to free up buffer space.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-errorsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "For packet-oriented interfaces, the number of inbound\npackets that contained errors preventing them from being\ndeliverable to a higher-layer protocol.  For character-\noriented or fixed-length interfaces, the number of\ninbound transmission units that contained errors\npreventing them from being deliverable to a higher-layer\nprotocol.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-errorsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "For packet-oriented interfaces, the number of inbound\npackets that contained errors preventing them from being\ndeliverable to a higher-layer protocol.  For character-\noriented or fixed-length interfaces, the number of\ninbound transmission units that contained errors\npreventing them from being deliverable to a higher-layer\nprotocol.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-fcs-errorsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "Number of received packets which had errors in the\nframe check sequence (FCS), i.e., framing errors.\n\nDiscontinuities in the value of this counter can occur\nwhen the device is re-initialization as indicated by the\nvalue of 'last-clear'."
+    },
+    "In-fcs-errorsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "Number of received packets which had errors in the\nframe check sequence (FCS), i.e., framing errors.\n\nDiscontinuities in the value of this counter can occur\nwhen the device is re-initialization as indicated by the\nvalue of 'last-clear'."
+    },
+    "In-multicast-pktsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were addressed to a multicast\naddress at this sub-layer.  For a MAC-layer protocol,\nthis includes both Group and Functional addresses.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-multicast-pktsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were addressed to a multicast\naddress at this sub-layer.  For a MAC-layer protocol,\nthis includes both Group and Functional addresses.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-octetsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of octets received on the interface,\nincluding framing characters.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-octetsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of octets received on the interface,\nincluding framing characters.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-unicast-pktsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were not addressed to a\nmulticast or broadcast address at this sub-layer.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-unicast-pktsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of packets, delivered by this sub-layer to a\nhigher (sub-)layer, that were not addressed to a\nmulticast or broadcast address at this sub-layer.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-unknown-protosLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "For packet-oriented interfaces, the number of packets\nreceived via the interface that were discarded because\nof an unknown or unsupported protocol.  For\ncharacter-oriented or fixed-length interfaces that\nsupport protocol multiplexing, the number of\ntransmission units received via the interface that were\ndiscarded because of an unknown or unsupported protocol.\nFor any interface that does not support protocol\nmultiplexing, this counter is not present.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "In-unknown-protosLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "For packet-oriented interfaces, the number of packets\nreceived via the interface that were discarded because\nof an unknown or unsupported protocol.  For\ncharacter-oriented or fixed-length interfaces that\nsupport protocol multiplexing, the number of\ntransmission units received via the interface that were\ndiscarded because of an unknown or unsupported protocol.\nFor any interface that does not support protocol\nmultiplexing, this counter is not present.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "IndexLeaf": {
+      "$ref": "#/$defs/IndexLeaf2",
+      "description": "The index number of the subinterface -- used to address\nthe logical interface"
+    },
+    "IndexLeaf2": {
+      "description": "The index of the subinterface, or logical interface number.\nOn systems with no support for subinterfaces, or not using\nsubinterfaces, this value should default to 0, i.e., the\ndefault subinterface.",
+      "maximum": 4294967295,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "IndexLeaf3": {
+      "description": "The index of the subinterface, or logical interface number.\nOn systems with no support for subinterfaces, or not using\nsubinterfaces, this value should default to 0, i.e., the\ndefault subinterface.",
+      "maximum": 4294967295,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "InterfaceListEntry": {
+      "description": "The list of named interfaces on the device.",
+      "properties": {
+        "openconfig-interfaces:name": {
+          "$ref": "#/$defs/NameLeaf"
+        },
+        "openconfig-interfaces:state": {
+          "$ref": "#/$defs/StateContainer",
+          "default": null
+        },
+        "openconfig-interfaces:hold-time": {
+          "$ref": "#/$defs/Hold-timeContainer",
+          "default": null
+        },
+        "openconfig-interfaces:subinterfaces": {
+          "$ref": "#/$defs/SubinterfacesContainer",
+          "default": null
+        }
+      },
+      "required": [
+        "openconfig-interfaces:name"
+      ],
+      "title": "InterfaceListEntry",
+      "type": "object"
+    },
+    "InterfacesContainer": {
+      "description": "Top level container for interfaces, including configuration\nand state data.",
+      "properties": {
+        "openconfig-interfaces:interface": {
+          "default": null,
+          "items": {
+            "$ref": "#/$defs/InterfaceListEntry"
+          },
+          "type": "array"
+        }
+      },
+      "title": "InterfacesContainer",
+      "type": "object"
+    },
+    "Last-changeLeaf": {
+      "$ref": "#/$defs/Timeticks64Type",
+      "description": "This timestamp indicates the time of the last state change\nof the interface (e.g., up-to-down transition). This\ncorresponds to the ifLastChange object in the standard\ninterface MIB.\n\nThe value is the timestamp in nanoseconds relative to\nthe Unix Epoch (Jan 1, 1970 00:00:00 UTC)."
+    },
+    "Last-changeLeaf2": {
+      "$ref": "#/$defs/Timeticks64Type",
+      "description": "This timestamp indicates the time of the last state change\nof the interface (e.g., up-to-down transition). This\ncorresponds to the ifLastChange object in the standard\ninterface MIB.\n\nThe value is the timestamp in nanoseconds relative to\nthe Unix Epoch (Jan 1, 1970 00:00:00 UTC)."
+    },
+    "Last-clearLeaf": {
+      "$ref": "#/$defs/Timeticks64Type",
+      "description": "Timestamp of the last time the interface counters were\ncleared.\n\nThe value is the timestamp in nanoseconds relative to\nthe Unix Epoch (Jan 1, 1970 00:00:00 UTC)."
+    },
+    "Last-clearLeaf2": {
+      "$ref": "#/$defs/Timeticks64Type",
+      "description": "Timestamp of the last time the interface counters were\ncleared.\n\nThe value is the timestamp in nanoseconds relative to\nthe Unix Epoch (Jan 1, 1970 00:00:00 UTC)."
+    },
+    "Loopback-modeLeaf2": {
+      "description": "When set to true, the interface is logically looped back,\nsuch that packets that are forwarded via the interface\nare received on the same interface.",
+      "type": "boolean"
+    },
+    "MtuLeaf2": {
+      "description": "Set the max transmission unit size in octets\nfor the physical interface.  If this is not set, the mtu is\nset to the operational default -- e.g., 1514 bytes on an\nEthernet interface.",
+      "maximum": 65535,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "NameLeaf": {
+      "$ref": "#/$defs/NameLeaf2",
+      "description": "References the configured name of the interface"
+    },
+    "NameLeaf2": {
+      "description": "The name of the interface.\n\nA device MAY restrict the allowed values for this leaf,\npossibly depending on the type of the interface.\nFor system-controlled interfaces, this leaf is the\ndevice-specific name of the interface.  The 'config false'\nlist interfaces/interface[name]/state contains the currently\nexisting interfaces on the device.\n\nIf a client tries to create configuration for a\nsystem-controlled interface that is not present in the\ncorresponding state list, the server MAY reject\nthe request if the implementation does not support\npre-provisioning of interfaces or if the name refers to\nan interface that can never exist in the system.  A\nNETCONF server MUST reply with an rpc-error with the\nerror-tag 'invalid-value' in this case.\n\nThe IETF model in RFC 7223 provides YANG features for the\nfollowing (i.e., pre-provisioning and arbitrary-names),\nhowever they are omitted here:\n\n If the device supports pre-provisioning of interface\n configuration, the 'pre-provisioning' feature is\n advertised.\n\n If the device allows arbitrarily named user-controlled\n interfaces, the 'arbitrary-names' feature is advertised.\n\nWhen a configured user-controlled interface is created by\nthe system, it is instantiated with the same name in the\n/interfaces/interface[name]/state list.",
+      "type": "string"
+    },
+    "NameLeaf3": {
+      "description": "The name of the interface.\n\nA device MAY restrict the allowed values for this leaf,\npossibly depending on the type of the interface.\nFor system-controlled interfaces, this leaf is the\ndevice-specific name of the interface.  The 'config false'\nlist interfaces/interface[name]/state contains the currently\nexisting interfaces on the device.\n\nIf a client tries to create configuration for a\nsystem-controlled interface that is not present in the\ncorresponding state list, the server MAY reject\nthe request if the implementation does not support\npre-provisioning of interfaces or if the name refers to\nan interface that can never exist in the system.  A\nNETCONF server MUST reply with an rpc-error with the\nerror-tag 'invalid-value' in this case.\n\nThe IETF model in RFC 7223 provides YANG features for the\nfollowing (i.e., pre-provisioning and arbitrary-names),\nhowever they are omitted here:\n\n If the device supports pre-provisioning of interface\n configuration, the 'pre-provisioning' feature is\n advertised.\n\n If the device allows arbitrarily named user-controlled\n interfaces, the 'arbitrary-names' feature is advertised.\n\nWhen a configured user-controlled interface is created by\nthe system, it is instantiated with the same name in the\n/interfaces/interface[name]/state list.",
+      "type": "string"
+    },
+    "NameLeaf4": {
+      "description": "The system-assigned name for the sub-interface.  This MAY\nbe a combination of the base interface name and the\nsubinterface index, or some other convention used by the\nsystem.",
+      "type": "string"
+    },
+    "Oper-statusLeaf": {
+      "$ref": "#/$defs/enumerationEnum2",
+      "description": "The current operational state of the interface.\n\nThis leaf has the same semantics as ifOperStatus."
+    },
+    "Oper-statusLeaf2": {
+      "$ref": "#/$defs/enumerationEnum4",
+      "description": "The current operational state of the interface.\n\nThis leaf has the same semantics as ifOperStatus."
+    },
+    "Out-broadcast-pktsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of packets that higher-level protocols\nrequested be transmitted, and that were addressed to a\nbroadcast address at this sub-layer, including those\nthat were discarded or not sent.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-broadcast-pktsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of packets that higher-level protocols\nrequested be transmitted, and that were addressed to a\nbroadcast address at this sub-layer, including those\nthat were discarded or not sent.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-discardsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of outbound packets that were chosen to be\ndiscarded even though no errors had been detected to\nprevent their being transmitted.  One possible reason\nfor discarding such a packet could be to free up buffer\nspace.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-discardsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The number of outbound packets that were chosen to be\ndiscarded even though no errors had been detected to\nprevent their being transmitted.  One possible reason\nfor discarding such a packet could be to free up buffer\nspace.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-errorsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "For packet-oriented interfaces, the number of outbound\npackets that could not be transmitted because of errors.\nFor character-oriented or fixed-length interfaces, the\nnumber of outbound transmission units that could not be\ntransmitted because of errors.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-errorsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "For packet-oriented interfaces, the number of outbound\npackets that could not be transmitted because of errors.\nFor character-oriented or fixed-length interfaces, the\nnumber of outbound transmission units that could not be\ntransmitted because of errors.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-multicast-pktsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of packets that higher-level protocols\nrequested be transmitted, and that were addressed to a\nmulticast address at this sub-layer, including those\nthat were discarded or not sent.  For a MAC-layer\nprotocol, this includes both Group and Functional\naddresses.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-multicast-pktsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of packets that higher-level protocols\nrequested be transmitted, and that were addressed to a\nmulticast address at this sub-layer, including those\nthat were discarded or not sent.  For a MAC-layer\nprotocol, this includes both Group and Functional\naddresses.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-octetsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of octets transmitted out of the\ninterface, including framing characters.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-octetsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of octets transmitted out of the\ninterface, including framing characters.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-unicast-pktsLeaf": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of packets that higher-level protocols\nrequested be transmitted, and that were not addressed\nto a multicast or broadcast address at this sub-layer,\nincluding those that were discarded or not sent.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "Out-unicast-pktsLeaf2": {
+      "$ref": "#/$defs/Counter64Type",
+      "description": "The total number of packets that higher-level protocols\nrequested be transmitted, and that were not addressed\nto a multicast or broadcast address at this sub-layer,\nincluding those that were discarded or not sent.\n\nDiscontinuities in the value of this counter can occur\nat re-initialization of the management system, and at\nother times as indicated by the value of\n'last-clear'."
+    },
+    "StateContainer": {
+      "description": "Operational state data at the global interface level",
+      "properties": {
+        "openconfig-interfaces:name": {
+          "$ref": "#/$defs/NameLeaf3",
+          "default": null
+        },
+        "openconfig-interfaces:type": {
+          "$ref": "#/$defs/TypeLeaf2"
+        },
+        "openconfig-interfaces:mtu": {
+          "$ref": "#/$defs/MtuLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:loopback-mode": {
+          "$ref": "#/$defs/Loopback-modeLeaf2",
+          "default": false
+        },
+        "openconfig-interfaces:description": {
+          "$ref": "#/$defs/DescriptionLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:enabled": {
+          "$ref": "#/$defs/EnabledLeaf2",
+          "default": true
+        },
+        "openconfig-interfaces:ifindex": {
+          "$ref": "#/$defs/IfindexLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:admin-status": {
+          "$ref": "#/$defs/Admin-statusLeaf"
+        },
+        "openconfig-interfaces:oper-status": {
+          "$ref": "#/$defs/Oper-statusLeaf"
+        },
+        "openconfig-interfaces:last-change": {
+          "$ref": "#/$defs/Last-changeLeaf",
+          "default": null
+        },
+        "openconfig-interfaces:counters": {
+          "$ref": "#/$defs/CountersContainer",
+          "default": null
+        }
+      },
+      "required": [
+        "openconfig-interfaces:type",
+        "openconfig-interfaces:admin-status",
+        "openconfig-interfaces:oper-status"
+      ],
+      "title": "StateContainer",
+      "type": "object"
+    },
+    "StateContainer2": {
+      "description": "Operational state data for interface hold-time.",
+      "properties": {
+        "openconfig-interfaces:up": {
+          "$ref": "#/$defs/UpLeaf2",
+          "default": 0
+        },
+        "openconfig-interfaces:down": {
+          "$ref": "#/$defs/DownLeaf2",
+          "default": 0
+        }
+      },
+      "title": "StateContainer2",
+      "type": "object"
+    },
+    "StateContainer3": {
+      "description": "Operational state data for logical interfaces",
+      "properties": {
+        "openconfig-interfaces:index": {
+          "$ref": "#/$defs/IndexLeaf3",
+          "default": 0
+        },
+        "openconfig-interfaces:description": {
+          "$ref": "#/$defs/DescriptionLeaf4",
+          "default": null
+        },
+        "openconfig-interfaces:enabled": {
+          "$ref": "#/$defs/EnabledLeaf4",
+          "default": true
+        },
+        "openconfig-interfaces:name": {
+          "$ref": "#/$defs/NameLeaf4",
+          "default": null
+        },
+        "openconfig-interfaces:ifindex": {
+          "$ref": "#/$defs/IfindexLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:admin-status": {
+          "$ref": "#/$defs/Admin-statusLeaf2"
+        },
+        "openconfig-interfaces:oper-status": {
+          "$ref": "#/$defs/Oper-statusLeaf2"
+        },
+        "openconfig-interfaces:last-change": {
+          "$ref": "#/$defs/Last-changeLeaf2",
+          "default": null
+        },
+        "openconfig-interfaces:counters": {
+          "$ref": "#/$defs/CountersContainer2",
+          "default": null
+        }
+      },
+      "required": [
+        "openconfig-interfaces:admin-status",
+        "openconfig-interfaces:oper-status"
+      ],
+      "title": "StateContainer3",
+      "type": "object"
+    },
+    "SubinterfaceListEntry": {
+      "description": "The list of subinterfaces (logical interfaces) associated\nwith a physical interface",
+      "properties": {
+        "openconfig-interfaces:index": {
+          "$ref": "#/$defs/IndexLeaf"
+        },
+        "openconfig-interfaces:state": {
+          "$ref": "#/$defs/StateContainer3",
+          "default": null
+        }
+      },
+      "required": [
+        "openconfig-interfaces:index"
+      ],
+      "title": "SubinterfaceListEntry",
+      "type": "object"
+    },
+    "SubinterfacesContainer": {
+      "description": "Enclosing container for the list of subinterfaces associated\nwith a physical interface",
+      "properties": {
+        "openconfig-interfaces:subinterface": {
+          "default": null,
+          "items": {
+            "$ref": "#/$defs/SubinterfaceListEntry"
+          },
+          "type": "array"
+        }
+      },
+      "title": "SubinterfacesContainer",
+      "type": "object"
+    },
+    "Timeticks64Type": {
+      "description": "The timeticks64 represents the time, modulo 2^64 in\nnanoseconds between two epochs. The leaf using this\ntype must define the epochs that tests are relative to.",
+      "maximum": 18446744073709551615,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "TypeLeaf2": {
+      "description": "The type of the interface.\n\nWhen an interface entry is created, a server MAY\ninitialize the type leaf with a valid value, e.g., if it\nis possible to derive the type from the name of the\ninterface.\n\nIf a client tries to set the type of an interface to a\nvalue that can never be used by the system, e.g., if the\ntype is not supported or if the type does not match the\nname of the interface, the server MUST reject the request.\nA NETCONF server MUST reply with an rpc-error with the\nerror-tag 'invalid-value' in this case.",
+      "type": "string"
+    },
+    "UpLeaf2": {
+      "description": "Dampens advertisement when the interface\ntransitions from down to up.  A zero value means dampening\nis turned off, i.e., immediate notification.",
+      "maximum": 4294967295,
+      "minimum": 0,
+      "type": "integer"
+    },
+    "enumerationEnum": {
+      "enum": [
+        "UP",
+        "DOWN",
+        "TESTING"
+      ],
+      "title": "enumerationEnum",
+      "type": "string"
+    },
+    "enumerationEnum2": {
+      "enum": [
+        "UP",
+        "DOWN",
+        "TESTING",
+        "UNKNOWN",
+        "DORMANT",
+        "NOT_PRESENT",
+        "LOWER_LAYER_DOWN"
+      ],
+      "title": "enumerationEnum2",
+      "type": "string"
+    },
+    "enumerationEnum3": {
+      "enum": [
+        "UP",
+        "DOWN",
+        "TESTING"
+      ],
+      "title": "enumerationEnum3",
+      "type": "string"
+    },
+    "enumerationEnum4": {
+      "enum": [
+        "UP",
+        "DOWN",
+        "TESTING",
+        "UNKNOWN",
+        "DORMANT",
+        "NOT_PRESENT",
+        "LOWER_LAYER_DOWN"
+      ],
+      "title": "enumerationEnum4",
+      "type": "string"
+    }
+  },
+  "description": "Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.\n\n## Tips\nInitialization:\n- all values have to be set via keyword arguments\n- if a class contains only a `root` field, it can be initialized as follows:\n    - `member=MyNode(root=<value>)`\n    - `member=<value>`\n\nSerialziation:\n- `exclude_defaults=True` omits fields set to their default value (recommended)\n- `by_alias=True` ensures qualified names are used (necessary)",
+  "properties": {
+    "openconfig-interfaces:interfaces": {
+      "$ref": "#/$defs/InterfacesContainer",
+      "default": null
+    }
+  },
+  "title": "Model",
+  "type": "object"
+}
+

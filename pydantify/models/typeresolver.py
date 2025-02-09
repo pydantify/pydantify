@@ -1,37 +1,35 @@
 from enum import Enum
-from typing import Dict, List, Type, Optional, Union
+from typing import Dict, List, Optional, Type, Union
 
 from pyang.statements import Statement, TypedefStatement, TypeStatement
 from pyang.types import (
+    BinaryTypeSpec,
+    BitsTypeSpec,  # TODO: Implement
+    BitTypeSpec,
     BooleanTypeSpec,
+    Decimal64TypeSpec,
     EmptyTypeSpec,
+    EnumerationTypeSpec,  # TODO: Implement
     EnumTypeSpec,
+    IdentityrefTypeSpec,
+    InstanceIdentifierTypeSpec,  # TODO: Implement
     IntTypeSpec,
+    LeafrefTypeSpec,  # TODO: Implement
     LengthTypeSpec,
     PathTypeSpec,
     PatternTypeSpec,
     RangeTypeSpec,
     StringTypeSpec,
     TypeSpec,
-    XSDPattern,
-    # TODO: Implement the following:
-    BinaryTypeSpec,
-    BitsTypeSpec,
-    BitTypeSpec,
-    EnumerationTypeSpec,
-    IdentityrefTypeSpec,
-    InstanceIdentifierTypeSpec,
-    LeafrefTypeSpec,
     UnionTypeSpec,
-    Decimal64TypeSpec,
+    XSDPattern,
 )
-from pydantic import Field
 from pydantic.types import conbytes, confloat, conint, constr
-from pydantic_core import PydanticUndefinedType, core_schema
-from typing_extensions import Annotated, Self
+from pydantic_core import PydanticUndefinedType
+from typing_extensions import Self
 
-from . import Node
 from ..utility.patterns import convert_pattern
+from . import Node
 
 
 class TypeResolver:

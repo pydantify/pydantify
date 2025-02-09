@@ -1,7 +1,6 @@
 import ast
 import json
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any, List
@@ -10,7 +9,6 @@ from unittest.mock import patch
 import pytest
 from pydantic import validate_call
 from pytest import param
-from typing_extensions import Self
 
 LOGGER = logging.getLogger(__name__)
 
@@ -84,6 +82,7 @@ def run_pydantify(input_file: Path, output_folder: Path, args: List[str] = []):
 @pytest.fixture(autouse=True)
 def reset_optparse():
     from pyang import plugin
+
     from pydantify.models.base import Node
 
     # Reset plugins. Otherwise pyang creates cross-test side-effects. TODO: Better way?
@@ -167,6 +166,22 @@ def reset_optparse():
                 "-t=openconfig-interfaces/interfaces/interface/config",
             ],
             id="openconfig",
+        ),
+        param(
+            "examples/openconfig/openconfig-interfaces.yang",
+            "examples/openconfig/expected_config_only.py",
+            [
+                "-d=config",
+            ],
+            id="openconfig_config_only",
+        ),
+        param(
+            "examples/openconfig/openconfig-interfaces.yang",
+            "examples/openconfig/expected_state_only.py",
+            [
+                "-d=state",
+            ],
+            id="openconfig_state_only",
         ),
         param(
             "examples/with_leaflist/interfaces.yang",
@@ -301,6 +316,24 @@ def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Pa
                 "-t=openconfig-interfaces/interfaces/interface/config",
             ],
             id="openconfig",
+        ),
+        param(
+            "examples/openconfig/openconfig-interfaces.yang",
+            "examples/openconfig/expected_config_only.json",
+            [
+                "-j",
+                "-d=config",
+            ],
+            id="openconfig_config_only",
+        ),
+        param(
+            "examples/openconfig/openconfig-interfaces.yang",
+            "examples/openconfig/expected_state_only.json",
+            [
+                "-j",
+                "-d=state",
+            ],
+            id="openconfig_state_only",
         ),
         param(
             "examples/with_leaflist/interfaces.yang",

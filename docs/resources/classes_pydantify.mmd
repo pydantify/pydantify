@@ -98,6 +98,7 @@ classDiagram
     to_pydantic_model() type[BaseModel]
   }
   class ModelGenerator {
+    data_type : Literal['config', 'state'] | None
     include_verification_code
     input_dir : Path
     json_schema_output
@@ -131,6 +132,7 @@ classDiagram
     arg
     children : List[Node]
     comments : str | None
+    config
     default
     description : str | None
     keyword
@@ -138,6 +140,7 @@ classDiagram
     raw_statement
     substmts : List[Statement]
     __extract_comments(stm: Statement) str | None
+    __extract_config(stm: Statement) bool
     __extract_description(stm: Statement) str | None
     __init__(stm: Statement)
     _children_to_fields() Dict[str, Tuple[type, FieldInfo]]
@@ -622,6 +625,8 @@ classDiagram
   bool --* ConfigDict : coerce_numbers_to_str
   bool --* ConfigDict : validation_error_cause
   bool --* ConfigDict : use_attribute_docstrings
+  bool --* Node : config
+  bool --* Node : config
   bool --* Node : mandatory
   bool --* Pydantify : multiple_modules
   bool --* Pydantify : handle_comments
