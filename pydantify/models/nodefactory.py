@@ -6,10 +6,10 @@ from typing import Any, Callable, Dict, List, Type
 
 from pyang.statements import Statement
 from typing_extensions import Self
+
 from pydantify.exceptions import NotImplementedException
 
-from . import Node
-from . import TypeResolver
+from . import Node, TypeResolver
 
 logger = logging.getLogger("pydantify")
 

@@ -84,6 +84,7 @@ class Node(ABC):
     alias_mapping: Dict[str, str] = dict()
 
     def __init__(self, stm: Statement):
+        self.config: bool = __class__.__extract_config(stm)
         self.children: List[Node] = __class__.extract_statement_list(stm, "i_children")
         self.mandatory: bool = stm.search_one("mandatory", "true") or any(
             (ch for ch in self.children if ch.mandatory is True)
@@ -162,6 +163,12 @@ class Node(ABC):
         description = stm.search_one("description")
         return description.arg if description is not None else None
 
+    @staticmethod
+    def __extract_config(stm: Statement) -> bool:
+        """Returns the content of the "config" field, if present."""
+        config = getattr(stm, "i_config", None)
+        return True if config is None else config
+
     def to_pydantic_model(self) -> Type[BaseModel] | Type[RootModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
@@ -177,9 +184,23 @@ class Node(ABC):
         return output_model
 
     def _children_to_fields(self) -> Dict[str, Tuple[type, FieldInfo]]:
+        from ..utility.model_generator import ModelGenerator
+
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
         for ch in self.children:
-            ret[ch.arg] = ch._output_model.to_field()
+            if (
+                ModelGenerator.data_type == "config"
+                and ch.config is True
+                or ModelGenerator.data_type == "state"
+                and ch.config is False
+                or ModelGenerator.data_type is None
+                or ch.mandatory is True
+            ):
+                ret[ch.arg] = ch._output_model.to_field()
+
+        if ret and ModelGenerator.data_type == "state":
+            self.config = False
+
         return ret
 
     @staticmethod

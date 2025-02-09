@@ -1,6 +1,6 @@
 import inspect
-from typing import Callable
 import re
+from typing import Callable
 
 
 def function_to_source_code(f: Callable) -> str:

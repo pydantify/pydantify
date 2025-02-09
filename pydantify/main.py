@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-from typing import List
 import logging
 import sys
-
+from typing import List
 
 logging.basicConfig(
     stream=sys.stdout,
@@ -27,10 +26,11 @@ def parse_cli_arguments() -> List[str]:
 
     # Import locally to not clutter scope of caller
     import logging
-    from argparse import ArgumentParser
-    from .utility.model_generator import ModelGenerator
-    from pathlib import Path
     import os
+    from argparse import ArgumentParser
+    from pathlib import Path
+
+    from .utility.model_generator import ModelGenerator
 
     # Setup parser
     parser = ArgumentParser(
@@ -101,8 +101,17 @@ def parse_cli_arguments() -> List[str]:
         "--json-schema",
         action="store_true",
         dest="json_schema_output",
-        help="Output JSON schema instead of Pydantic models",
+        help="Output JSON schema instead of Pydantic models.",
         default=False,
+    )
+    parser.add_argument(
+        "-d",
+        "--data-type",
+        action="store",
+        dest="data_type",
+        choices=["config", "state"],
+        help="Limit output to config or state only. Default is config and state combined.",
+        default=None,
     )
     relay_args: List[str] = []
 
@@ -114,6 +123,7 @@ def parse_cli_arguments() -> List[str]:
     ModelGenerator.include_verification_code = args.verify
     ModelGenerator.standalone = args.standalone
     ModelGenerator.json_schema_output = args.json_schema_output
+    ModelGenerator.data_type = args.data_type
     default_output_file = "out.json" if args.json_schema_output else "out.py"
 
     input_dir = (
