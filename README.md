@@ -1,32 +1,42 @@
-# Pydantify
+<p align=center><a href="https://pydantify.github.io/pydantify/"><img src=docs/pydantify.svg?sanitize=true/></a></p>
+
 A ***prototype*** CLI tool to transform YANG models into Pydantic datastructures that can be initialized with config values and serialized into RESTCONF payloads.
 
 [Check out the documentation https://pydantify.github.io/pydantify/](https://pydantify.github.io/pydantify/)
 
 ## For users
+
 ### Installation
+
 **Prerequisites:**
+
 - Python 3.10
 - pip
 
 **Installing from PYPI:**
+
 ```bash
 pip install pydantify
 ```
 
 **Installing from local folder:**
+
 ```bash
 pip install .
 ```
 
 ### Usage
+
 **Example:**
+
 ```ps
 pydantify -i ./models_dir -o ./output_dir -t interfaces/ethernet model.yang
 ```
+
 Transforms the `/interfaces/ethernet` node and its children (located in `model.yang`) into a Python script located in `./output_dir`. Imports of definitions found in `./models_dir` are included if relevant to the specified model and node.
 
 **Command syntax:**
+
 ```ps
 pydantify [-h] [-v] [-V] [-S] [-i INPUT_DIR] [-o OUTPUT_DIR] [-t TRIM_PATH] input_file
 
@@ -57,48 +67,58 @@ NOTE: All unknown arguments will be passed to Pyang as-is and without guarantees
 ```
 
 ---
+
 ## For developers
-### Requirements:
+
+### Requirements
+
 - Visual Studio Code
 - Python 3.10
 - [PDM package manager](https://pdm.fming.dev/)
 
-### Instructions:
+### Instructions
+
 **Note**: instructions with the same indentation are alternatives to eachother.
+
 - Install
-    - dependencies through pdm (`pdm install` in project root)
-        - into the local `__pypackages__` folder
-            - to run your project as a python module
-                - locally (`python -m pydantify`)
-                - in a docker container (see [Dockerfile](./Dockerfile))
-            - to be accessed by your IDE for intellisense (see [.vscode/settings.json](./.vscode/settings.json))
-            - to be accessed by your debug launch configuration (see [.vscode/launch.json](./.vscode/launch.json))
-    - project through pip ([see guide for users](#for-users))
+  - dependencies through pdm (`pdm install` in project root)
+    - into the local `__pypackages__` folder
+      - to run your project as a python module
+        - locally (`python -m pydantify`)
+        - in a docker container (see [Dockerfile](./Dockerfile))
+      - to be accessed by your IDE for intellisense (see [.vscode/settings.json](./.vscode/settings.json))
+      - to be accessed by your debug launch configuration (see [.vscode/launch.json](./.vscode/launch.json))
+  - project through pip ([see guide for users](#for-users))
 - Build
-    - through pdm (`pdm build`)
-        - into the local `dist` folder
-            - to be published on pypi
-                - through twine (`twine upload dist/*`)
+  - through pdm (`pdm build`)
+    - into the local `dist` folder
+      - to be published on pypi
+        - through twine (`twine upload dist/*`)
 
 ---
 
 ## Links relevant to project
+
 ### Pydantic
+
 - [source](https://github.com/pydantic/pydantic)
 - [documentation](https://pydantic-docs.helpmanual.io/)
 
 ### Explanations
+
 - [Yang concepts (yangson)](https://yangson.labs.nic.cz/concepts-terms.html)
 - [yang-python training examples](https://github.com/cmoberg/netconf-yang-training)
 
 ### Yang models
+
 - [YangModels/yang](https://github.com/YangModels/yang)
 
 ### Pyang
+
 - [pyang](https://github.com/mbj4668/pyang)
 
-
 ---
+
 ## Thanks
 
 - Dejan Jovicic and Dominic Walther, who laid the foundations of pydantify
