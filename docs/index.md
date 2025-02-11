@@ -1,16 +1,21 @@
 # Welcome to pydantify
 
+<p align=center><a href="https://pydantify.github.io/pydantify/"><img src=pydantify.svg?sanitize=true/></a></p>
+
 A ***prototype*** CLI tool to transform YANG models into Pydantic datastructures that can be initialized with config values and serialized into RESTCONF payloads.
 
-
 ### Usage
+
 **Example:**
+
 ```ps
 pydantify -i ./models_dir -o ./output_dir -t interfaces/ethernet model.yang
 ```
+
 Transforms the `/interfaces/ethernet` node and its children (located in `model.yang`) into a Python script located in `./output_dir`. Imports of definitions found in `./models_dir` are included if relevant to the specified model and node.
 
 **Command syntax:**
+
 ```ps
 pydantify [-h] [-v] [-V] [-S] [-i INPUT_DIR] [-o OUTPUT_DIR] [-t TRIM_PATH] input_file
 
