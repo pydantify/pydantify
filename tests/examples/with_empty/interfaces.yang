@@ -1,0 +1,18 @@
+module interfaces {
+  namespace
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+
+  prefix if;
+
+  description 'Example demonstarating leafref nodes';
+
+  container interfaces {
+    description 'Just a simple example of a container.';
+
+    leaf primary {
+        type empty;
+        description
+            "primary IP";
+    }
+  }
+}
