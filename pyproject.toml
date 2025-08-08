@@ -2,10 +2,19 @@
 name = "pydantify"
 version = "0.8.0"
 description = "Makes network automation pydantic."
+readme = "README.md"
 authors = [
     { name = "Dominic Walther", email = "dominic.walther@ost.ch" },
     { name = "Dejan Jovicic", email = "dejan.jovicic@ost.ch" },
+    { name = "Urs Baumann", email = "github@m.ubaumann.ch" }
 ]
+license = { text = "Apache 2.0" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.10"
 dependencies = [
     "pydantic==2.10.6",
     "pyang==2.6.1",
@@ -15,23 +24,22 @@ dependencies = [
     "typing-extensions>=4.12.2",
     "setuptools>=74.0.0",
 ]
-requires-python = ">=3.10"
-readme = "README.md"
 
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "Operating System :: OS Independent",
-]
+[project.urls]
+Homepage = "https://pydantify.github.io/pydantify/"
+Documentation = "https://pydantify.github.io/pydantify/"
+Repository = "https://github.com/pydantify/pydantify"
+Issues = "https://github.com/pydantify/pydantify/issues"
+Changelog = "https://github.com/pydantify/pydantify/releases"
 
 [project.scripts]
 pydantify = "pydantify.main:main"
 
-[project.urls]
-Repository = "https://gitlab.ost.ch/pydantic-sa/pydantify"
+[build-system]
+requires = ["uv_build>=0.8.6,<0.9.0"]
+build-backend = "uv_build"
 
-[tool.pdm]
-[tool.pdm.dev-dependencies]
+[dependency-groups]
 dev = [
     "autopep8>=2.3.1",
     "black>=24.8.0",
@@ -47,10 +55,6 @@ dev = [
 
 [tool.pdm.scripts]
 class_diagram = "pyreverse -o mmd -d docs/resources --project pydantify --colorized pydantify"
-
-[build-system]
-requires = ["pdm-pep517>=1.1.4"]
-build-backend = "pdm.pep517.api"
 
 [tool.pytest.ini_options]
 log_cli = true
