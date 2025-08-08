@@ -1,12 +1,12 @@
-module interfaces {
+module interface {
   namespace
-  "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces";
+  "http://ultraconfig.com.au/ns/yang/ultraconfig-interface";
 
   prefix if;
 
   description 'Example demonstarating leafref nodes';
 
-  container interfaces {
+  container interface {
     description 'Just a simple example of a container.';
 
     leaf primary {

@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Dict, List, Optional, Type, Union
+from types import NoneType
 
 from pyang.statements import Statement, TypedefStatement, TypeStatement
 from pyang.types import (
@@ -24,7 +25,7 @@ from pyang.types import (
     UnionTypeSpec,
     XSDPattern,
 )
-from pydantic.types import conbytes, confloat, conint, constr
+from pydantic.types import conbytes, confloat, conint, constr, conlist
 from pydantic_core import PydanticUndefinedType
 from typing_extensions import Self
 
@@ -169,7 +170,8 @@ class TypeResolver:
                 pattern = cls.__resolve_pattern(patterns=spec.res)
                 return constr(pattern=convert_pattern(pattern))
             case EmptyTypeSpec.__qualname__:
-                return dict
+                # Empty is represented as `[null]`
+                return conlist(NoneType, min_length=1, max_length=1)
             case (
                 IdentityrefTypeSpec.__qualname__
             ):  # TODO: abort before entering this stage?
