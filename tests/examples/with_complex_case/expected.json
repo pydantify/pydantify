@@ -15,8 +15,12 @@
       "type": "object"
     },
     "DailyLeaf": {
-      "title": "DailyLeaf",
-      "type": "object"
+      "items": {
+        "type": "null"
+      },
+      "maxItems": 1,
+      "minItems": 1,
+      "type": "array"
     },
     "IntervalCase": {
       "properties": {
@@ -44,8 +48,12 @@
       "type": "object"
     },
     "ManualLeaf": {
-      "title": "ManualLeaf",
-      "type": "object"
+      "items": {
+        "type": "null"
+      },
+      "maxItems": 1,
+      "minItems": 1,
+      "type": "array"
     },
     "Time-of-dayLeaf": {
       "type": "string"
@@ -71,4 +79,3 @@
   "title": "Model",
   "type": "object"
 }
-

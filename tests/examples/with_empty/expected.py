@@ -1,42 +1,27 @@
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 from typing_extensions import Annotated
 
 
-class DailyCase(BaseModel):
+class InterfaceContainer(BaseModel):
+    """
+    Just a simple example of a container.
+    """
+
     model_config = ConfigDict(
         populate_by_name=True,
         regex_engine="python-re",
     )
-    daily: Annotated[
+    primary: Annotated[
         Optional[List[None]],
-        Field(alias="interfaces:daily", max_length=1, min_length=1),
+        Field(alias="interface:primary", max_length=1, min_length=1),
     ] = None
-    time_of_day: Annotated[Optional[str], Field(alias="interfaces:time-of-day")] = "1am"
-
-
-class IntervalCase(BaseModel):
-    model_config = ConfigDict(
-        populate_by_name=True,
-        regex_engine="python-re",
-    )
-    interval: Annotated[
-        Optional[int], Field(alias="interfaces:interval", ge=0, le=65535)
-    ] = 30
-
-
-class ManualCase(BaseModel):
-    model_config = ConfigDict(
-        populate_by_name=True,
-        regex_engine="python-re",
-    )
-    manual: Annotated[
-        Optional[List[None]],
-        Field(alias="interfaces:manual", max_length=1, min_length=1),
-    ] = None
+    """
+    primary IP
+    """
 
 
 class Model(BaseModel):
@@ -59,9 +44,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    how: Annotated[
-        Optional[Union[IntervalCase, DailyCase, ManualCase]],
-        Field(alias="interfaces:how"),
+    interface: Annotated[
+        Optional[InterfaceContainer], Field(alias="interface:interface")
     ] = None
 
 

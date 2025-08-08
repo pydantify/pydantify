@@ -231,6 +231,12 @@ def reset_optparse():
             [],
             id="identity default list",
         ),
+        param(
+            "examples/with_empty/interface.yang",
+            "examples/with_empty/expected.py",
+            [],
+            id="empty",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
