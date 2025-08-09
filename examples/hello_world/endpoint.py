@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Annotated, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
-from typing_extensions import Annotated
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EndpointContainer(BaseModel):
