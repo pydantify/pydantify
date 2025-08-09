@@ -1,13 +1,13 @@
 ---
 name: test pydantify
-on: [push,pull_request]
+on: [push, pull_request]
 
 jobs:
   linters:
     name: linters
     strategy:
       matrix:
-        python-version: [ '3.10' ]
+        python-version: ["3.13"]
         platform: [ubuntu-latest]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -35,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ '3.10', '3.11', '3.12' ]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
         # platform: [ubuntu-latest, macOS-latest, windows-latest]
         platform: [ubuntu-latest, macOS-latest]
     runs-on: ${{ matrix.platform }}
