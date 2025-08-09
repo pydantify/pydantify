@@ -14,18 +14,18 @@ class EndpointContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    address: Annotated[str, Field(alias='my-endpoint:address', title='AddressLeaf')]
+    address: Annotated[str, Field(alias="my-endpoint:address", title="AddressLeaf")]
     """
     Endpoint address. IP or FQDN
     """
     port: Annotated[
-        int, Field(alias='my-endpoint:port', ge=1, le=65535, title='PortLeaf')
+        int, Field(alias="my-endpoint:port", ge=1, le=65535, title="PortLeaf")
     ]
     """
     Port number between 1 and 65535
     """
     description: Annotated[
-        Optional[str], Field(alias='my-endpoint:description', title='DescriptionLeaf')
+        Optional[str], Field(alias="my-endpoint:description", title="DescriptionLeaf")
     ] = None
     """
     Endpoint description
@@ -53,7 +53,7 @@ class Model(BaseModel):
         regex_engine="python-re",
     )
     endpoint: Annotated[
-        Optional[EndpointContainer], Field(alias='my-endpoint:endpoint')
+        Optional[EndpointContainer], Field(alias="my-endpoint:endpoint")
     ] = None
 
 
