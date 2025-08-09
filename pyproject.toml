@@ -8,7 +8,7 @@ authors = [
     { name = "Dejan Jovicic", email = "dejan.jovicic@ost.ch" },
     { name = "Urs Baumann", email = "github@m.ubaumann.ch" },
 ]
-license = { text = "Apache 2.0" }
+license = { text = "MIT" }
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
