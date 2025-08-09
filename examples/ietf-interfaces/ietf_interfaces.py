@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, List, Optional
+from typing import Annotated, Any, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
-from typing_extensions import Annotated
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EnumerationEnum(Enum):
-    enabled = 'enabled'
-    disabled = 'disabled'
+    enabled = "enabled"
+    disabled = "disabled"
 
 
 class InterfaceListEntry(BaseModel):
@@ -33,7 +32,7 @@ class InterfaceListEntry(BaseModel):
         regex_engine="python-re",
     )
     name: Annotated[
-        Optional[str], Field(alias='ietf-interfaces:name', title='NameLeaf')
+        Optional[str], Field(alias="ietf-interfaces:name", title="NameLeaf")
     ] = None
     """
     The name of the interface.
@@ -67,7 +66,7 @@ class InterfaceListEntry(BaseModel):
     """
     description: Annotated[
         Optional[str],
-        Field(alias='ietf-interfaces:description', title='DescriptionLeaf'),
+        Field(alias="ietf-interfaces:description", title="DescriptionLeaf"),
     ] = None
     """
     A textual description of the interface.
@@ -97,7 +96,7 @@ class InterfaceListEntry(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    type: Annotated[Any, Field(alias='ietf-interfaces:type', title='TypeLeaf')]
+    type: Annotated[Any, Field(alias="ietf-interfaces:type", title="TypeLeaf")]
     """
     The type of the interface.
 
@@ -114,7 +113,7 @@ class InterfaceListEntry(BaseModel):
     error-tag 'invalid-value' in this case.
     """
     enabled: Annotated[
-        Optional[bool], Field(alias='ietf-interfaces:enabled', title='EnabledLeaf')
+        Optional[bool], Field(alias="ietf-interfaces:enabled", title="EnabledLeaf")
     ] = True
     """
     This leaf contains the configured, desired state of the
@@ -134,8 +133,8 @@ class InterfaceListEntry(BaseModel):
     link_up_down_trap_enable: Annotated[
         Optional[EnumerationEnum],
         Field(
-            alias='ietf-interfaces:link-up-down-trap-enable',
-            title='Link-up-down-trap-enableLeaf',
+            alias="ietf-interfaces:link-up-down-trap-enable",
+            title="Link-up-down-trap-enableLeaf",
         ),
     ] = None
     """
@@ -159,7 +158,7 @@ class InterfacesContainer(BaseModel):
         regex_engine="python-re",
     )
     interface: Annotated[
-        Optional[List[InterfaceListEntry]], Field(alias='ietf-interfaces:interface')
+        Optional[List[InterfaceListEntry]], Field(alias="ietf-interfaces:interface")
     ] = None
 
 
@@ -184,7 +183,7 @@ class Model(BaseModel):
         regex_engine="python-re",
     )
     interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias='ietf-interfaces:interfaces')
+        Optional[InterfacesContainer], Field(alias="ietf-interfaces:interfaces")
     ] = None
 
 

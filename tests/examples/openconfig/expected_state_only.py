@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Optional
+from typing import Annotated, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
-from typing_extensions import Annotated
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EnumerationEnum(Enum):

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Annotated, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
-from typing_extensions import Annotated
 
 
 class UnionLeafLeaf1(RootModel[int]):

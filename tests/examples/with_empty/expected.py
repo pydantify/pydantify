@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Annotated, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
-from typing_extensions import Annotated
 
 
 class InterfaceContainer(BaseModel):

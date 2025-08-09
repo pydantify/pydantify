@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import Annotated, List, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
-from typing_extensions import Annotated
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DailyCase(BaseModel):

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from pydantic import BaseModel, ConfigDict, Field
-from typing_extensions import Annotated
 
 
 class Model(BaseModel):
