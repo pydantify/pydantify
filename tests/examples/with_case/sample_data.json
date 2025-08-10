@@ -1,9 +1,7 @@
 {
-    "interfaces": {
-        "interface_type": {
-            "ethernet": {
-                "name": "test"
-            }
+    "interface_type": {
+        "ethernet": {
+            "name": "test"
         }
     }
 }

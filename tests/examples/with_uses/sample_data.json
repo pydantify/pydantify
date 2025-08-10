@@ -1,0 +1,8 @@
+{
+    "peer": {
+        "destination": {
+            "address": "1.1.1.1",
+            "port": "123"
+        }
+    }
+}

@@ -1,9 +1,5 @@
 {
     "interfaces": {
-        "interface_type": {
-            "ethernet": {
-                "name": "test"
-            }
-        }
+        "union_leaf": 123456
     }
 }
