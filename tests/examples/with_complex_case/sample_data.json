@@ -1,10 +1,8 @@
 {
-    "interfaces": {
-        "how": {
-            "daily": [
-                null
-            ],
-            "time_of_day": "3pm"
-        }
+    "how": {
+        "daily": [
+            null
+        ],
+        "time_of_day": "3pm"
     }
 }

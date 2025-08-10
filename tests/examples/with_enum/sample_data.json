@@ -1,14 +1,12 @@
 {
-    "interfaces": {
-        "interfaces": [
-            {
-                "name": "GigabitEthernet 0/0/0",
-                "admin-state": "disable"
-            },
-            {
-                "name": "GigabitEthernet 0/0/1",
-                "admin-state": "enable"
-            }
-        ]
-    }
+    "interfaces": [
+        {
+            "name": "GigabitEthernet 0/0/0",
+            "admin_state": "disable"
+        },
+        {
+            "name": "GigabitEthernet 0/0/1",
+            "admin_state": "enable"
+        }
+    ]
 }
