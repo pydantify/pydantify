@@ -53,3 +53,31 @@ jobs:
 
       - name: Run pytest
         run: make pytest
+
+  release:
+    name: Releasing to pypi
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    needs: [linters, pytest]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: "3.13"
+
+      - name: build release
+        run: uv build
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: dist/*
