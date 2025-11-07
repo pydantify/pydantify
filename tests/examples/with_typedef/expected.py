@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class InterfaceListEntry(BaseModel):
@@ -14,7 +14,7 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[str, Field(alias="interfaces:name", title="NameLeaf")]
+    name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
@@ -23,7 +23,6 @@ class InterfaceListEntry(BaseModel):
         Field(
             alias="interfaces:address",
             pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
-            title="AddressLeaf",
         ),
     ]
     """
@@ -34,15 +33,12 @@ class InterfaceListEntry(BaseModel):
         Field(
             alias="interfaces:subnet-mask",
             pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
-            title="Subnet-maskLeaf",
         ),
     ]
     """
     Interface subnet mask. Example value: 255.255.255.0
     """
-    enabled: Annotated[
-        Optional[bool], Field(alias="interfaces:enabled", title="EnabledLeaf")
-    ] = False
+    enabled: Annotated[Optional[bool], Field(alias="interfaces:enabled")] = False
     """
     Enable or disable the interface. Example value: true
     """
@@ -84,7 +80,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

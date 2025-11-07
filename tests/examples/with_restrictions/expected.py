@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class InterfacesContainer(BaseModel):
@@ -14,7 +14,7 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[str, Field(alias="interfaces:name", title="NameLeaf")]
+    name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
@@ -23,25 +23,16 @@ class InterfacesContainer(BaseModel):
         Field(
             alias="interfaces:complex-address",
             pattern="^(?=^(\\d{1,3}\\.){3}\\d{1,3}$).*$",
-            title="Complex-addressLeaf",
         ),
     ]
     """
     Interface IP address. Example value: 10.10.10.1
     """
-    complex_port: Annotated[
-        int,
-        Field(
-            alias="interfaces:complex-port", ge=1, le=65535, title="Complex-portLeaf"
-        ),
-    ]
+    complex_port: Annotated[int, Field(alias="interfaces:complex-port", ge=1, le=65535)]
     """
     Port number. Example value: 8080
     """
-    simple_port: Annotated[
-        int,
-        Field(alias="interfaces:simple-port", ge=1, le=65535, title="Simple-portLeaf"),
-    ]
+    simple_port: Annotated[int, Field(alias="interfaces:simple-port", ge=1, le=65535)]
     """
     Port number. Example value: 8080
     """
@@ -73,7 +64,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

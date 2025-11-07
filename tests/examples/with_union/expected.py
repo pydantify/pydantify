@@ -10,7 +10,7 @@ class UnionLeafLeaf1(RootModel[int]):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    root: Annotated[int, Field(ge=-2147483648, le=2147483647, title="Union_leafLeaf")]
+    root: Annotated[int, Field(ge=-2147483648, le=2147483647)]
     """
     Number or 'unbounded'
     """
@@ -26,8 +26,7 @@ class InterfacesContainer(BaseModel):
         regex_engine="python-re",
     )
     union_leaf: Annotated[
-        Union[UnionLeafLeaf1, str],
-        Field(alias="interfaces:union_leaf", title="Union_leafLeaf"),
+        Union[UnionLeafLeaf1, str], Field(alias="interfaces:union_leaf")
     ]
     """
     Number or 'unbounded'
@@ -60,7 +59,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

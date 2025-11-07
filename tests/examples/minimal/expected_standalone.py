@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class InterfacesContainer(BaseModel):
@@ -14,17 +14,15 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[str, Field(alias="interfaces:name", title="NameLeaf")]
+    name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    address: Annotated[str, Field(alias="interfaces:address", title="AddressLeaf")]
+    address: Annotated[str, Field(alias="interfaces:address")]
     """
     Interface IP address. Example value: 10.10.10.1
     """
-    port: Annotated[
-        int, Field(alias="interfaces:port", ge=0, le=65535, title="PortLeaf")
-    ]
+    port: Annotated[int, Field(alias="interfaces:port", ge=0, le=65535)]
     """
     Port number. Example value: 8080
     """
@@ -81,7 +79,7 @@ def restconf_patch_request(url: str, user_pw_auth: tuple[str, str], data: str):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

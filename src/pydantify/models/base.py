@@ -4,7 +4,7 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Type
 
 from datamodel_code_generator.reference import FieldNameResolver
 from pyang.statements import (
@@ -82,6 +82,8 @@ class Node(ABC):
         dict()
     )  # keeps track of the number of models with the same name
     alias_mapping: Dict[str, str] = dict()
+    data_type: Literal["config", "state"] | None
+    strip_namespace: bool
 
     def __init__(self, stm: Statement):
         self.config: bool = __class__.__extract_config(stm)
@@ -121,7 +123,11 @@ class Node(ABC):
         return self._output_model
 
     def get_qualified_name(self) -> str:
-        qualified_name = f"{self.raw_statement.i_module.arg}:{self.arg}"
+        qualified_name = (
+            f"{self.arg}"
+            if self.strip_namespace
+            else f"{self.raw_statement.i_module.arg}:{self.arg}"
+        )
         self.alias_mapping[qualified_name] = FieldNameResolver(
             snake_case_field=True
         ).get_valid_name(self.arg)
@@ -141,7 +147,7 @@ class Node(ABC):
         count: int = Node._name_count.setdefault(name, 0)
         ret: str = name
         if count > 0:
-            ret = f"{name}{count+1}"
+            ret = f"{name}{count + 1}"
         Node._name_count[name] += 1
         return ret
 
@@ -184,21 +190,19 @@ class Node(ABC):
         return output_model
 
     def _children_to_fields(self) -> Dict[str, Tuple[type, FieldInfo]]:
-        from ..utility.model_generator import ModelGenerator
-
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
         for ch in self.children:
             if (
-                ModelGenerator.data_type == "config"
+                self.data_type == "config"
                 and ch.config is True
-                or ModelGenerator.data_type == "state"
+                or self.data_type == "state"
                 and ch.config is False
-                or ModelGenerator.data_type is None
+                or self.data_type is None
                 or ch.mandatory is True
             ):
                 ret[ch.arg] = ch._output_model.to_field()
 
-        if ret and ModelGenerator.data_type == "state":
+        if ret and self.data_type == "state":
             self.config = False
 
         return ret

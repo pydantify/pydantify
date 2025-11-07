@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class InterfacesContainer(BaseModel):
@@ -14,13 +14,12 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[str, Field(alias="interfaces:name", title="NameLeaf")]
+    name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     counter1: Annotated[
-        Optional[float],
-        Field(alias="interfaces:counter1", ge=-20.0, le=3.0, title="Counter1Leaf"),
+        Optional[float], Field(alias="interfaces:counter1", ge=-20.0, le=3.0)
     ] = None
     """
     Pkt Counter 1
@@ -53,7 +52,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

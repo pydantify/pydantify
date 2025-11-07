@@ -49,11 +49,13 @@ classDiagram
     children : List[Node]
     comments : str | None
     config : bool
+    data_type : Literal['config', 'state'] | None
     default
     description : str | None
     keyword : str
     mandatory : bool
     raw_statement : Statement
+    strip_namespace : bool
     substmts : List[Statement]
     ensure_unique_name(name: str) str
     extract_statement_list(statement: Statement, attr_name: str) List[Node]
@@ -80,12 +82,3 @@ classDiagram
   ListNode --|> Node
   ModuleNode --|> Node
   TypeDefNode --|> Node
-  GeneratedClass --* Node : _output_model
-  GeneratedClass --* CaseNode : _output_model
-  GeneratedClass --* ChoiceNode : _output_model
-  GeneratedClass --* ContainerNode : _output_model
-  GeneratedClass --* LeafListNode : _output_model
-  GeneratedClass --* LeafNode : _output_model
-  GeneratedClass --* ListNode : _output_model
-  GeneratedClass --* ModuleNode : _output_model
-  GeneratedClass --* TypeDefNode : _output_model
