@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class EndpointContainer(BaseModel):
@@ -14,19 +14,15 @@ class EndpointContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    address: Annotated[str, Field(alias="my-endpoint:address", title="AddressLeaf")]
+    address: Annotated[str, Field(alias="my-endpoint:address")]
     """
     Endpoint address. IP or FQDN
     """
-    port: Annotated[
-        int, Field(alias="my-endpoint:port", ge=1, le=65535, title="PortLeaf")
-    ]
+    port: Annotated[int, Field(alias="my-endpoint:port", ge=1, le=65535)]
     """
     Port number between 1 and 65535
     """
-    description: Annotated[
-        Optional[str], Field(alias="my-endpoint:description", title="DescriptionLeaf")
-    ] = None
+    description: Annotated[Optional[str], Field(alias="my-endpoint:description")] = None
     """
     Endpoint description
     """
