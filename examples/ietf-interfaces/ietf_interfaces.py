@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, Any, List, Optional
+from typing import Annotated, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
@@ -31,9 +31,7 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[
-        Optional[str], Field(alias="ietf-interfaces:name", title="NameLeaf")
-    ] = None
+    name: Annotated[str, Field(alias="ietf-interfaces:name")]
     """
     The name of the interface.
 
@@ -65,8 +63,7 @@ class InterfaceListEntry(BaseModel):
     /interface-state/interface list.
     """
     description: Annotated[
-        Optional[str],
-        Field(alias="ietf-interfaces:description", title="DescriptionLeaf"),
+        Optional[str], Field(alias="ietf-interfaces:description")
     ] = None
     """
     A textual description of the interface.
@@ -96,7 +93,7 @@ class InterfaceListEntry(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    type: Annotated[Any, Field(alias="ietf-interfaces:type", title="TypeLeaf")]
+    type: Annotated[str, Field(alias="ietf-interfaces:type")]
     """
     The type of the interface.
 
@@ -112,9 +109,7 @@ class InterfaceListEntry(BaseModel):
     A NETCONF server MUST reply with an rpc-error with the
     error-tag 'invalid-value' in this case.
     """
-    enabled: Annotated[
-        Optional[bool], Field(alias="ietf-interfaces:enabled", title="EnabledLeaf")
-    ] = True
+    enabled: Annotated[Optional[bool], Field(alias="ietf-interfaces:enabled")] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -132,10 +127,7 @@ class InterfaceListEntry(BaseModel):
     """
     link_up_down_trap_enable: Annotated[
         Optional[EnumerationEnum],
-        Field(
-            alias="ietf-interfaces:link-up-down-trap-enable",
-            title="Link-up-down-trap-enableLeaf",
-        ),
+        Field(alias="ietf-interfaces:link-up-down-trap-enable"),
     ] = None
     """
     Controls whether linkUp/linkDown SNMP notifications

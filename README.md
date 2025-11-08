@@ -76,26 +76,8 @@ NOTE: All unknown arguments will be passed to Pyang as-is and without guarantees
 
 - Visual Studio Code
 - Python 3.10
-- [PDM package manager](https://pdm.fming.dev/)
+- [UV](https://docs.astral.sh/uv/)
 
-### Instructions
-
-**Note**: instructions with the same indentation are alternatives to eachother.
-
-- Install
-  - dependencies through pdm (`pdm install` in project root)
-    - into the local `__pypackages__` folder
-      - to run your project as a python module
-        - locally (`python -m pydantify`)
-        - in a docker container (see [Dockerfile](./Dockerfile))
-      - to be accessed by your IDE for intellisense (see [.vscode/settings.json](./.vscode/settings.json))
-      - to be accessed by your debug launch configuration (see [.vscode/launch.json](./.vscode/launch.json))
-  - project through pip ([see guide for users](#for-users))
-- Build
-  - through pdm (`pdm build`)
-    - into the local `dist` folder
-      - to be published on pypi
-        - through twine (`twine upload dist/*`)
 
 ---
 

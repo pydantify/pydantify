@@ -17,7 +17,11 @@ Transforms the `/interfaces/ethernet` node and its children (located in `model.y
 **Command syntax:**
 
 ```ps
-pydantify [-h] [-v] [-V] [-S] [-i INPUT_DIR] [-o OUTPUT_DIR] [-t TRIM_PATH] input_file
+usage: pydantify [-h] [-v] [-V] [-S] [-i INPUT_DIR] [-o OUTPUT_DIR] [-f OUTPUT_FILE] [-t TRIM_PATH]
+                 [-j] [-d {config,state}] [-n]
+                 input_file
+
+Transform a YANG model to a serializable Pydantic model.
 
 positional arguments:
   input_file            The YANG file containing the entrypoint to the model to evaluate.
@@ -26,21 +30,26 @@ options:
   -h, --help            show this help message and exit
   -v, --verbose         Enables debug output
   -V, --include-verification
-                        Adds validation code, as well as the relevant YANG files, to the output model.
-  -S, --standalone      Generated output model has no dependency on Pydantify.
-                        All required code is copied into the output model.
+                        Adds validation code, as well as the relevant YANG files, to the output
+                        model.
+  -S, --standalone      Generated output model has no dependency on Pydantify. All required code is
+                        copied into the output model.
   -i INPUT_DIR, --input-dir INPUT_DIR, --path INPUT_DIR
-                        The directory that contains the YANG input model.
-                        Defaults to the input file's folder.
+                        The directory that contains the YANG input model. Defaults to the input
+                        file's folder.
   -o OUTPUT_DIR, --output-dir OUTPUT_DIR
-                        The directory that should be used to store the output model. Defaults to "$CWD/out".
+                        The directory that should be used to store the output model. Defaults to
+                        "$CWD/out".
   -f OUTPUT_FILE, --output-file OUTPUT_FILE
-                        The name of the output file. Defaults to "out.py".
+                        The name of the output file. Defaults to "out.py" for Pydantic output or
+                        "out.json" for JSON schema output.
   -t TRIM_PATH, --trim-path TRIM_PATH
                         Get only the specified branch of the whole tree.
   -j, --json-schema     Output JSON schema instead of Pydantic models.
-  -d, --data-type {config,state}
+  -d {config,state}, --data-type {config,state}
                         Limit output to config or state only. Default is config and state combined.
+  -n, --strip-namespace
+                        Strip the YANG namespace from the output model aliases.
 
 NOTE: All unknown arguments will be passed to Pyang as-is and without guarantees.
 ```
