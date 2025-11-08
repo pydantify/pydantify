@@ -30,6 +30,7 @@ def parse_cli_arguments() -> List[str]:
     from argparse import ArgumentParser
     from pathlib import Path
 
+    from .models.base import Node
     from .utility.model_generator import ModelGenerator
 
     # Setup parser
@@ -113,6 +114,14 @@ def parse_cli_arguments() -> List[str]:
         help="Limit output to config or state only. Default is config and state combined.",
         default=None,
     )
+    parser.add_argument(
+        "-n",
+        "--strip-namespace",
+        action="store_true",
+        dest="strip_namespace",
+        help="Strip the YANG namespace from the output model aliases.",
+        default=False,
+    )
     relay_args: List[str] = []
 
     # Parse
@@ -123,7 +132,8 @@ def parse_cli_arguments() -> List[str]:
     ModelGenerator.include_verification_code = args.verify
     ModelGenerator.standalone = args.standalone
     ModelGenerator.json_schema_output = args.json_schema_output
-    ModelGenerator.data_type = args.data_type
+    Node.data_type = args.data_type
+    Node.strip_namespace = args.strip_namespace
     default_output_file = "out.json" if args.json_schema_output else "out.py"
 
     input_dir = (

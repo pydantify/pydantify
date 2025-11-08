@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class DestinationContainer(BaseModel):
@@ -10,15 +10,11 @@ class DestinationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    address: Annotated[
-        Optional[str], Field(alias="interfaces:address", title="AddressLeaf")
-    ] = None
+    address: Annotated[Optional[str], Field(alias="interfaces:address")] = None
     """
     Target IP address
     """
-    port: Annotated[Optional[str], Field(alias="interfaces:port", title="PortLeaf")] = (
-        None
-    )
+    port: Annotated[Optional[str], Field(alias="interfaces:port")] = None
     """
     Target port number
     """
@@ -58,7 +54,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

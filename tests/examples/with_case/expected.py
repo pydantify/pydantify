@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class Ethernet2Case(BaseModel):
@@ -14,9 +14,7 @@ class Ethernet2Case(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name2: Annotated[
-        Optional[str], Field(alias="interfaces:name2", title="Name2Leaf")
-    ] = None
+    name2: Annotated[Optional[str], Field(alias="interfaces:name2")] = None
 
 
 class EthernetContainer(BaseModel):
@@ -28,9 +26,7 @@ class EthernetContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="interfaces:name", title="NameLeaf")] = (
-        None
-    )
+    name: Annotated[Optional[str], Field(alias="interfaces:name")] = None
 
 
 class EthernetCase(BaseModel):
@@ -70,7 +66,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

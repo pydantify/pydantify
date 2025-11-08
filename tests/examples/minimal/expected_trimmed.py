@@ -25,14 +25,14 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    address: Annotated[str, Field(alias="interfaces:address", title="AddressLeaf")]
+    address: Annotated[str, Field(alias="interfaces:address")]
     """
     Interface IP address. Example value: 10.10.10.1
     """
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

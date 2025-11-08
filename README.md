@@ -62,6 +62,8 @@ options:
   -j, --json-schema     Output JSON schema instead of Pydantic models.
   -d, --data-type {config,state}
                         Limit output to config or state only. Default is config and state combined.
+  -n, --strip-namespace
+                        Strip the YANG namespace from the output model aliases.
 
 NOTE: All unknown arguments will be passed to Pyang as-is and without guarantees.
 ```

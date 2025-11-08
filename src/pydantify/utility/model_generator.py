@@ -69,7 +69,6 @@ class ModelGenerator:
     standalone: bool = False
     trim_path: Optional[str] = None
     json_schema_output: bool
-    data_type: Literal["config", "state"] | None
 
     @classmethod
     def generate(
@@ -196,7 +195,7 @@ class ModelGenerator:
                 else:
                     logger.warn(
                         f'Path element "{path[0]}" not found in "{statement.arg}\n'
-                        f'Available: [{", ".join(ch.arg for ch in statement.i_children)}]'
+                        f"Available: [{', '.join(ch.arg for ch in statement.i_children)}]"
                     )
                     return None
             return statement

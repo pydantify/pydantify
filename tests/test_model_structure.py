@@ -29,8 +29,10 @@ class ParsedAST:
                 self.classes[f"{c.name}({bases})"] = c
 
     @staticmethod
-    def get_annotation(annotation: Any) -> ast.expr:
-        return annotation.value if isinstance(annotation, ast.Subscript) else annotation
+    def get_annotation(annotation: Any) -> str:
+        if hasattr(ast, "unparse"):
+            return ast.unparse(annotation)
+        return ast.dump(annotation, include_attributes=False, annotate_fields=False)
 
     @staticmethod
     @validate_call
@@ -56,9 +58,9 @@ class ParsedAST:
                 assert (annotation_a is None) == (annotation_b is None)
                 if annotation_a is not None:
                     # Compare annotated type
-                    assert getattr(
-                        ast1.get_annotation(annotation_a), "id", None
-                    ) == getattr(ast2.get_annotation(annotation_b), "id", None)
+                    assert ast1.get_annotation(annotation_a) == ast2.get_annotation(
+                        annotation_b
+                    )
         assert len(ast1.body) == len(ast2.body)
 
 
@@ -166,6 +168,15 @@ def reset_optparse():
                 "-t=openconfig-interfaces/interfaces/interface/config",
             ],
             id="openconfig",
+        ),
+        param(
+            "examples/openconfig/openconfig-interfaces.yang",
+            "examples/openconfig/expected_stripped_ns.py",
+            [
+                "-t=openconfig-interfaces/interfaces/interface/config",
+                "--strip-namespace",
+            ],
+            id="openconfig_stripped_ns",
         ),
         param(
             "examples/openconfig/openconfig-interfaces.yang",
