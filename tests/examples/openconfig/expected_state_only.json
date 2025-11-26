@@ -318,7 +318,7 @@
       "description": "Top level container for interfaces, including configuration\nand state data.",
       "properties": {
         "openconfig-interfaces:interface": {
-          "default": null,
+          "default": [],
           "items": {
             "$ref": "#/$defs/InterfaceListEntry"
           },
@@ -560,7 +560,7 @@
       "description": "Enclosing container for the list of subinterfaces associated\nwith a physical interface",
       "properties": {
         "openconfig-interfaces:subinterface": {
-          "default": null,
+          "default": [],
           "items": {
             "$ref": "#/$defs/SubinterfaceListEntry"
           },
@@ -641,4 +641,3 @@
   "title": "Model",
   "type": "object"
 }
-

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional, Union
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Ethernet2Case(BaseModel):

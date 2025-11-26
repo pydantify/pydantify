@@ -50,7 +50,7 @@ class Model(BaseModel):
     )
     interfaces: Annotated[
         Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
-    ] = None
+    ] = []
     mgmt_interface: Annotated[
         Optional[str], Field(alias="interfaces:mgmt-interface")
     ] = None

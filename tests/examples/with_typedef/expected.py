@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class InterfaceListEntry(BaseModel):
@@ -51,7 +51,7 @@ class InterfacesContainer(BaseModel):
     )
     interface: Annotated[
         Optional[List[InterfaceListEntry]], Field(alias="interfaces:interface")
-    ] = None
+    ] = []
 
 
 class Model(BaseModel):

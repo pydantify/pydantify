@@ -51,7 +51,7 @@ class Model(BaseModel):
     )
     interfaces: Annotated[
         Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
-    ] = None
+    ] = []
 
 
 if __name__ == "__main__":

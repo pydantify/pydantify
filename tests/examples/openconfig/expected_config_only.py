@@ -276,7 +276,7 @@ class SubinterfacesContainer(BaseModel):
     subinterface: Annotated[
         Optional[List[SubinterfaceListEntry]],
         Field(alias="openconfig-interfaces:subinterface"),
-    ] = None
+    ] = []
 
 
 class InterfaceListEntry(BaseModel):
@@ -317,7 +317,7 @@ class InterfacesContainer(BaseModel):
     interface: Annotated[
         Optional[List[InterfaceListEntry]],
         Field(alias="openconfig-interfaces:interface"),
-    ] = None
+    ] = []
 
 
 class Model(BaseModel):

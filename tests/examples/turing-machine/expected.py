@@ -104,7 +104,7 @@ class TapeContainer(BaseModel):
     )
     cell: Annotated[
         Optional[List[CellListEntry]], Field(alias="turing-machine:cell")
-    ] = None
+    ] = []
 
 
 class DeltaListEntry(BaseModel):
@@ -140,7 +140,7 @@ class TransitionFunctionContainer(BaseModel):
     )
     delta: Annotated[
         Optional[List[DeltaListEntry]], Field(alias="turing-machine:delta")
-    ] = None
+    ] = []
 
 
 class TuringMachineContainer(BaseModel):

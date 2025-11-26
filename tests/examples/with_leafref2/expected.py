@@ -67,7 +67,7 @@ class KeychainListEntry(BaseModel):
     """
     Provides the key index of the currently active Keychain key
     """
-    key: Annotated[Optional[List[KeyListEntry]], Field(alias="keychains:key")] = None
+    key: Annotated[Optional[List[KeyListEntry]], Field(alias="keychains:key")] = []
 
 
 class Model(BaseModel):
@@ -92,7 +92,7 @@ class Model(BaseModel):
     )
     keychain: Annotated[
         Optional[List[KeychainListEntry]], Field(alias="keychains:keychain")
-    ] = None
+    ] = []
 
 
 if __name__ == "__main__":

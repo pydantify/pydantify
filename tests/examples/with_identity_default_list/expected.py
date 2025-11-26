@@ -43,7 +43,7 @@ class TlsContainer(BaseModel):
     )
     server_profile: Annotated[
         Optional[List[ServerProfileListEntry]], Field(alias="ciphers:server-profile")
-    ] = None
+    ] = []
 
 
 class Model(BaseModel):
