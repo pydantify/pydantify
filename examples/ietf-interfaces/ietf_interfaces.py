@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EnumerationEnum(Enum):
@@ -62,9 +62,7 @@ class InterfaceListEntry(BaseModel):
     the system, it is instantiated with the same name in the
     /interface-state/interface list.
     """
-    description: Annotated[
-        Optional[str], Field(alias="ietf-interfaces:description")
-    ] = None
+    description: Annotated[str, Field(alias="ietf-interfaces:description")] = None
     """
     A textual description of the interface.
 
@@ -109,7 +107,7 @@ class InterfaceListEntry(BaseModel):
     A NETCONF server MUST reply with an rpc-error with the
     error-tag 'invalid-value' in this case.
     """
-    enabled: Annotated[Optional[bool], Field(alias="ietf-interfaces:enabled")] = True
+    enabled: Annotated[bool, Field(alias="ietf-interfaces:enabled")] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -125,10 +123,7 @@ class InterfaceListEntry(BaseModel):
     reflected in ifAdminStatus, but if ifAdminStatus is
     changed over SNMP, this leaf is not affected.
     """
-    link_up_down_trap_enable: Annotated[
-        Optional[EnumerationEnum],
-        Field(alias="ietf-interfaces:link-up-down-trap-enable"),
-    ] = None
+    link_up_down_trap_enable: Annotated[EnumerationEnum, Field(alias="ietf-interfaces:link-up-down-trap-enable")] = None
     """
     Controls whether linkUp/linkDown SNMP notifications
     should be generated for this interface.
@@ -149,9 +144,7 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    interface: Annotated[
-        Optional[List[InterfaceListEntry]], Field(alias="ietf-interfaces:interface")
-    ] = None
+    interface: Annotated[List[InterfaceListEntry], Field(alias="ietf-interfaces:interface")] = None
 
 
 class Model(BaseModel):
@@ -174,9 +167,7 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="ietf-interfaces:interfaces")
-    ] = None
+    interfaces: Annotated[InterfacesContainer, Field(alias="ietf-interfaces:interfaces")] = None
 
 
 if __name__ == "__main__":
@@ -184,9 +175,7 @@ if __name__ == "__main__":
         # <Initialize model here>
     )
 
-    restconf_payload = model.model_dump_json(
-        exclude_defaults=True, by_alias=True, indent=2
-    )
+    restconf_payload = model.model_dump_json(exclude_defaults=True, by_alias=True, indent=2)
 
     print(f"Generated output: {restconf_payload}")
 
