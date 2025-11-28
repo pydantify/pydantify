@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional, Union
+from typing import Annotated, List, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -11,10 +11,10 @@ class DailyCase(BaseModel):
         regex_engine="python-re",
     )
     daily: Annotated[
-        Optional[List[None]],
+        List[None],
         Field(alias="interfaces:daily", max_length=1, min_length=1),
     ] = None
-    time_of_day: Annotated[Optional[str], Field(alias="interfaces:time-of-day")] = "1am"
+    time_of_day: Annotated[str, Field(alias="interfaces:time-of-day")] = "1am"
 
 
 class IntervalCase(BaseModel):
@@ -22,9 +22,7 @@ class IntervalCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    interval: Annotated[
-        Optional[int], Field(alias="interfaces:interval", ge=0, le=65535)
-    ] = 30
+    interval: Annotated[int, Field(alias="interfaces:interval", ge=0, le=65535)] = 30
 
 
 class ManualCase(BaseModel):
@@ -33,7 +31,7 @@ class ManualCase(BaseModel):
         regex_engine="python-re",
     )
     manual: Annotated[
-        Optional[List[None]],
+        List[None],
         Field(alias="interfaces:manual", max_length=1, min_length=1),
     ] = None
 
@@ -59,7 +57,7 @@ class Model(BaseModel):
         regex_engine="python-re",
     )
     how: Annotated[
-        Optional[Union[IntervalCase, DailyCase, ManualCase]],
+        Union[IntervalCase, DailyCase, ManualCase],
         Field(alias="interfaces:how"),
     ] = None
 

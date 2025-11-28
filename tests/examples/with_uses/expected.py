@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DestinationContainer(BaseModel):
@@ -10,11 +10,11 @@ class DestinationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    address: Annotated[Optional[str], Field(alias="interfaces:address")] = None
+    address: Annotated[str, Field(alias="interfaces:address")] = None
     """
     Target IP address
     """
-    port: Annotated[Optional[str], Field(alias="interfaces:port")] = None
+    port: Annotated[str, Field(alias="interfaces:port")] = None
     """
     Target port number
     """
@@ -26,7 +26,7 @@ class PeerContainer(BaseModel):
         regex_engine="python-re",
     )
     destination: Annotated[
-        Optional[DestinationContainer], Field(alias="interfaces:destination")
+        DestinationContainer, Field(alias="interfaces:destination")
     ] = None
 
 
@@ -50,7 +50,7 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    peer: Annotated[Optional[PeerContainer], Field(alias="interfaces:peer")] = None
+    peer: Annotated[PeerContainer, Field(alias="interfaces:peer")] = None
 
 
 if __name__ == "__main__":

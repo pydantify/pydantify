@@ -41,7 +41,7 @@
     "InterfacesContainer": {
       "properties": {
         "interfaces:interface": {
-          "default": null,
+          "default": [],
           "items": {
             "$ref": "#/$defs/InterfaceListEntry"
           },
@@ -70,4 +70,3 @@
   "title": "Model",
   "type": "object"
 }
-

@@ -61,6 +61,12 @@ class ParsedAST:
                     assert ast1.get_annotation(annotation_a) == ast2.get_annotation(
                         annotation_b
                     )
+                # Compare default value, if any
+                value_a = getattr(a2, "value", None)
+                value_b = getattr(b2, "value", None)
+                assert (value_a is None) == (value_b is None)
+                if value_a is not None:
+                    assert ast1.get_annotation(value_a) == ast2.get_annotation(value_b)
         assert len(ast1.body) == len(ast2.body)
 
 

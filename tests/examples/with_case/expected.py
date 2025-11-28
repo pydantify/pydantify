@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional, Union
+from typing import Annotated, Union
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Ethernet2Case(BaseModel):
@@ -14,7 +14,7 @@ class Ethernet2Case(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name2: Annotated[Optional[str], Field(alias="interfaces:name2")] = None
+    name2: Annotated[str, Field(alias="interfaces:name2")] = None
 
 
 class EthernetContainer(BaseModel):
@@ -26,7 +26,7 @@ class EthernetContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="interfaces:name")] = None
+    name: Annotated[str, Field(alias="interfaces:name")] = None
 
 
 class EthernetCase(BaseModel):
@@ -34,9 +34,7 @@ class EthernetCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    ethernet: Annotated[
-        Optional[EthernetContainer], Field(alias="interfaces:ethernet")
-    ] = None
+    ethernet: Annotated[EthernetContainer, Field(alias="interfaces:ethernet")] = None
 
 
 class Model(BaseModel):
@@ -60,7 +58,7 @@ class Model(BaseModel):
         regex_engine="python-re",
     )
     interface_type: Annotated[
-        Optional[Union[EthernetCase, Ethernet2Case]],
+        Union[EthernetCase, Ethernet2Case],
         Field(alias="interfaces:interface-type"),
     ] = None
 

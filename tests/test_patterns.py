@@ -1,4 +1,3 @@
-from typing import List
 from pytest import mark, param
 
 from pydantify.utility.patterns import convert_pattern
