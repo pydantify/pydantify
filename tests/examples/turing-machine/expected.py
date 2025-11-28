@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -32,7 +32,7 @@ class CellListEntry(BaseModel):
     Coordinate (index) of the tape cell.
     """
     symbol: Annotated[
-        Optional[str], Field(alias="turing-machine:symbol", max_length=1, min_length=0)
+        str, Field(alias="turing-machine:symbol", max_length=1, min_length=0)
     ] = None
     """
     Symbol appearing in the tape cell.
@@ -71,23 +71,21 @@ class OutputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    state: Annotated[
-        Optional[int], Field(alias="turing-machine:state", ge=0, le=65535)
-    ] = None
+    state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)] = None
     """
     New state of the control unit. If this leaf is not
     present, the state doesn't change.
     """
     symbol: Annotated[
-        Optional[str], Field(alias="turing-machine:symbol", max_length=1, min_length=0)
+        str, Field(alias="turing-machine:symbol", max_length=1, min_length=0)
     ] = None
     """
     Symbol to be written to the tape cell. If this leaf is
     not present, the symbol doesn't change.
     """
-    head_move: Annotated[
-        Optional[EnumerationEnum], Field(alias="turing-machine:head-move")
-    ] = "right"
+    head_move: Annotated[EnumerationEnum, Field(alias="turing-machine:head-move")] = (
+        "right"
+    )
     """
     Move the head one cell to the left or right
     """
@@ -102,9 +100,7 @@ class TapeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    cell: Annotated[
-        Optional[List[CellListEntry]], Field(alias="turing-machine:cell")
-    ] = []
+    cell: Annotated[List[CellListEntry], Field(alias="turing-machine:cell")] = []
 
 
 class DeltaListEntry(BaseModel):
@@ -120,12 +116,8 @@ class DeltaListEntry(BaseModel):
     """
     An arbitrary label of the transition rule.
     """
-    input: Annotated[Optional[InputContainer], Field(alias="turing-machine:input")] = (
-        None
-    )
-    output: Annotated[
-        Optional[OutputContainer], Field(alias="turing-machine:output")
-    ] = None
+    input: Annotated[InputContainer, Field(alias="turing-machine:input")] = None
+    output: Annotated[OutputContainer, Field(alias="turing-machine:output")] = None
 
 
 class TransitionFunctionContainer(BaseModel):
@@ -138,9 +130,7 @@ class TransitionFunctionContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    delta: Annotated[
-        Optional[List[DeltaListEntry]], Field(alias="turing-machine:delta")
-    ] = []
+    delta: Annotated[List[DeltaListEntry], Field(alias="turing-machine:delta")] = []
 
 
 class TuringMachineContainer(BaseModel):
@@ -168,9 +158,9 @@ class TuringMachineContainer(BaseModel):
     """
     Position of tape read/write head.
     """
-    tape: Annotated[Optional[TapeContainer], Field(alias="turing-machine:tape")] = None
+    tape: Annotated[TapeContainer, Field(alias="turing-machine:tape")] = None
     transition_function: Annotated[
-        Optional[TransitionFunctionContainer],
+        TransitionFunctionContainer,
         Field(alias="turing-machine:transition-function"),
     ] = None
 
@@ -196,7 +186,7 @@ class Model(BaseModel):
         regex_engine="python-re",
     )
     turing_machine: Annotated[
-        Optional[TuringMachineContainer], Field(alias="turing-machine:turing-machine")
+        TuringMachineContainer, Field(alias="turing-machine:turing-machine")
     ] = None
 
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -15,7 +15,7 @@ class ConfigContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    name: Annotated[Optional[str], Field(alias="openconfig-interfaces:name")] = None
+    name: Annotated[str, Field(alias="openconfig-interfaces:name")] = None
     """
     The name of the interface.
 
@@ -66,9 +66,7 @@ class ConfigContainer(BaseModel):
     A NETCONF server MUST reply with an rpc-error with the
     error-tag 'invalid-value' in this case.
     """
-    mtu: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:mtu", ge=0, le=65535)
-    ] = None
+    mtu: Annotated[int, Field(alias="openconfig-interfaces:mtu", ge=0, le=65535)] = None
     """
     Set the max transmission unit size in octets
     for the physical interface.  If this is not set, the mtu is
@@ -76,16 +74,14 @@ class ConfigContainer(BaseModel):
     Ethernet interface.
     """
     loopback_mode: Annotated[
-        Optional[bool], Field(alias="openconfig-interfaces:loopback-mode")
+        bool, Field(alias="openconfig-interfaces:loopback-mode")
     ] = False
     """
     When set to true, the interface is logically looped back,
     such that packets that are forwarded via the interface
     are received on the same interface.
     """
-    description: Annotated[
-        Optional[str], Field(alias="openconfig-interfaces:description")
-    ] = None
+    description: Annotated[str, Field(alias="openconfig-interfaces:description")] = None
     """
     A textual description of the interface.
 
@@ -114,9 +110,7 @@ class ConfigContainer(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    enabled: Annotated[Optional[bool], Field(alias="openconfig-interfaces:enabled")] = (
-        True
-    )
+    enabled: Annotated[bool, Field(alias="openconfig-interfaces:enabled")] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -141,16 +135,14 @@ class ConfigContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    up: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:up", ge=0, le=4294967295)
-    ] = 0
+    up: Annotated[int, Field(alias="openconfig-interfaces:up", ge=0, le=4294967295)] = 0
     """
     Dampens advertisement when the interface
     transitions from down to up.  A zero value means dampening
     is turned off, i.e., immediate notification.
     """
     down: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:down", ge=0, le=4294967295)
+        int, Field(alias="openconfig-interfaces:down", ge=0, le=4294967295)
     ] = 0
     """
     Dampens advertisement when the interface transitions from
@@ -169,7 +161,7 @@ class ConfigContainer3(BaseModel):
         regex_engine="python-re",
     )
     index: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
+        int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
     ] = 0
     """
     The index of the subinterface, or logical interface number.
@@ -177,9 +169,7 @@ class ConfigContainer3(BaseModel):
     subinterfaces, this value should default to 0, i.e., the
     default subinterface.
     """
-    description: Annotated[
-        Optional[str], Field(alias="openconfig-interfaces:description")
-    ] = None
+    description: Annotated[str, Field(alias="openconfig-interfaces:description")] = None
     """
     A textual description of the interface.
 
@@ -208,9 +198,7 @@ class ConfigContainer3(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    enabled: Annotated[Optional[bool], Field(alias="openconfig-interfaces:enabled")] = (
-        True
-    )
+    enabled: Annotated[bool, Field(alias="openconfig-interfaces:enabled")] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -236,9 +224,9 @@ class HoldTimeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    config: Annotated[
-        Optional[ConfigContainer2], Field(alias="openconfig-interfaces:config")
-    ] = None
+    config: Annotated[ConfigContainer2, Field(alias="openconfig-interfaces:config")] = (
+        None
+    )
 
 
 class SubinterfaceListEntry(BaseModel):
@@ -258,9 +246,9 @@ class SubinterfaceListEntry(BaseModel):
     The index number of the subinterface -- used to address
     the logical interface
     """
-    config: Annotated[
-        Optional[ConfigContainer3], Field(alias="openconfig-interfaces:config")
-    ] = None
+    config: Annotated[ConfigContainer3, Field(alias="openconfig-interfaces:config")] = (
+        None
+    )
 
 
 class SubinterfacesContainer(BaseModel):
@@ -274,7 +262,7 @@ class SubinterfacesContainer(BaseModel):
         regex_engine="python-re",
     )
     subinterface: Annotated[
-        Optional[List[SubinterfaceListEntry]],
+        List[SubinterfaceListEntry],
         Field(alias="openconfig-interfaces:subinterface"),
     ] = []
 
@@ -292,14 +280,14 @@ class InterfaceListEntry(BaseModel):
     """
     References the configured name of the interface
     """
-    config: Annotated[
-        Optional[ConfigContainer], Field(alias="openconfig-interfaces:config")
-    ] = None
+    config: Annotated[ConfigContainer, Field(alias="openconfig-interfaces:config")] = (
+        None
+    )
     hold_time: Annotated[
-        Optional[HoldTimeContainer], Field(alias="openconfig-interfaces:hold-time")
+        HoldTimeContainer, Field(alias="openconfig-interfaces:hold-time")
     ] = None
     subinterfaces: Annotated[
-        Optional[SubinterfacesContainer],
+        SubinterfacesContainer,
         Field(alias="openconfig-interfaces:subinterfaces"),
     ] = None
 
@@ -315,7 +303,7 @@ class InterfacesContainer(BaseModel):
         regex_engine="python-re",
     )
     interface: Annotated[
-        Optional[List[InterfaceListEntry]],
+        List[InterfaceListEntry],
         Field(alias="openconfig-interfaces:interface"),
     ] = []
 
@@ -341,7 +329,7 @@ class Model(BaseModel):
         regex_engine="python-re",
     )
     interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="openconfig-interfaces:interfaces")
+        InterfacesContainer, Field(alias="openconfig-interfaces:interfaces")
     ] = None
 
 

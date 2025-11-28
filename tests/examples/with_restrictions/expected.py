@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -58,9 +58,9 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
-    ] = None
+    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
+        None
+    )
 
 
 if __name__ == "__main__":

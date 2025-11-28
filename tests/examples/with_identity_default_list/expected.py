@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -18,7 +18,7 @@ class ServerProfileListEntry(BaseModel):
     """
     Name of the TLS server-profile
     """
-    cipher_list: Annotated[Optional[List[str]], Field(alias="ciphers:cipher-list")] = [
+    cipher_list: Annotated[List[str], Field(alias="ciphers:cipher-list")] = [
         "ecdhe-ecdsa-aes256-gcm-sha384",
         "ecdhe-ecdsa-aes128-gcm-sha256",
         "ecdhe-rsa-aes256-gcm-sha384",
@@ -42,7 +42,7 @@ class TlsContainer(BaseModel):
         regex_engine="python-re",
     )
     server_profile: Annotated[
-        Optional[List[ServerProfileListEntry]], Field(alias="ciphers:server-profile")
+        List[ServerProfileListEntry], Field(alias="ciphers:server-profile")
     ] = []
 
 
@@ -66,7 +66,7 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    tls: Annotated[Optional[TlsContainer], Field(alias="ciphers:tls")] = None
+    tls: Annotated[TlsContainer, Field(alias="ciphers:tls")] = None
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,7 +14,7 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    test: Annotated[Optional[int], Field(alias="interfaces:test", ge=0, le=255)] = None
+    test: Annotated[int, Field(alias="interfaces:test", ge=0, le=255)] = None
     """
     Test node
     """
@@ -22,7 +22,7 @@ class InterfacesListEntry(BaseModel):
     """
     Interface name
     """
-    ip: Annotated[Optional[str], Field(alias="interfaces:ip")] = None
+    ip: Annotated[str, Field(alias="interfaces:ip")] = None
     """
     Interface IP
     """
@@ -49,11 +49,9 @@ class Model(BaseModel):
         regex_engine="python-re",
     )
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
+        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
     ] = []
-    mgmt_interface: Annotated[
-        Optional[str], Field(alias="interfaces:mgmt-interface")
-    ] = None
+    mgmt_interface: Annotated[str, Field(alias="interfaces:mgmt-interface")] = None
     """
     Dedicated management interface
     """

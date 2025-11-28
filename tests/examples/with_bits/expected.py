@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -19,7 +19,7 @@ class InterfacesContainer(BaseModel):
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     mybits: Annotated[
-        Optional[str],
+        str,
         Field(
             alias="interfaces:mybits",
             pattern="^(disable-nagle|auto-sense-speed|ten-mb-only|\\s)*$",
@@ -47,9 +47,9 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
-    ] = None
+    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
+        None
+    )
 
 
 if __name__ == "__main__":
