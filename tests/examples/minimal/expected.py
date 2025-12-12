@@ -14,6 +14,8 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    prefix = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -48,6 +50,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    prefix = "if"
     interfaces: Annotated[
         Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
     ] = None
