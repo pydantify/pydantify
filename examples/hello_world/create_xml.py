@@ -1,6 +1,6 @@
 from pathlib import Path
 from endpoint import Model, EndpointContainer
-from pydantify.utility.xml import model_dump_xml_string
+from pydantify.utility.netconf import model_dump_xml_string
 
 port = 8080
 host = "localhost"

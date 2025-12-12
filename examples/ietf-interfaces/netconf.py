@@ -2,7 +2,7 @@ import os
 
 import ncclient.manager
 from ncclient.operations.retrieve import GetReply
-from pydantify.utility.xml import model_dump_xml_string, model_validate_xml
+from pydantify.utility.netconf import model_dump_xml_string, model_validate_xml
 
 username = os.getenv("NETCONF_USER", input("Username: "))
 password = os.getenv("NETCONF_PASSWORD", input("Password: "))
