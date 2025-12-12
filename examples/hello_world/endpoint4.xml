@@ -1,0 +1,4 @@
+<ep:endpoint xmlns:ep="http://pydantify.github.io/ns/yang/pydantify-endpoint">
+  <ep:address>localhost</ep:address>
+  <ep:port>8000</ep:port>
+</ep:endpoint>
