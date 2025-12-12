@@ -1,0 +1,4 @@
+<ep:endpoint xmlns:ep="http://pydantify.github.io/ns/yang/pydantify-endpoint">
+  <ep:address>remote</ep:address>
+  <ep:port>53</ep:port>
+</ep:endpoint>
