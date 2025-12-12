@@ -1,30 +1,30 @@
 import os
 
 import ncclient.manager
-from pydantify.utility.xml import model_dump_xml_string
+from ncclient.operations.retrieve import GetReply
+from pydantify.utility.xml import model_dump_xml_string, model_validate_xml
 
 username = os.getenv("NETCONF_USER", input("Username: "))
 password = os.getenv("NETCONF_PASSWORD", input("Password: "))
 host = os.getenv("NETCONF_HOST", input("Host: "))
 
-manager = ncclient.manager.connect(
-    host=host,
-    port=830,
-    username=username,
-    password=password,
-    hostkey_verify=False,  # for demonstration purposes only
-    device_params={"name": "default"},
-)
+manager = ncclient.manager.connect(host=host, username=username, password=password)
 
 print("#" * 17, "Get interface data", "#" * 17)
-response = m.get_config(source="running", filter=("subtree", "<interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'/>"))
+response: GetReply = m.get_config(
+    source="running",
+    filter=(
+        "subtree",
+        "<interfaces xmlns='urn:ietf:params:xml:ns:yang:ietf-interfaces'/>",
+    ),
+)
 print(response.xml)
 
 
 print("#" * 17, "Convert received data into pydantic model", "#" * 17)
 from ietf_interfaces import Model
 
-model = Model.model_validate(response.xml)
+model = model_validate_xml(Model, response.xml)
 
 print(model_dump_xml_string(model, pretty_print=True))
 
