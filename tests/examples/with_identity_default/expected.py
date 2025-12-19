@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -18,11 +18,11 @@ class InterfacesListEntry(BaseModel):
     """
     Interface name
     """
-    ip: Annotated[Optional[List[str]], Field(alias="interfaces:ip")] = []
+    ip: Annotated[List[str], Field(alias="interfaces:ip")] = []
     """
     List of interface IPs
     """
-    tpid: Annotated[Optional[str], Field(alias="interfaces:tpid")] = "TPID_0X8100"
+    tpid: Annotated[str, Field(alias="interfaces:tpid")] = "TPID_0X8100"
     """
     Optionally set the tag protocol identifier field (TPID) that
     is accepted on the VLAN
@@ -50,8 +50,8 @@ class Model(BaseModel):
         regex_engine="python-re",
     )
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
-    ] = None
+        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
+    ] = []
 
 
 if __name__ == "__main__":

@@ -138,7 +138,7 @@ class ModelGenerator:
             use_field_description=True,
             aliases=Node.alias_mapping,
             reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
-            strict_nullable=False,
+            strict_nullable=True,
             allow_population_by_field_name=True,
             allow_extra_fields=False,
             collapse_root_models=True,

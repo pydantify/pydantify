@@ -38,7 +38,7 @@
       "description": "Top-level container for TLS configuration and state",
       "properties": {
         "ciphers:server-profile": {
-          "default": null,
+          "default": [],
           "items": {
             "$ref": "#/$defs/Server-profileListEntry"
           },
@@ -59,4 +59,3 @@
   "title": "Model",
   "type": "object"
 }
-

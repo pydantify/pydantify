@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EndpointContainer(BaseModel):
@@ -22,7 +22,7 @@ class EndpointContainer(BaseModel):
     """
     Port number between 1 and 65535
     """
-    description: Annotated[Optional[str], Field(alias="my-endpoint:description")] = None
+    description: Annotated[str, Field(alias="my-endpoint:description")] = None
     """
     Endpoint description
     """
@@ -48,9 +48,7 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    endpoint: Annotated[
-        Optional[EndpointContainer], Field(alias="my-endpoint:endpoint")
-    ] = None
+    endpoint: Annotated[EndpointContainer, Field(alias="my-endpoint:endpoint")] = None
 
 
 if __name__ == "__main__":
@@ -58,9 +56,7 @@ if __name__ == "__main__":
         # <Initialize model here>
     )
 
-    restconf_payload = model.model_dump_json(
-        exclude_defaults=True, by_alias=True, indent=2
-    )
+    restconf_payload = model.model_dump_json(exclude_defaults=True, by_alias=True, indent=2)
 
     print(f"Generated output: {restconf_payload}")
 

@@ -140,7 +140,7 @@
       "description": "The contents of the tape.",
       "properties": {
         "turing-machine:cell": {
-          "default": null,
+          "default": [],
           "items": {
             "$ref": "#/$defs/CellListEntry"
           },
@@ -154,7 +154,7 @@
       "description": "The Turing Machine is configured by specifying the\ntransition function.",
       "properties": {
         "turing-machine:delta": {
-          "default": null,
+          "default": [],
           "items": {
             "$ref": "#/$defs/DeltaListEntry"
           },
@@ -208,4 +208,3 @@
   "title": "Model",
   "type": "object"
 }
-
