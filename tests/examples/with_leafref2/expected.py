@@ -26,6 +26,8 @@ class KeyListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
+    prefix: Optional[str] = "keychains"
     index: Annotated[int, Field(alias="keychains:index", ge=0, le=255)]
     """
     Each key in a keychain requires a unique identifier, the index value specifies this identifier
@@ -50,6 +52,8 @@ class KeychainListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
+    prefix: Optional[str] = "keychains"
     name: Annotated[str, Field(alias="keychains:name")]
     """
     The user configured name for the keychain
@@ -90,6 +94,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
+    prefix: Optional[str] = "keychains"
     keychain: Annotated[
         Optional[List[KeychainListEntry]], Field(alias="keychains:keychain")
     ] = None

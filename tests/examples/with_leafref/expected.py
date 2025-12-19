@@ -14,6 +14,10 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     test: Annotated[Optional[int], Field(alias="interfaces:test", ge=0, le=255)] = None
     """
     Test node
@@ -48,6 +52,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     interfaces: Annotated[
         Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
     ] = None

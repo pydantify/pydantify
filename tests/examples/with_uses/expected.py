@@ -10,6 +10,10 @@ class DestinationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     address: Annotated[Optional[str], Field(alias="interfaces:address")] = None
     """
     Target IP address
@@ -25,6 +29,10 @@ class PeerContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     destination: Annotated[
         Optional[DestinationContainer], Field(alias="interfaces:destination")
     ] = None
@@ -50,6 +58,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     peer: Annotated[Optional[PeerContainer], Field(alias="interfaces:peer")] = None
 
 

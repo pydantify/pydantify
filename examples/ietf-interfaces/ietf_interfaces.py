@@ -31,6 +31,8 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: str = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: str = "if"
     name: Annotated[str, Field(alias="ietf-interfaces:name")]
     """
     The name of the interface.
@@ -149,6 +151,8 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: str = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: str = "if"
     interface: Annotated[
         Optional[List[InterfaceListEntry]], Field(alias="ietf-interfaces:interface")
     ] = None
@@ -174,6 +178,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: str = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: str = "if"
     interfaces: Annotated[
         Optional[InterfacesContainer], Field(alias="ietf-interfaces:interfaces")
     ] = None
