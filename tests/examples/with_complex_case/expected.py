@@ -10,6 +10,10 @@ class DailyCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     daily: Annotated[
         Optional[List[None]],
         Field(alias="interfaces:daily", max_length=1, min_length=1),
@@ -22,6 +26,10 @@ class IntervalCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     interval: Annotated[
         Optional[int], Field(alias="interfaces:interval", ge=0, le=65535)
     ] = 30
@@ -32,6 +40,10 @@ class ManualCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     manual: Annotated[
         Optional[List[None]],
         Field(alias="interfaces:manual", max_length=1, min_length=1),
@@ -58,6 +70,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     how: Annotated[
         Optional[Union[IntervalCase, DailyCase, ManualCase]],
         Field(alias="interfaces:how"),

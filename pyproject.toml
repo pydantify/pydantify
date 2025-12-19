@@ -50,6 +50,7 @@ dev = [
     "mypy>=1.11.2",
     "mkdocs>=1.6.0",
     "mkdocs-material>=9.5.33",
+    "types-lxml>=2025.11.25",
 ]
 
 [tool.pdm.scripts]
