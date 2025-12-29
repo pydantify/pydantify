@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class InterfaceListEntry(BaseModel):
@@ -42,7 +42,7 @@ class InterfaceListEntry(BaseModel):
     """
     Interface subnet mask. Example value: 255.255.255.0
     """
-    enabled: Annotated[Optional[bool], Field(alias="interfaces:enabled")] = False
+    enabled: Annotated[bool, Field(alias="interfaces:enabled")] = False
     """
     Enable or disable the interface. Example value: true
     """
@@ -58,8 +58,8 @@ class InterfacesContainer(BaseModel):
     )
     prefix: Optional[str] = "if"
     interface: Annotated[
-        Optional[List[InterfaceListEntry]], Field(alias="interfaces:interface")
-    ] = None
+        List[InterfaceListEntry], Field(alias="interfaces:interface")
+    ] = []
 
 
 class Model(BaseModel):
@@ -86,9 +86,9 @@ class Model(BaseModel):
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
     prefix: Optional[str] = "if"
-    interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
-    ] = None
+    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
+        None
+    )
 
 
 if __name__ == "__main__":

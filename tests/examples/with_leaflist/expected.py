@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -33,19 +33,15 @@ class InterfacesListEntry(BaseModel):
     """
     Interface name
     """
-    ip: Annotated[Optional[List[str]], Field(alias="interfaces:ip")] = []
+    ip: Annotated[List[str], Field(alias="interfaces:ip")] = []
     """
     List of interface IPs
     """
-    tagged: Annotated[
-        Optional[List[TaggedLeafList]], Field(alias="interfaces:tagged")
-    ] = []
+    tagged: Annotated[List[TaggedLeafList], Field(alias="interfaces:tagged")] = []
     """
     List of tagged VLANs
     """
-    untagged: Annotated[
-        Optional[int], Field(alias="interfaces:untagged", ge=1, le=4094)
-    ] = None
+    untagged: Annotated[int, Field(alias="interfaces:untagged", ge=1, le=4094)] = None
     """
     Untagged VLAN
     """
@@ -76,8 +72,8 @@ class Model(BaseModel):
     )
     prefix: Optional[str] = "if"
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
-    ] = None
+        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
+    ] = []
 
 
 if __name__ == "__main__":

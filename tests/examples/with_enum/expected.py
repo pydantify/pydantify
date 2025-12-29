@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -28,9 +28,9 @@ class InterfacesListEntry(BaseModel):
     """
     Interface name
     """
-    admin_state: Annotated[
-        Optional[EnumerationEnum], Field(alias="interfaces:admin-state")
-    ] = "enable"
+    admin_state: Annotated[EnumerationEnum, Field(alias="interfaces:admin-state")] = (
+        "enable"
+    )
     """
     The configured, desired state of the interface
     """
@@ -61,8 +61,8 @@ class Model(BaseModel):
     )
     prefix: Optional[str] = "if"
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
-    ] = None
+        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
+    ] = []
 
 
 if __name__ == "__main__":

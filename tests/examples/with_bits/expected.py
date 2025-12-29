@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class InterfacesContainer(BaseModel):
@@ -23,7 +23,7 @@ class InterfacesContainer(BaseModel):
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     mybits: Annotated[
-        Optional[str],
+        str,
         Field(
             alias="interfaces:mybits",
             pattern="^(disable-nagle|auto-sense-speed|ten-mb-only|\\s)*$",
@@ -55,9 +55,9 @@ class Model(BaseModel):
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
     prefix: Optional[str] = "if"
-    interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
-    ] = None
+    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
+        None
+    )
 
 
 if __name__ == "__main__":

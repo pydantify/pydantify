@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional, Union
+from typing import Annotated, List, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -15,10 +15,10 @@ class DailyCase(BaseModel):
     )
     prefix: Optional[str] = "if"
     daily: Annotated[
-        Optional[List[None]],
+        List[None],
         Field(alias="interfaces:daily", max_length=1, min_length=1),
     ] = None
-    time_of_day: Annotated[Optional[str], Field(alias="interfaces:time-of-day")] = "1am"
+    time_of_day: Annotated[str, Field(alias="interfaces:time-of-day")] = "1am"
 
 
 class IntervalCase(BaseModel):
@@ -30,9 +30,7 @@ class IntervalCase(BaseModel):
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
     prefix: Optional[str] = "if"
-    interval: Annotated[
-        Optional[int], Field(alias="interfaces:interval", ge=0, le=65535)
-    ] = 30
+    interval: Annotated[int, Field(alias="interfaces:interval", ge=0, le=65535)] = 30
 
 
 class ManualCase(BaseModel):
@@ -45,7 +43,7 @@ class ManualCase(BaseModel):
     )
     prefix: Optional[str] = "if"
     manual: Annotated[
-        Optional[List[None]],
+        List[None],
         Field(alias="interfaces:manual", max_length=1, min_length=1),
     ] = None
 
@@ -75,7 +73,7 @@ class Model(BaseModel):
     )
     prefix: Optional[str] = "if"
     how: Annotated[
-        Optional[Union[IntervalCase, DailyCase, ManualCase]],
+        Union[IntervalCase, DailyCase, ManualCase],
         Field(alias="interfaces:how"),
     ] = None
 

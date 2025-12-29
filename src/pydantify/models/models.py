@@ -48,7 +48,8 @@ class TypeDefNode(Node):
         """Generates the output class representing this Typedef."""
         base_type = TypeResolver.resolve_statement(self.raw_statement)
         output_model: type[RootModel] = create_model(
-            self.name(), __base__=(RootModel[base_type],)  # type: ignore[misc]
+            self.name(),
+            __base__=(RootModel[base_type],),  # type: ignore[misc]
         )
         output_model.__doc__ = self.description or ""
         return output_model
@@ -88,7 +89,8 @@ class LeafNode(Node):
         output_model: type[BaseModel] | type[RootModel]
         if base is not None:
             output_model = create_model(
-                self.name(), __base__=(RootModel[base],)  # type: ignore[misc]
+                self.name(),
+                __base__=(RootModel[base],),  # type: ignore[misc]
             )
         else:
             output_model = create_model(self.name(), __base__=(BaseModel,), **fields)
@@ -197,7 +199,7 @@ class ListNode(Node):
             cls=output_class,
             field_annotation=List[output_class],  # type: ignore
             field_info=Field(  # type: ignore[arg-type]
-                ... if self.mandatory else None, alias=self.get_qualified_name()
+                ... if self.mandatory else [], alias=self.get_qualified_name()
             ),
         )
 
@@ -226,13 +228,18 @@ class LeafListNode(Node):
         logger.debug(f"Parsing {__class__}")
         super().__init__(stm)
 
+        if self.default is None:
+            default = ... if self.mandatory else []
+        else:
+            default = self.default
+
         output_class = self.to_pydantic_model()
         self._output_model = GeneratedClass(
             class_name=self.name(),
             cls=output_class,
             field_annotation=List[output_class],  # type: ignore
             field_info=Field(
-                self.default if self.default is not None or not self.mandatory else ...,
+                default,
                 description=self.description,
                 alias=self.get_qualified_name(),
             ),  # type: ignore[arg-type]
@@ -256,7 +263,8 @@ class LeafListNode(Node):
         output_model: type[BaseModel] | type[RootModel]
         if base is not None:
             output_model = create_model(
-                self.name(), __base__=(RootModel[base],)  # type: ignore[misc]
+                self.name(),
+                __base__=(RootModel[base],),  # type: ignore[misc]
             )
         else:
             output_model = create_model(self.name(), __base__=(BaseModel,), **fields)

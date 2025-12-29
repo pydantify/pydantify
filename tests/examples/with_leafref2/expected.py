@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List, Optional, Union
+from typing import Annotated, List, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -58,20 +58,20 @@ class KeychainListEntry(BaseModel):
     """
     The user configured name for the keychain
     """
-    type: Annotated[Optional[EnumerationEnum], Field(alias="keychains:type")] = None
+    type: Annotated[EnumerationEnum, Field(alias="keychains:type")] = None
     """
     Specifies the intended use of the keychain
 
      The type constrains the set of crypto algorithms that are available to use with each key in the keychain. It is also used to ensure that this keychain is only used by protocols for which it is intended.
     """
     active_key_for_send: Annotated[
-        Optional[Union[EnumerationEnum2, IndexLeaf]],
+        Union[EnumerationEnum2, IndexLeaf],
         Field(alias="keychains:active-key-for-send"),
     ] = None
     """
     Provides the key index of the currently active Keychain key
     """
-    key: Annotated[Optional[List[KeyListEntry]], Field(alias="keychains:key")] = None
+    key: Annotated[List[KeyListEntry], Field(alias="keychains:key")] = []
 
 
 class Model(BaseModel):
@@ -96,9 +96,7 @@ class Model(BaseModel):
     )
     namespace: Optional[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
     prefix: Optional[str] = "keychains"
-    keychain: Annotated[
-        Optional[List[KeychainListEntry]], Field(alias="keychains:keychain")
-    ] = None
+    keychain: Annotated[List[KeychainListEntry], Field(alias="keychains:keychain")] = []
 
 
 if __name__ == "__main__":

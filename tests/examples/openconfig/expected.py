@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ConfigContainer(BaseModel):
@@ -17,7 +17,7 @@ class ConfigContainer(BaseModel):
     )
     namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
     prefix: Optional[str] = "oc-if"
-    name: Annotated[Optional[str], Field(alias="openconfig-interfaces:name")] = None
+    name: Annotated[str, Field(alias="openconfig-interfaces:name")] = None
     """
     The name of the interface.
 
@@ -68,9 +68,7 @@ class ConfigContainer(BaseModel):
     A NETCONF server MUST reply with an rpc-error with the
     error-tag 'invalid-value' in this case.
     """
-    mtu: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:mtu", ge=0, le=65535)
-    ] = None
+    mtu: Annotated[int, Field(alias="openconfig-interfaces:mtu", ge=0, le=65535)] = None
     """
     Set the max transmission unit size in octets
     for the physical interface.  If this is not set, the mtu is
@@ -78,16 +76,14 @@ class ConfigContainer(BaseModel):
     Ethernet interface.
     """
     loopback_mode: Annotated[
-        Optional[bool], Field(alias="openconfig-interfaces:loopback-mode")
+        bool, Field(alias="openconfig-interfaces:loopback-mode")
     ] = False
     """
     When set to true, the interface is logically looped back,
     such that packets that are forwarded via the interface
     are received on the same interface.
     """
-    description: Annotated[
-        Optional[str], Field(alias="openconfig-interfaces:description")
-    ] = None
+    description: Annotated[str, Field(alias="openconfig-interfaces:description")] = None
     """
     A textual description of the interface.
 
@@ -116,9 +112,7 @@ class ConfigContainer(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    enabled: Annotated[Optional[bool], Field(alias="openconfig-interfaces:enabled")] = (
-        True
-    )
+    enabled: Annotated[bool, Field(alias="openconfig-interfaces:enabled")] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -156,9 +150,9 @@ class Model(BaseModel):
     )
     namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
     prefix: Optional[str] = "oc-if"
-    config: Annotated[
-        Optional[ConfigContainer], Field(alias="openconfig-interfaces:config")
-    ] = None
+    config: Annotated[ConfigContainer, Field(alias="openconfig-interfaces:config")] = (
+        None
+    )
 
 
 if __name__ == "__main__":

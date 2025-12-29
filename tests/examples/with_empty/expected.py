@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -17,7 +17,7 @@ class InterfaceContainer(BaseModel):
     namespace: Optional[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
     prefix: Optional[str] = "if"
     primary: Annotated[
-        Optional[List[None]],
+        List[None],
         Field(alias="interface:primary", max_length=1, min_length=1),
     ] = None
     """
@@ -47,9 +47,7 @@ class Model(BaseModel):
     )
     namespace: Optional[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
     prefix: Optional[str] = "if"
-    interface: Annotated[
-        Optional[InterfaceContainer], Field(alias="interface:interface")
-    ] = None
+    interface: Annotated[InterfaceContainer, Field(alias="interface:interface")] = None
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional, Union
+from typing import Annotated, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -61,9 +61,9 @@ class Model(BaseModel):
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
     prefix: Optional[str] = "if"
-    interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
-    ] = None
+    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
+        None
+    )
 
 
 if __name__ == "__main__":

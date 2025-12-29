@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -18,7 +18,7 @@ class InterfacesListEntry(BaseModel):
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
     prefix: Optional[str] = "if"
-    test: Annotated[Optional[int], Field(alias="interfaces:test", ge=0, le=255)] = None
+    test: Annotated[int, Field(alias="interfaces:test", ge=0, le=255)] = None
     """
     Test node
     """
@@ -26,7 +26,7 @@ class InterfacesListEntry(BaseModel):
     """
     Interface name
     """
-    ip: Annotated[Optional[str], Field(alias="interfaces:ip")] = None
+    ip: Annotated[str, Field(alias="interfaces:ip")] = None
     """
     Interface IP
     """
@@ -57,11 +57,9 @@ class Model(BaseModel):
     )
     prefix: Optional[str] = "if"
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]], Field(alias="interfaces:interfaces")
-    ] = None
-    mgmt_interface: Annotated[
-        Optional[str], Field(alias="interfaces:mgmt-interface")
-    ] = None
+        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
+    ] = []
+    mgmt_interface: Annotated[str, Field(alias="interfaces:mgmt-interface")] = None
     """
     Dedicated management interface
     """

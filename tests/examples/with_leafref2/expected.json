@@ -49,7 +49,7 @@
           "default": null
         },
         "keychains:key": {
-          "default": null,
+          "default": [],
           "items": {
             "$ref": "#/$defs/KeyListEntry"
           },
@@ -89,7 +89,7 @@
   "description": "Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.\n\n## Tips\nInitialization:\n- all values have to be set via keyword arguments\n- if a class contains only a `root` field, it can be initialized as follows:\n    - `member=MyNode(root=<value>)`\n    - `member=<value>`\n\nSerialziation:\n- `exclude_defaults=True` omits fields set to their default value (recommended)\n- `by_alias=True` ensures qualified names are used (necessary)",
   "properties": {
     "keychains:keychain": {
-      "default": null,
+      "default": [],
       "items": {
         "$ref": "#/$defs/KeychainListEntry"
       },
@@ -99,4 +99,3 @@
   "title": "Model",
   "type": "object"
 }
-

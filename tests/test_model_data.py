@@ -1,14 +1,13 @@
+import importlib.util
 import json
 import logging
 import sys
-import importlib.util
 from pathlib import Path
-from typing import Any, List
 from types import ModuleType
+from typing import Any, List
 from unittest.mock import patch
 
 import pytest
-from pydantic import validate_call
 from pytest import param
 
 LOGGER = logging.getLogger(__name__)

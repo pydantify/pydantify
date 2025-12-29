@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DestinationContainer(BaseModel):
@@ -14,11 +14,11 @@ class DestinationContainer(BaseModel):
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
     prefix: Optional[str] = "if"
-    address: Annotated[Optional[str], Field(alias="interfaces:address")] = None
+    address: Annotated[str, Field(alias="interfaces:address")] = None
     """
     Target IP address
     """
-    port: Annotated[Optional[str], Field(alias="interfaces:port")] = None
+    port: Annotated[str, Field(alias="interfaces:port")] = None
     """
     Target port number
     """
@@ -34,7 +34,7 @@ class PeerContainer(BaseModel):
     )
     prefix: Optional[str] = "if"
     destination: Annotated[
-        Optional[DestinationContainer], Field(alias="interfaces:destination")
+        DestinationContainer, Field(alias="interfaces:destination")
     ] = None
 
 
@@ -62,7 +62,7 @@ class Model(BaseModel):
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
     prefix: Optional[str] = "if"
-    peer: Annotated[Optional[PeerContainer], Field(alias="interfaces:peer")] = None
+    peer: Annotated[PeerContainer, Field(alias="interfaces:peer")] = None
 
 
 if __name__ == "__main__":
