@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Union, Optional
 
 from pyang.statements import (
     ChoiceStatement,
@@ -305,8 +305,8 @@ class ModelRoot:
             fields = self.root_node._children_to_fields()
         elif isinstance(self.root_node, Node):
             fields = {
-                "namespace": (str, self.root_node.namespace),
-                "prefix": (str, self.root_node.prefix),
+                "namespace": (Optional[str], self.root_node.namespace),
+                "prefix": (Optional[str], self.root_node.prefix),
                 self.root_node.arg: self.root_node.get_output_class().to_field(),
             }
         output_model: type[BaseModel] = create_model(

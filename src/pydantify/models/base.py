@@ -88,8 +88,15 @@ class Node(ABC):
     def __init__(self, stm: Statement):
         self.config: bool = __class__.__extract_config(stm)
         self.children: List[Node] = __class__.extract_statement_list(stm, "i_children")
-        self.namespace = stm.search_one("namespace")
-        self.prefix = stm.search_one("prefix")
+        # self.namespace = None
+        # self.prefix = None
+        if stm.top:
+            self.namespace = stm.top.search_one("namespace").arg
+            self.prefix = stm.top.search_one("prefix").arg
+        else:
+            self.namespace = stm.search_one("namespace").arg
+            self.prefix = stm.search_one("prefix").arg
+
         self.mandatory: bool = stm.search_one("mandatory", "true") or any(
             (ch for ch in self.children if ch.mandatory is True)
         )
@@ -128,7 +135,7 @@ class Node(ABC):
         qualified_name = (
             f"{self.arg}"
             if self.strip_namespace
-            else f"{self.raw_statement.i_module.arg}:{self.arg}"
+            else f"{self.raw_statement.top.arg}:{self.arg}"
         )
         self.alias_mapping[qualified_name] = FieldNameResolver(
             snake_case_field=True
@@ -193,8 +200,8 @@ class Node(ABC):
 
     def _children_to_fields(self) -> Dict[str, Tuple[type, FieldInfo]]:
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
-        ret["namespace"] = (str, self.namespace)
-        ret["prefix"] = (str, self.prefix)
+        ret["namespace"] = (Optional[str], self.namespace)
+        ret["prefix"] = (Optional[str], self.prefix)
         for ch in self.children:
             if (
                 self.data_type == "config"
