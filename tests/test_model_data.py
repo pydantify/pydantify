@@ -165,7 +165,7 @@ def reset_optparse():
             "examples/with_identity_default_list/ciphers.yang",
             "examples/with_identity_default_list/sample_data.json",
             [],
-            {"exclude_defaults": False, "mode": "json"},
+            {"exclude_defaults": True, "mode": "json"},
             id="identity default list",
         ),
         param(

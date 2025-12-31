@@ -25,6 +25,10 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name
@@ -63,6 +67,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     interfaces: Annotated[
         List[InterfacesListEntry], Field(alias="interfaces:interfaces")
     ] = []

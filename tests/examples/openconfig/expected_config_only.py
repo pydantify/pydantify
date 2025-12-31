@@ -15,6 +15,8 @@ class ConfigContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")] = None
     """
     The name of the interface.
@@ -135,6 +137,8 @@ class ConfigContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     up: Annotated[int, Field(alias="openconfig-interfaces:up", ge=0, le=4294967295)] = 0
     """
     Dampens advertisement when the interface
@@ -160,6 +164,8 @@ class ConfigContainer3(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
     ] = 0
@@ -224,6 +230,8 @@ class HoldTimeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     config: Annotated[ConfigContainer2, Field(alias="openconfig-interfaces:config")] = (
         None
     )
@@ -239,6 +247,8 @@ class SubinterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
     ]
@@ -261,6 +271,8 @@ class SubinterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     subinterface: Annotated[
         List[SubinterfaceListEntry],
         Field(alias="openconfig-interfaces:subinterface"),
@@ -276,6 +288,8 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")]
     """
     References the configured name of the interface
@@ -302,6 +316,8 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     interface: Annotated[
         List[InterfaceListEntry],
         Field(alias="openconfig-interfaces:interface"),
@@ -328,6 +344,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     interfaces: Annotated[
         InterfacesContainer, Field(alias="openconfig-interfaces:interfaces")
     ] = None

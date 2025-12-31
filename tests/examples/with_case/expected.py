@@ -14,6 +14,10 @@ class Ethernet2Case(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     name2: Annotated[str, Field(alias="interfaces:name2")] = None
 
 
@@ -26,6 +30,10 @@ class EthernetContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     name: Annotated[str, Field(alias="interfaces:name")] = None
 
 
@@ -34,6 +42,10 @@ class EthernetCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     ethernet: Annotated[EthernetContainer, Field(alias="interfaces:ethernet")] = None
 
 
@@ -57,6 +69,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     interface_type: Annotated[
         Union[EthernetCase, Ethernet2Case],
         Field(alias="interfaces:interface-type"),

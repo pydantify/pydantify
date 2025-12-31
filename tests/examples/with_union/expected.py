@@ -25,6 +25,10 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     union_leaf: Annotated[
         Union[UnionLeafLeaf1, str], Field(alias="interfaces:union_leaf")
     ]
@@ -53,6 +57,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Optional[str] = "if"
     interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
         None
     )

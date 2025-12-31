@@ -15,6 +15,8 @@ class ConfigContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     name: Annotated[str, Field(alias="name")] = None
     """
     The name of the interface.
@@ -144,6 +146,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: Optional[str] = "http://openconfig.net/yang/interfaces"
+    prefix: Optional[str] = "oc-if"
     config: Annotated[ConfigContainer, Field(alias="config")] = None
 
 

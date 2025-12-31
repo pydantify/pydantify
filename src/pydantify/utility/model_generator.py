@@ -203,4 +203,13 @@ class ModelGenerator:
 
     @classmethod
     def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> Dict[str, Any]:
-        return model.model_json_schema(by_alias=True)
+        schema = model.model_json_schema(by_alias=True)
+        if cls.json_schema_output:
+            properties = schema.get("properties", {})
+            properties.pop("namespace", None)
+            properties.pop("prefix", None)
+            for def_schema in schema["$defs"].values():
+                def_properties = def_schema.get("properties", {})
+                def_properties.pop("namespace", None)
+                def_properties.pop("prefix", None)
+        return schema

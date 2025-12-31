@@ -14,6 +14,8 @@ class EndpointContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: str = "http://pydantify.github.io/ns/yang/pydantify-endpoint"
+    prefix: str = "ep"
     address: Annotated[str, Field(alias="my-endpoint:address")]
     """
     Endpoint address. IP or FQDN
@@ -48,6 +50,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: str = "http://pydantify.github.io/ns/yang/pydantify-endpoint"
+    prefix: str = "ep"
     endpoint: Annotated[EndpointContainer, Field(alias="my-endpoint:endpoint")] = None
 
 
