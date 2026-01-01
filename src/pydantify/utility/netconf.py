@@ -10,7 +10,7 @@ def model_dump_xml_string(model: BaseModel, pretty_print: bool = False) -> str:
 
 def model_dump_xml(model: BaseModel) -> etree.Element:
     dump = model.model_dump(exclude_defaults=True)
-    return dict_to_elements(dump, model.namespace, model.prefix)[0]
+    return dict_to_elements(dump, model.namespace, model.prefix)[0]  # type: ignore  # ToDo: Find a better way
 
 
 def dict_to_elements(
