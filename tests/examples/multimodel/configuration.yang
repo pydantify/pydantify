@@ -1,0 +1,26 @@
+module configuration {
+  namespace "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration";
+
+  prefix configuration;
+
+  import namespaces {
+    prefix ns;
+  }
+
+  description
+    'Example using multimodel imports';
+
+  container configuration {
+    description
+      'Just a simple example of a container with uses.';
+
+    leaf devicename {
+      type string;
+      mandatory "true";
+      description
+        "Device name. Example value: sw01";
+    }
+
+    uses ns:namespaces-group;
+  }
+}

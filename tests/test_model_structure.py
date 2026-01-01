@@ -254,6 +254,12 @@ def reset_optparse():
             [],
             id="empty",
         ),
+        param(
+            "examples/multimodel/configuration.yang",
+            "examples/multimodel/expected.py",
+            [],
+            id="multimodel",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
