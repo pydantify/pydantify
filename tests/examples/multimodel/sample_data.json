@@ -1,0 +1,19 @@
+{
+    "configuration": {
+        "devicename": "test",
+        "namespaces": [
+            {
+                "name": "ns1",
+                "interfaces": [
+                    {
+                        "name": "Eth1",
+                        "ip": "::1"
+                    },
+                    {
+                        "name": "Eth2"
+                    }
+                ]
+            }
+        ]
+    }
+}

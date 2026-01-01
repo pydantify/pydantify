@@ -20,8 +20,8 @@ class CellListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = "http://example.net/turing-machine"
-    prefix: Optional[str] = "tm"
+    namespace: str = "http://example.net/turing-machine"
+    prefix: str = "tm"
     coord: Annotated[
         int,
         Field(
@@ -52,8 +52,8 @@ class InputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = "http://example.net/turing-machine"
-    prefix: Optional[str] = "tm"
+    namespace: str = "http://example.net/turing-machine"
+    prefix: str = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
     Current state of the control unit.
@@ -75,8 +75,8 @@ class OutputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = "http://example.net/turing-machine"
-    prefix: Optional[str] = "tm"
+    namespace: str = "http://example.net/turing-machine"
+    prefix: str = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)] = None
     """
     New state of the control unit. If this leaf is not
@@ -106,8 +106,8 @@ class TapeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = "http://example.net/turing-machine"
-    prefix: Optional[str] = "tm"
+    namespace: str = "http://example.net/turing-machine"
+    prefix: str = "tm"
     cell: Annotated[List[CellListEntry], Field(alias="turing-machine:cell")] = []
 
 
@@ -120,8 +120,8 @@ class DeltaListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = "http://example.net/turing-machine"
-    prefix: Optional[str] = "tm"
+    namespace: str = "http://example.net/turing-machine"
+    prefix: str = "tm"
     label: Annotated[str, Field(alias="turing-machine:label")]
     """
     An arbitrary label of the transition rule.
@@ -140,8 +140,8 @@ class TransitionFunctionContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = "http://example.net/turing-machine"
-    prefix: Optional[str] = "tm"
+    namespace: str = "http://example.net/turing-machine"
+    prefix: str = "tm"
     delta: Annotated[List[DeltaListEntry], Field(alias="turing-machine:delta")] = []
 
 
@@ -154,8 +154,8 @@ class TuringMachineContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = "http://example.net/turing-machine"
-    prefix: Optional[str] = "tm"
+    namespace: str = "http://example.net/turing-machine"
+    prefix: str = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
     Current state of the control unit.
@@ -199,8 +199,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = "http://example.net/turing-machine"
-    prefix: Optional[str] = "tm"
+    namespace: str = "http://example.net/turing-machine"
+    prefix: str = "tm"
     turing_machine: Annotated[
         TuringMachineContainer, Field(alias="turing-machine:turing-machine")
     ] = None

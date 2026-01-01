@@ -175,6 +175,13 @@ def reset_optparse():
             {"exclude_defaults": True, "mode": "json"},
             id="empty",
         ),
+        param(
+            "examples/multimodel/configuration.yang",
+            "examples/multimodel/sample_data.json",
+            [],
+            {"exclude_defaults": True, "mode": "json"},
+            id="multimodel",
+        ),
     ],
 )
 def test_model(

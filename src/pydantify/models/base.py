@@ -88,8 +88,7 @@ class Node(ABC):
     def __init__(self, stm: Statement):
         self.config: bool = __class__.__extract_config(stm)
         self.children: List[Node] = __class__.extract_statement_list(stm, "i_children")
-        # self.namespace = None
-        # self.prefix = None
+
         if stm.top:
             self.namespace = stm.top.search_one("namespace").arg
             self.prefix = stm.top.search_one("prefix").arg
@@ -200,8 +199,8 @@ class Node(ABC):
 
     def _children_to_fields(self) -> Dict[str, Tuple[type, FieldInfo]]:
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
-        ret["namespace"] = (Optional[str], self.namespace)
-        ret["prefix"] = (Optional[str], self.prefix)
+        ret["namespace"] = (str, FieldInfo(default=self.namespace))
+        ret["prefix"] = (str, FieldInfo(default=self.prefix))
         for ch in self.children:
             if (
                 self.data_type == "config"

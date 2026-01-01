@@ -14,10 +14,8 @@ class ServerProfileListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    )
-    prefix: Optional[str] = "ciph"
+    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    prefix: str = "ciph"
     name: Annotated[str, Field(alias="ciphers:name")]
     """
     Name of the TLS server-profile
@@ -45,10 +43,8 @@ class TlsContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    )
-    prefix: Optional[str] = "ciph"
+    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    prefix: str = "ciph"
     server_profile: Annotated[
         List[ServerProfileListEntry], Field(alias="ciphers:server-profile")
     ] = []
@@ -74,10 +70,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    )
-    prefix: Optional[str] = "ciph"
+    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    prefix: str = "ciph"
     tls: Annotated[TlsContainer, Field(alias="ciphers:tls")] = None
 
 

@@ -412,6 +412,12 @@ def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Pa
             ["-j"],
             id="identity default list",
         ),
+        param(
+            "examples/multimodel/configuration.yang",
+            "examples/multimodel/expected.json",
+            ["-j"],
+            id="multimodel",
+        ),
     ],
 )
 def test_json_schema(

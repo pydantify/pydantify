@@ -14,10 +14,10 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = (
+    namespace: str = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-interfaces"
     )
-    prefix: Optional[str] = "if"
+    prefix: str = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -37,10 +37,10 @@ class NamespacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = (
+    namespace: str = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-namespaces"
     )
-    prefix: Optional[str] = "ns"
+    prefix: str = "ns"
     name: Annotated[str, Field(alias="namespaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -59,10 +59,10 @@ class ConfigurationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = (
+    namespace: str = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: Optional[str] = "configuration"
+    prefix: str = "configuration"
     devicename: Annotated[str, Field(alias="configuration:devicename")]
     """
     Device name. Example value: sw01
@@ -92,10 +92,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: Optional[str] = (
+    namespace: str = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: Optional[str] = "configuration"
+    prefix: str = "configuration"
     configuration: Annotated[
         ConfigurationContainer, Field(alias="configuration:configuration")
     ] = None
