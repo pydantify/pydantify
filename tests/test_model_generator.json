@@ -1,0 +1,21 @@
+{
+    "$defs": {
+        "ClassVarModel": {
+            "properties": {},
+            "title": "ClassVarModel",
+            "type": "object"
+        },
+        "MockModel": {
+            "properties": {
+                "prefix": {
+                    "$ref": "#/$defs/ClassVarModel",
+                    "default": "if"
+                }
+            },
+            "title": "MockModel",
+            "type": "object"
+        }
+    },
+    "$ref": "#/$defs/MockModel",
+    "title": "MockRootModel"
+}

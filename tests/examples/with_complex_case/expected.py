@@ -1,8 +1,40 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Union
+from typing import Annotated, ClassVar, List, Union
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+
+
+class DailyLeaf(RootModel[List[None]]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[List[None], Field(max_length=1, min_length=1)]
+
+
+class IntervalLeaf(RootModel[int]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[int, Field(ge=0, le=65535)]
+
+
+class ManualLeaf(RootModel[List[None]]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[List[None], Field(max_length=1, min_length=1)]
+
+
+class TimeOfDayLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
 
 
 class DailyCase(BaseModel):
@@ -10,13 +42,12 @@ class DailyCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
     daily: Annotated[
-        List[None],
-        Field(alias="interfaces:daily", max_length=1, min_length=1),
+        List[None], Field(alias='interfaces:daily', max_length=1, min_length=1)
     ] = None
-    time_of_day: Annotated[str, Field(alias="interfaces:time-of-day")] = "1am"
+    time_of_day: Annotated[str, Field(alias='interfaces:time-of-day')] = '1am'
 
 
 class IntervalCase(BaseModel):
@@ -24,9 +55,9 @@ class IntervalCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
-    interval: Annotated[int, Field(alias="interfaces:interval", ge=0, le=65535)] = 30
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
+    interval: Annotated[int, Field(alias='interfaces:interval', ge=0, le=65535)] = 30
 
 
 class ManualCase(BaseModel):
@@ -34,11 +65,10 @@ class ManualCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
     manual: Annotated[
-        List[None],
-        Field(alias="interfaces:manual", max_length=1, min_length=1),
+        List[None], Field(alias='interfaces:manual', max_length=1, min_length=1)
     ] = None
 
 
@@ -62,11 +92,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
     how: Annotated[
-        Union[IntervalCase, DailyCase, ManualCase],
-        Field(alias="interfaces:how"),
+        Union[IntervalCase, DailyCase, ManualCase], Field(alias='interfaces:how')
     ] = None
 
 

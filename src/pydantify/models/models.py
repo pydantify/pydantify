@@ -16,7 +16,15 @@ from pyang.statements import (
 from pydantic import create_model
 from pydantic.fields import Field, FieldInfo
 
-from . import BaseModel, GeneratedClass, Node, NodeFactory, RootModel, TypeResolver
+from . import (
+    BaseModel,
+    GeneratedClass,
+    Node,
+    NodeFactory,
+    RootModel,
+    TypeResolver,
+    ClassVarModel,
+)
 
 if TYPE_CHECKING:
     __class__: type
@@ -145,9 +153,7 @@ class ChoiceNode(Node):
     def to_pydantic_model(self) -> type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        fields.pop("namespace")
-        fields.pop("prefix")
-        bases: tuple = tuple(x[0] for x in fields.values())
+        bases: tuple = tuple(x[0] for x in fields.values() if x[0] is not ClassVarModel)
         output_model: type[BaseModel] = Union[bases]  # type: ignore
         return output_model
 
@@ -305,8 +311,8 @@ class ModelRoot:
             fields = self.root_node._children_to_fields()
         elif isinstance(self.root_node, Node):
             fields = {
-                "namespace": (str, self.root_node.namespace),
-                "prefix": (str, self.root_node.prefix),
+                "namespace": (ClassVarModel, self.root_node.namespace),
+                "prefix": (ClassVarModel, self.root_node.prefix),
                 self.root_node.arg: self.root_node.get_output_class().to_field(),
             }
         output_model: type[BaseModel] = create_model(

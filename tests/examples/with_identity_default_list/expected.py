@@ -1,8 +1,33 @@
 from __future__ import annotations
 
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+
+
+class CipherListLeafList(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    List of ciphers to use when negotiating TLS 1.2 with clients
+
+    TLS 1.3 cipher suites are always enabled:
+        tls_aes_256_gcm_sha384, tls_aes_128_gcm_sha256, tls_chacha20_poly1305_sha256
+    """
+
+
+class NameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Name of the TLS server-profile
+    """
 
 
 class ServerProfileListEntry(BaseModel):
@@ -14,17 +39,17 @@ class ServerProfileListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "ciph"
-    name: Annotated[str, Field(alias="ciphers:name")]
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'ciph'
+    name: Annotated[str, Field(alias='ciphers:name')]
     """
     Name of the TLS server-profile
     """
-    cipher_list: Annotated[List[str], Field(alias="ciphers:cipher-list")] = [
-        "ecdhe-ecdsa-aes256-gcm-sha384",
-        "ecdhe-ecdsa-aes128-gcm-sha256",
-        "ecdhe-rsa-aes256-gcm-sha384",
-        "ecdhe-rsa-aes128-gcm-sha256",
+    cipher_list: Annotated[List[str], Field(alias='ciphers:cipher-list')] = [
+        'ecdhe-ecdsa-aes256-gcm-sha384',
+        'ecdhe-ecdsa-aes128-gcm-sha256',
+        'ecdhe-rsa-aes256-gcm-sha384',
+        'ecdhe-rsa-aes128-gcm-sha256',
     ]
     """
     List of ciphers to use when negotiating TLS 1.2 with clients
@@ -43,11 +68,12 @@ class TlsContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "ciph"
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'ciph'
     server_profile: Annotated[
-        List[ServerProfileListEntry], Field(alias="ciphers:server-profile")
-    ] = []
+        List[ServerProfileListEntry],
+        Field(default_factory=list, alias='ciphers:server-profile'),
+    ]
 
 
 class Model(BaseModel):
@@ -70,9 +96,9 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "ciph"
-    tls: Annotated[TlsContainer, Field(alias="ciphers:tls")] = None
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'ciph'
+    tls: Annotated[TlsContainer, Field(alias='ciphers:tls')] = None
 
 
 if __name__ == "__main__":

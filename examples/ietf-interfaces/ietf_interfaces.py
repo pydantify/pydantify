@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -31,8 +31,8 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: ClassVar = "if"
     name: Annotated[str, Field(alias="ietf-interfaces:name")]
     """
     The name of the interface.
@@ -146,8 +146,8 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: ClassVar = "if"
     interface: Annotated[List[InterfaceListEntry], Field(alias="ietf-interfaces:interface")] = None
 
 
@@ -171,8 +171,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: ClassVar = "if"
     interfaces: Annotated[InterfacesContainer, Field(alias="ietf-interfaces:interfaces")] = None
 
 

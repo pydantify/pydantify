@@ -1,4 +1,4 @@
-from .base import BaseModel, GeneratedClass, Node, RootModel
+from .base import BaseModel, GeneratedClass, Node, RootModel, ClassVarModel
 from .typeresolver import TypeResolver
 from .nodefactory import NodeFactory
 from .models import (

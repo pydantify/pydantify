@@ -6,6 +6,7 @@ from io import TextIOWrapper
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Type
 
+from datamodel_code_generator.config import JSONSchemaParserConfig
 from datamodel_code_generator.model import pydantic_v2
 from datamodel_code_generator.parser.base import Result
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
@@ -103,12 +104,20 @@ class ModelGenerator:
             pydantic_model = mod.to_pydantic_model()
             if pydantic_model is None:
                 continue
-            schema = cls.custom_dump(pydantic_model)
-            result = (
-                json.dumps(schema, indent=2)
-                if cls.json_schema_output is True
-                else cls.__generate_pydantic(json.dumps(schema))
-            )
+            schema = pydantic_model.model_json_schema(by_alias=True)
+            if cls.json_schema_output:
+                defs = schema.get("$defs", {})
+                defs.pop("ClassVarModel", None)
+                properties = schema.get("properties", {})
+                properties.pop("namespace", None)
+                properties.pop("prefix", None)
+                for def_schema in defs.values():
+                    def_properties = def_schema.get("properties", {})
+                    def_properties.pop("namespace", None)
+                    def_properties.pop("prefix", None)
+                result = json.dumps(schema, indent=2)
+            else:
+                result = cls._generate_pydantic(json.dumps(schema))
             # Keep mypy happy
             if isinstance(result, str):
                 fd.write(result)
@@ -119,30 +128,34 @@ class ModelGenerator:
             pass
 
     @staticmethod
-    def __generate_pydantic(json: str) -> str | dict[tuple[str, ...], Result]:
+    def _generate_pydantic(json: str) -> str | dict[tuple[str, ...], Result]:
         """Generates pydantic models"""
         extra_template_data: defaultdict[str, dict[str, Any]] = defaultdict(dict)
         extra_template_data["#all#"]["config"] = {}
         extra_template_data["#all#"]["config"]["regex_engine"] = '"python-re"'
         parser = JsonSchemaParser(
             json,
-            data_model_type=pydantic_v2.BaseModel,
-            data_model_root_type=pydantic_v2.RootModel,
-            data_type_manager_type=pydantic_v2.DataTypeManager,
-            data_model_field_type=pydantic_v2.DataModelField,
-            snake_case_field=True,
-            apply_default_values_for_required_fields=True,
-            use_annotated=True,
-            field_constraints=True,
-            use_schema_description=True,
-            use_field_description=True,
-            aliases=Node.alias_mapping,
-            reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
-            strict_nullable=True,
-            allow_population_by_field_name=True,
-            allow_extra_fields=False,
-            collapse_root_models=True,
-            extra_template_data=extra_template_data,
+            config=JSONSchemaParserConfig(
+                data_model_type=pydantic_v2.BaseModel,
+                data_model_root_type=pydantic_v2.RootModel,
+                data_type_manager_type=pydantic_v2.DataTypeManager,
+                data_model_field_type=pydantic_v2.DataModelField,
+                snake_case_field=True,
+                apply_default_values_for_required_fields=True,
+                use_annotated=True,
+                field_constraints=True,
+                use_schema_description=True,
+                use_field_description=True,
+                aliases=Node.alias_mapping,
+                reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
+                strict_nullable=True,
+                allow_population_by_field_name=True,
+                allow_extra_fields=False,
+                collapse_root_models=True,
+                extra_template_data=extra_template_data,
+                # https://docs.pydantic.dev/latest/concepts/models/#class-variables
+                type_overrides={"ClassVarModel": "typing.ClassVar"},
+            ),
         )
         return parser.parse()
 
@@ -200,16 +213,3 @@ class ModelGenerator:
                     return None
             return statement
         return None
-
-    @classmethod
-    def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> Dict[str, Any]:
-        schema = model.model_json_schema(by_alias=True)
-        if cls.json_schema_output:
-            properties = schema.get("properties", {})
-            properties.pop("namespace", None)
-            properties.pop("prefix", None)
-            for def_schema in schema["$defs"].values():
-                def_properties = def_schema.get("properties", {})
-                def_properties.pop("namespace", None)
-                def_properties.pop("prefix", None)
-        return schema
