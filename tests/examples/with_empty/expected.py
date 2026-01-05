@@ -1,8 +1,23 @@
 from __future__ import annotations
 
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+
+
+class PrimaryLeaf(RootModel[List[None]]):
+    """
+    primary IP
+    """
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[List[None], Field(max_length=1, min_length=1)]
+    """
+    primary IP
+    """
 
 
 class InterfaceContainer(BaseModel):
@@ -14,11 +29,10 @@ class InterfaceContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
-    prefix: str = "if"
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interface'
+    prefix: ClassVar = 'if'
     primary: Annotated[
-        List[None],
-        Field(alias="interface:primary", max_length=1, min_length=1),
+        List[None], Field(alias='interface:primary', max_length=1, min_length=1)
     ] = None
     """
     primary IP
@@ -45,9 +59,9 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
-    prefix: str = "if"
-    interface: Annotated[InterfaceContainer, Field(alias="interface:interface")] = None
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interface'
+    prefix: ClassVar = 'if'
+    interface: Annotated[InterfaceContainer, Field(alias='interface:interface')] = None
 
 
 if __name__ == "__main__":

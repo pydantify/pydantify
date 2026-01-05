@@ -109,7 +109,7 @@ classDiagram
     trim_path : Optional[str]
     \_\_generate(modules: List[ModSubmodStatement], fd: TextIOWrapper)
     \_\_generate_helper_code(fd: TextIOWrapper) None
-    \_\_generate_pydantic(json: str) str | dict[tuple[str, ...], Result]
+    \_generate_pydantic(json: str) str | dict[tuple[str, ...], Result]
     custom_dump(model: Type[BaseModel]) Dict[str, Any]
     generate(ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper)
     split_path(path: str) List[str]

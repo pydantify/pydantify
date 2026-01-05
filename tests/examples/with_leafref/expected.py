@@ -1,8 +1,41 @@
 from __future__ import annotations
 
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+
+
+class IpLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Interface IP
+    """
+
+
+class NameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Interface name
+    """
+
+
+class TestLeaf(RootModel[int]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[int, Field(ge=0, le=255)]
+    """
+    Test node
+    """
 
 
 class InterfacesListEntry(BaseModel):
@@ -14,19 +47,30 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
-    test: Annotated[int, Field(alias="interfaces:test", ge=0, le=255)] = None
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
+    test: Annotated[int, Field(alias='interfaces:test', ge=0, le=255)] = None
     """
     Test node
     """
-    name: Annotated[str, Field(alias="interfaces:name")]
+    name: Annotated[str, Field(alias='interfaces:name')]
     """
     Interface name
     """
-    ip: Annotated[str, Field(alias="interfaces:ip")] = None
+    ip: Annotated[str, Field(alias='interfaces:ip')] = None
     """
     Interface IP
+    """
+
+
+class MgmtInterfaceLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Dedicated management interface
     """
 
 
@@ -50,12 +94,13 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
-    ] = []
-    mgmt_interface: Annotated[str, Field(alias="interfaces:mgmt-interface")] = None
+        List[InterfacesListEntry],
+        Field(default_factory=list, alias='interfaces:interfaces'),
+    ]
+    mgmt_interface: Annotated[str, Field(alias='interfaces:mgmt-interface')] = None
     """
     Dedicated management interface
     """

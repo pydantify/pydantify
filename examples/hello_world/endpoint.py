@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, ClassVar
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,8 +14,8 @@ class EndpointContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://pydantify.github.io/ns/yang/pydantify-endpoint"
-    prefix: str = "ep"
+    namespace: ClassVar = "http://pydantify.github.io/ns/yang/pydantify-endpoint"
+    prefix: ClassVar = "ep"
     address: Annotated[str, Field(alias="my-endpoint:address")]
     """
     Endpoint address. IP or FQDN
@@ -50,8 +50,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://pydantify.github.io/ns/yang/pydantify-endpoint"
-    prefix: str = "ep"
+    namespace: ClassVar = "http://pydantify.github.io/ns/yang/pydantify-endpoint"
+    prefix: ClassVar = "ep"
     endpoint: Annotated[EndpointContainer, Field(alias="my-endpoint:endpoint")] = None
 
 

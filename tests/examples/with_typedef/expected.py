@@ -1,8 +1,78 @@
 from __future__ import annotations
 
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+
+
+class DottedQuadType(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[
+        str,
+        Field(
+            pattern='^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$'
+        ),
+    ]
+    """
+    Four octets written as decimal numbers and separated with the '.' (full stop) character.
+    """
+
+
+class EnabledLeaf(RootModel[bool]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: bool
+    """
+    Enable or disable the interface. Example value: true
+    """
+
+
+class NameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Interface name. Example value: GigabitEthernet 0/0/0
+    """
+
+
+class SubnetMaskLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[
+        str,
+        Field(
+            pattern='^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$'
+        ),
+    ]
+    """
+    Interface subnet mask. Example value: 255.255.255.0
+    """
+
+
+class AddressLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[
+        str,
+        Field(
+            pattern='^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$'
+        ),
+    ]
+    """
+    Interface IP address. Example value: 10.10.10.1
+    """
 
 
 class InterfaceListEntry(BaseModel):
@@ -14,17 +84,17 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
-    name: Annotated[str, Field(alias="interfaces:name")]
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
+    name: Annotated[str, Field(alias='interfaces:name')]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     address: Annotated[
         str,
         Field(
-            alias="interfaces:address",
-            pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
+            alias='interfaces:address',
+            pattern='^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$',
         ),
     ]
     """
@@ -33,14 +103,14 @@ class InterfaceListEntry(BaseModel):
     subnet_mask: Annotated[
         str,
         Field(
-            alias="interfaces:subnet-mask",
-            pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
+            alias='interfaces:subnet-mask',
+            pattern='^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$',
         ),
     ]
     """
     Interface subnet mask. Example value: 255.255.255.0
     """
-    enabled: Annotated[bool, Field(alias="interfaces:enabled")] = False
+    enabled: Annotated[bool, Field(alias='interfaces:enabled')] = False
     """
     Enable or disable the interface. Example value: true
     """
@@ -51,11 +121,12 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
     interface: Annotated[
-        List[InterfaceListEntry], Field(alias="interfaces:interface")
-    ] = []
+        List[InterfaceListEntry],
+        Field(default_factory=list, alias='interfaces:interface'),
+    ]
 
 
 class Model(BaseModel):
@@ -78,9 +149,9 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
-    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
+    interfaces: Annotated[InterfacesContainer, Field(alias='interfaces:interfaces')] = (
         None
     )
 

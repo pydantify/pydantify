@@ -1,8 +1,30 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+
+
+class AddressLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Target IP address
+    """
+
+
+class PortLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Target port number
+    """
 
 
 class DestinationContainer(BaseModel):
@@ -10,13 +32,13 @@ class DestinationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
-    address: Annotated[str, Field(alias="interfaces:address")] = None
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
+    address: Annotated[str, Field(alias='interfaces:address')] = None
     """
     Target IP address
     """
-    port: Annotated[str, Field(alias="interfaces:port")] = None
+    port: Annotated[str, Field(alias='interfaces:port')] = None
     """
     Target port number
     """
@@ -27,10 +49,10 @@ class PeerContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
     destination: Annotated[
-        DestinationContainer, Field(alias="interfaces:destination")
+        DestinationContainer, Field(alias='interfaces:destination')
     ] = None
 
 
@@ -54,9 +76,9 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
-    peer: Annotated[PeerContainer, Field(alias="interfaces:peer")] = None
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
+    peer: Annotated[PeerContainer, Field(alias='interfaces:peer')] = None
 
 
 if __name__ == "__main__":

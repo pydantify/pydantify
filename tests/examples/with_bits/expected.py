@@ -1,8 +1,39 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+
+
+class MybitsTypeType(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[
+        str, Field(pattern='^(disable-nagle|auto-sense-speed|ten-mb-only|\\s)*$')
+    ]
+
+
+class MybitsLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Annotated[
+        str, Field(pattern='^(disable-nagle|auto-sense-speed|ten-mb-only|\\s)*$')
+    ]
+
+
+class NameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Interface name. Example value: GigabitEthernet 0/0/0
+    """
 
 
 class InterfacesContainer(BaseModel):
@@ -14,17 +45,17 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
-    name: Annotated[str, Field(alias="interfaces:name")]
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
+    name: Annotated[str, Field(alias='interfaces:name')]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     mybits: Annotated[
         str,
         Field(
-            alias="interfaces:mybits",
-            pattern="^(disable-nagle|auto-sense-speed|ten-mb-only|\\s)*$",
+            alias='interfaces:mybits',
+            pattern='^(disable-nagle|auto-sense-speed|ten-mb-only|\\s)*$',
         ),
     ] = None
 
@@ -49,9 +80,9 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
-    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
+    interfaces: Annotated[InterfacesContainer, Field(alias='interfaces:interfaces')] = (
         None
     )
 

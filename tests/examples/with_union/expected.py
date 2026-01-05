@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Union
+from typing import Annotated, ClassVar, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -16,6 +16,17 @@ class UnionLeafLeaf1(RootModel[int]):
     """
 
 
+class UnionLeafLeaf(RootModel[Union[UnionLeafLeaf1, str]]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: Union[UnionLeafLeaf1, str]
+    """
+    Number or 'unbounded'
+    """
+
+
 class InterfacesContainer(BaseModel):
     """
     Just a simple example of a container.
@@ -25,10 +36,10 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
     union_leaf: Annotated[
-        Union[UnionLeafLeaf1, str], Field(alias="interfaces:union_leaf")
+        Union[UnionLeafLeaf1, str], Field(alias='interfaces:union_leaf')
     ]
     """
     Number or 'unbounded'
@@ -55,9 +66,9 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
-    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
+    namespace: ClassVar = 'http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces'
+    prefix: ClassVar = 'if'
+    interfaces: Annotated[InterfacesContainer, Field(alias='interfaces:interfaces')] = (
         None
     )
 

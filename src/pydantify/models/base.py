@@ -47,6 +47,10 @@ class RootModel(PydanticRootModel):
     model_config = model_config
 
 
+class ClassVarModel(BaseModel):
+    pass
+
+
 @dataclass
 class GeneratedClass:
     """Holds information about a dynamically generated output class."""
@@ -199,8 +203,8 @@ class Node(ABC):
 
     def _children_to_fields(self) -> Dict[str, Tuple[type, FieldInfo]]:
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
-        ret["namespace"] = (str, FieldInfo(default=self.namespace))
-        ret["prefix"] = (str, FieldInfo(default=self.prefix))
+        ret["namespace"] = (ClassVarModel, FieldInfo(default=self.namespace))
+        ret["prefix"] = (ClassVarModel, FieldInfo(default=self.prefix))
         for ch in self.children:
             if (
                 self.data_type == "config"

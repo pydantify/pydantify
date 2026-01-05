@@ -1,8 +1,52 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, ClassVar, List
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
+
+
+class DevicenameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Device name. Example value: sw01
+    """
+
+
+class IpLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Interface IP
+    """
+
+
+class NameLeaf(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Interface name. Example value: GigabitEthernet 0/0/0
+    """
+
+
+class NameLeaf2(RootModel[str]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: str
+    """
+    Interface name. Example value: GigabitEthernet 0/0/0
+    """
 
 
 class InterfacesListEntry(BaseModel):
@@ -14,15 +58,15 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = (
-        "http://pydantify.github.io/ns/yang/pydantify-multimodel-interfaces"
+    namespace: ClassVar = (
+        'http://pydantify.github.io/ns/yang/pydantify-multimodel-interfaces'
     )
-    prefix: str = "if"
-    name: Annotated[str, Field(alias="interfaces:name")]
+    prefix: ClassVar = 'if'
+    name: Annotated[str, Field(alias='interfaces:name')]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    ip: Annotated[str, Field(alias="interfaces:ip")] = None
+    ip: Annotated[str, Field(alias='interfaces:ip')] = None
     """
     Interface IP
     """
@@ -37,17 +81,18 @@ class NamespacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = (
-        "http://pydantify.github.io/ns/yang/pydantify-multimodel-namespaces"
+    namespace: ClassVar = (
+        'http://pydantify.github.io/ns/yang/pydantify-multimodel-namespaces'
     )
-    prefix: str = "ns"
-    name: Annotated[str, Field(alias="namespaces:name")]
+    prefix: ClassVar = 'ns'
+    name: Annotated[str, Field(alias='namespaces:name')]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
-    ] = []
+        List[InterfacesListEntry],
+        Field(default_factory=list, alias='interfaces:interfaces'),
+    ]
 
 
 class ConfigurationContainer(BaseModel):
@@ -59,17 +104,18 @@ class ConfigurationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = (
-        "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
+    namespace: ClassVar = (
+        'http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration'
     )
-    prefix: str = "configuration"
-    devicename: Annotated[str, Field(alias="configuration:devicename")]
+    prefix: ClassVar = 'configuration'
+    devicename: Annotated[str, Field(alias='configuration:devicename')]
     """
     Device name. Example value: sw01
     """
     namespaces: Annotated[
-        List[NamespacesListEntry], Field(alias="namespaces:namespaces")
-    ] = []
+        List[NamespacesListEntry],
+        Field(default_factory=list, alias='namespaces:namespaces'),
+    ]
 
 
 class Model(BaseModel):
@@ -92,12 +138,12 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = (
-        "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
+    namespace: ClassVar = (
+        'http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration'
     )
-    prefix: str = "configuration"
+    prefix: ClassVar = 'configuration'
     configuration: Annotated[
-        ConfigurationContainer, Field(alias="configuration:configuration")
+        ConfigurationContainer, Field(alias='configuration:configuration')
     ] = None
 
 
