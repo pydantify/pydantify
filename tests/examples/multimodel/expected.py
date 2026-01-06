@@ -46,8 +46,9 @@ class NamespacesListEntry(BaseModel):
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
-    ] = []
+        List[InterfacesListEntry],
+        Field(default_factory=list, alias="interfaces:interfaces"),
+    ]
 
 
 class ConfigurationContainer(BaseModel):
@@ -68,8 +69,9 @@ class ConfigurationContainer(BaseModel):
     Device name. Example value: sw01
     """
     namespaces: Annotated[
-        List[NamespacesListEntry], Field(alias="namespaces:namespaces")
-    ] = []
+        List[NamespacesListEntry],
+        Field(default_factory=list, alias="namespaces:namespaces"),
+    ]
 
 
 class Model(BaseModel):

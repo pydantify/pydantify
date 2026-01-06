@@ -54,8 +54,9 @@ class Model(BaseModel):
     namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     prefix: str = "if"
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
-    ] = []
+        List[InterfacesListEntry],
+        Field(default_factory=list, alias="interfaces:interfaces"),
+    ]
 
 
 if __name__ == "__main__":

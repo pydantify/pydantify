@@ -46,8 +46,9 @@ class TlsContainer(BaseModel):
     namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     prefix: str = "ciph"
     server_profile: Annotated[
-        List[ServerProfileListEntry], Field(alias="ciphers:server-profile")
-    ] = []
+        List[ServerProfileListEntry],
+        Field(default_factory=list, alias="ciphers:server-profile"),
+    ]
 
 
 class Model(BaseModel):

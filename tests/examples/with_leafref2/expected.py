@@ -43,6 +43,27 @@ class EnumerationEnum2(Enum):
     none = "none"
 
 
+class KeychainTypeType(RootModel[EnumerationEnum]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum
+
+
+class TypeLeaf(RootModel[KeychainTypeType]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: KeychainTypeType
+    """
+    Specifies the intended use of the keychain
+
+    The type constrains the set of crypto algorithms that are available to use with each key in the keychain. It is also used to ensure that this keychain is only used by protocols for which it is intended.
+    """
+
+
 class KeychainListEntry(BaseModel):
     """
     List of system keychains
@@ -58,20 +79,21 @@ class KeychainListEntry(BaseModel):
     """
     The user configured name for the keychain
     """
-    type: Annotated[EnumerationEnum, Field(alias="keychains:type")] = None
+    type: Annotated[TypeLeaf, Field(alias="keychains:type")] = None
     """
     Specifies the intended use of the keychain
 
      The type constrains the set of crypto algorithms that are available to use with each key in the keychain. It is also used to ensure that this keychain is only used by protocols for which it is intended.
     """
     active_key_for_send: Annotated[
-        Union[EnumerationEnum2, IndexLeaf],
-        Field(alias="keychains:active-key-for-send"),
+        Union[EnumerationEnum2, IndexLeaf], Field(alias="keychains:active-key-for-send")
     ] = None
     """
     Provides the key index of the currently active Keychain key
     """
-    key: Annotated[List[KeyListEntry], Field(alias="keychains:key")] = []
+    key: Annotated[
+        List[KeyListEntry], Field(default_factory=list, alias="keychains:key")
+    ]
 
 
 class Model(BaseModel):
@@ -96,7 +118,9 @@ class Model(BaseModel):
     )
     namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
     prefix: str = "keychains"
-    keychain: Annotated[List[KeychainListEntry], Field(alias="keychains:keychain")] = []
+    keychain: Annotated[
+        List[KeychainListEntry], Field(default_factory=list, alias="keychains:keychain")
+    ]
 
 
 if __name__ == "__main__":

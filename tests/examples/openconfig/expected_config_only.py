@@ -275,8 +275,8 @@ class SubinterfacesContainer(BaseModel):
     prefix: str = "oc-if"
     subinterface: Annotated[
         List[SubinterfaceListEntry],
-        Field(alias="openconfig-interfaces:subinterface"),
-    ] = []
+        Field(default_factory=list, alias="openconfig-interfaces:subinterface"),
+    ]
 
 
 class InterfaceListEntry(BaseModel):
@@ -320,8 +320,8 @@ class InterfacesContainer(BaseModel):
     prefix: str = "oc-if"
     interface: Annotated[
         List[InterfaceListEntry],
-        Field(alias="openconfig-interfaces:interface"),
-    ] = []
+        Field(default_factory=list, alias="openconfig-interfaces:interface"),
+    ]
 
 
 class Model(BaseModel):

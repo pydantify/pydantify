@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Annotated, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
@@ -36,6 +36,60 @@ class EnumerationEnum4(Enum):
     dormant = "DORMANT"
     not_present = "NOT_PRESENT"
     lower_layer_down = "LOWER_LAYER_DOWN"
+
+
+class AdminStatusLeaf(RootModel[EnumerationEnum]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum
+    """
+    The desired state of the interface.  In RFC 7223 this leaf
+    has the same read semantics as ifAdminStatus.  Here, it
+    reflects the administrative state as set by enabling or
+    disabling the interface.
+    """
+
+
+class AdminStatusLeaf2(RootModel[EnumerationEnum3]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum3
+    """
+    The desired state of the interface.  In RFC 7223 this leaf
+    has the same read semantics as ifAdminStatus.  Here, it
+    reflects the administrative state as set by enabling or
+    disabling the interface.
+    """
+
+
+class OperStatusLeaf(RootModel[EnumerationEnum2]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum2
+    """
+    The current operational state of the interface.
+
+    This leaf has the same semantics as ifOperStatus.
+    """
+
+
+class OperStatusLeaf2(RootModel[EnumerationEnum4]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum4
+    """
+    The current operational state of the interface.
+
+    This leaf has the same semantics as ifOperStatus.
+    """
 
 
 class StateContainer2(BaseModel):
@@ -770,22 +824,11 @@ class StateContainer(BaseModel):
     ifIndex object in SNMP Interface MIB
     """
     admin_status: Annotated[
-        EnumerationEnum, Field(alias="openconfig-interfaces:admin-status")
+        AdminStatusLeaf, Field(alias="openconfig-interfaces:admin-status")
     ]
-    """
-    The desired state of the interface.  In RFC 7223 this leaf
-    has the same read semantics as ifAdminStatus.  Here, it
-    reflects the administrative state as set by enabling or
-    disabling the interface.
-    """
     oper_status: Annotated[
-        EnumerationEnum2, Field(alias="openconfig-interfaces:oper-status")
+        OperStatusLeaf, Field(alias="openconfig-interfaces:oper-status")
     ]
-    """
-    The current operational state of the interface.
-
-    This leaf has the same semantics as ifOperStatus.
-    """
     last_change: Annotated[
         int,
         Field(alias="openconfig-interfaces:last-change", ge=0, le=18446744073709551615),
@@ -882,22 +925,11 @@ class StateContainer3(BaseModel):
     ifIndex object in SNMP Interface MIB
     """
     admin_status: Annotated[
-        EnumerationEnum3, Field(alias="openconfig-interfaces:admin-status")
+        AdminStatusLeaf2, Field(alias="openconfig-interfaces:admin-status")
     ]
-    """
-    The desired state of the interface.  In RFC 7223 this leaf
-    has the same read semantics as ifAdminStatus.  Here, it
-    reflects the administrative state as set by enabling or
-    disabling the interface.
-    """
     oper_status: Annotated[
-        EnumerationEnum4, Field(alias="openconfig-interfaces:oper-status")
+        OperStatusLeaf2, Field(alias="openconfig-interfaces:oper-status")
     ]
-    """
-    The current operational state of the interface.
-
-    This leaf has the same semantics as ifOperStatus.
-    """
     last_change: Annotated[
         int,
         Field(alias="openconfig-interfaces:last-change", ge=0, le=18446744073709551615),
@@ -952,8 +984,8 @@ class SubinterfacesContainer(BaseModel):
     prefix: str = "oc-if"
     subinterface: Annotated[
         List[SubinterfaceListEntry],
-        Field(alias="openconfig-interfaces:subinterface"),
-    ] = []
+        Field(default_factory=list, alias="openconfig-interfaces:subinterface"),
+    ]
 
 
 class InterfaceListEntry(BaseModel):
@@ -976,8 +1008,7 @@ class InterfaceListEntry(BaseModel):
         HoldTimeContainer, Field(alias="openconfig-interfaces:hold-time")
     ] = None
     subinterfaces: Annotated[
-        SubinterfacesContainer,
-        Field(alias="openconfig-interfaces:subinterfaces"),
+        SubinterfacesContainer, Field(alias="openconfig-interfaces:subinterfaces")
     ] = None
 
 
@@ -995,8 +1026,8 @@ class InterfacesContainer(BaseModel):
     prefix: str = "oc-if"
     interface: Annotated[
         List[InterfaceListEntry],
-        Field(alias="openconfig-interfaces:interface"),
-    ] = []
+        Field(default_factory=list, alias="openconfig-interfaces:interface"),
+    ]
 
 
 class Model(BaseModel):
@@ -1027,7 +1058,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

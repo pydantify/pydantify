@@ -3,12 +3,35 @@ from __future__ import annotations
 from enum import Enum
 from typing import Annotated, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
     left = "left"
     right = "right"
+
+
+class HeadDirType(RootModel[EnumerationEnum]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum
+    """
+    Possible directions for moving the read/write head, one cell
+    to the left or right (default).
+    """
+
+
+class HeadMoveLeaf(RootModel[HeadDirType]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: HeadDirType
+    """
+    Move the head one cell to the left or right
+    """
 
 
 class CellListEntry(BaseModel):
@@ -89,12 +112,13 @@ class OutputContainer(BaseModel):
     Symbol to be written to the tape cell. If this leaf is
     not present, the symbol doesn't change.
     """
-    head_move: Annotated[EnumerationEnum, Field(alias="turing-machine:head-move")] = (
-        "right"
-    )
-    """
-    Move the head one cell to the left or right
-    """
+    head_move: Annotated[
+        HeadMoveLeaf,
+        Field(
+            default_factory=lambda: HeadMoveLeaf("right"),
+            alias="turing-machine:head-move",
+        ),
+    ]
 
 
 class TapeContainer(BaseModel):
@@ -108,7 +132,9 @@ class TapeContainer(BaseModel):
     )
     namespace: str = "http://example.net/turing-machine"
     prefix: str = "tm"
-    cell: Annotated[List[CellListEntry], Field(alias="turing-machine:cell")] = []
+    cell: Annotated[
+        List[CellListEntry], Field(default_factory=list, alias="turing-machine:cell")
+    ]
 
 
 class DeltaListEntry(BaseModel):
@@ -142,7 +168,9 @@ class TransitionFunctionContainer(BaseModel):
     )
     namespace: str = "http://example.net/turing-machine"
     prefix: str = "tm"
-    delta: Annotated[List[DeltaListEntry], Field(alias="turing-machine:delta")] = []
+    delta: Annotated[
+        List[DeltaListEntry], Field(default_factory=list, alias="turing-machine:delta")
+    ]
 
 
 class TuringMachineContainer(BaseModel):
@@ -174,8 +202,7 @@ class TuringMachineContainer(BaseModel):
     """
     tape: Annotated[TapeContainer, Field(alias="turing-machine:tape")] = None
     transition_function: Annotated[
-        TransitionFunctionContainer,
-        Field(alias="turing-machine:transition-function"),
+        TransitionFunctionContainer, Field(alias="turing-machine:transition-function")
     ] = None
 
 

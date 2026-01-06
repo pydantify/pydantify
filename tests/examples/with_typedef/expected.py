@@ -54,8 +54,9 @@ class InterfacesContainer(BaseModel):
     namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     prefix: str = "if"
     interface: Annotated[
-        List[InterfaceListEntry], Field(alias="interfaces:interface")
-    ] = []
+        List[InterfaceListEntry],
+        Field(default_factory=list, alias="interfaces:interface"),
+    ]
 
 
 class Model(BaseModel):

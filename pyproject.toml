@@ -19,7 +19,7 @@ dependencies = [
     "pydantic==2.11.7",
     "pyang==2.6.1",
     "psutil>=6.0.0",
-    "datamodel-code-generator==0.32.0",
+    "datamodel-code-generator[ruff]==0.52.2",
     "requests>=2.32.3",
     "setuptools>=74.0.0",
 ]
