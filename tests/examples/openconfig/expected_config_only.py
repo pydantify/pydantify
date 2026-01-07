@@ -15,8 +15,10 @@ class ConfigContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")] = None
     """
     The name of the interface.
@@ -137,8 +139,10 @@ class ConfigContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     up: Annotated[int, Field(alias="openconfig-interfaces:up", ge=0, le=4294967295)] = 0
     """
     Dampens advertisement when the interface
@@ -164,8 +168,10 @@ class ConfigContainer3(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
     ] = 0
@@ -230,8 +236,10 @@ class HoldTimeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     config: Annotated[ConfigContainer2, Field(alias="openconfig-interfaces:config")] = (
         None
     )
@@ -247,8 +255,10 @@ class SubinterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
     ]
@@ -271,8 +281,10 @@ class SubinterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     subinterface: Annotated[
         List[SubinterfaceListEntry],
         Field(default_factory=list, alias="openconfig-interfaces:subinterface"),
@@ -288,8 +300,10 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")]
     """
     References the configured name of the interface
@@ -316,8 +330,10 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     interface: Annotated[
         List[InterfaceListEntry],
         Field(default_factory=list, alias="openconfig-interfaces:interface"),
@@ -344,8 +360,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     interfaces: Annotated[
         InterfacesContainer, Field(alias="openconfig-interfaces:interfaces")
     ] = None

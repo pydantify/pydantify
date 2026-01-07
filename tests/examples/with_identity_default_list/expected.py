@@ -14,8 +14,10 @@ class ServerProfileListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "ciph"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "ciph"
     name: Annotated[str, Field(alias="ciphers:name")]
     """
     Name of the TLS server-profile
@@ -43,8 +45,10 @@ class TlsContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "ciph"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "ciph"
     server_profile: Annotated[
         List[ServerProfileListEntry],
         Field(default_factory=list, alias="ciphers:server-profile"),
@@ -71,8 +75,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "ciph"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "ciph"
     tls: Annotated[TlsContainer, Field(alias="ciphers:tls")] = None
 
 

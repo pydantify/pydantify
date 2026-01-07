@@ -14,8 +14,10 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
     test: Annotated[int, Field(alias="interfaces:test", ge=0, le=255)] = None
     """
     Test node
@@ -50,8 +52,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
     interfaces: Annotated[
         List[InterfacesListEntry],
         Field(default_factory=list, alias="interfaces:interfaces"),

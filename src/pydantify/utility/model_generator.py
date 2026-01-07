@@ -145,6 +145,7 @@ class ModelGenerator:
                 allow_extra_fields=False,
                 collapse_root_models=True,
                 extra_template_data=extra_template_data,
+                field_extra_keys=set(["x-is-classvar"]),
             ),
         )
         return parser.parse()

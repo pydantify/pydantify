@@ -15,8 +15,10 @@ class ConfigContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")] = None
     """
     The name of the interface.
@@ -148,8 +150,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://openconfig.net/yang/interfaces"
-    prefix: str = "oc-if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://openconfig.net/yang/interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
     config: Annotated[ConfigContainer, Field(alias="openconfig-interfaces:config")] = (
         None
     )

@@ -10,8 +10,10 @@ class DestinationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
     address: Annotated[str, Field(alias="interfaces:address")] = None
     """
     Target IP address
@@ -27,8 +29,10 @@ class PeerContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
     destination: Annotated[
         DestinationContainer, Field(alias="interfaces:destination")
     ] = None
@@ -54,8 +58,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
-    prefix: str = "if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
     peer: Annotated[PeerContainer, Field(alias="interfaces:peer")] = None
 
 

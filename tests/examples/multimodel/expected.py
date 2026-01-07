@@ -14,10 +14,10 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = (
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-interfaces"
     )
-    prefix: str = "if"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -37,10 +37,10 @@ class NamespacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = (
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-namespaces"
     )
-    prefix: str = "ns"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "ns"
     name: Annotated[str, Field(alias="namespaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -60,10 +60,12 @@ class ConfigurationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = (
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: str = "configuration"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "configuration"
+    )
     devicename: Annotated[str, Field(alias="configuration:devicename")]
     """
     Device name. Example value: sw01
@@ -94,10 +96,12 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = (
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: str = "configuration"
+    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+        "configuration"
+    )
     configuration: Annotated[
         ConfigurationContainer, Field(alias="configuration:configuration")
     ] = None
