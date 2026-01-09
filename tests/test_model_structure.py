@@ -255,10 +255,10 @@ def reset_optparse():
             id="empty",
         ),
         param(
-            "examples/multimodel/configuration.yang",
-            "examples/multimodel/expected.py",
+            "examples/with_import_uses/configuration.yang",
+            "examples/with_import_uses/expected.py",
             [],
-            id="multimodel",
+            id="with_import_uses",
         ),
     ],
 )
@@ -413,10 +413,16 @@ def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Pa
             id="identity default list",
         ),
         param(
-            "examples/multimodel/configuration.yang",
-            "examples/multimodel/expected.json",
+            "examples/with_import_uses/configuration.yang",
+            "examples/with_import_uses/expected.json",
             ["-j"],
-            id="multimodel",
+            id="with_import_uses",
+        ),
+        param(
+            "examples/with_augment/configuration.yang",
+            "examples/with_augment/expected.json",
+            ["-j", "--deviation-module=tests/examples/with_augment/namespaces.yang", "--deviation-module=tests/examples/with_augment/interfaces.yang"],
+            id="with_augment",
         ),
     ],
 )
