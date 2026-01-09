@@ -185,7 +185,10 @@ def reset_optparse():
         param(
             "examples/with_augment/configuration.yang",
             "examples/with_augment/sample_data.json",
-            ["--deviation-module=tests/examples/with_augment/namespaces.yang", "--deviation-module=tests/examples/with_augment/interfaces.yang"],
+            [
+                "--deviation-module=tests/examples/with_augment/namespaces.yang",
+                "--deviation-module=tests/examples/with_augment/interfaces.yang",
+            ],
             {"exclude_defaults": True, "mode": "json"},
             id="with_augment",
         ),

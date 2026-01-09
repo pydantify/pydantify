@@ -421,7 +421,11 @@ def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Pa
         param(
             "examples/with_augment/configuration.yang",
             "examples/with_augment/expected.json",
-            ["-j", "--deviation-module=tests/examples/with_augment/namespaces.yang", "--deviation-module=tests/examples/with_augment/interfaces.yang"],
+            [
+                "-j",
+                "--deviation-module=tests/examples/with_augment/namespaces.yang",
+                "--deviation-module=tests/examples/with_augment/interfaces.yang",
+            ],
             id="with_augment",
         ),
     ],

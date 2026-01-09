@@ -6,7 +6,7 @@
         "configuration:devicename": {
           "$ref": "#/$defs/DevicenameLeaf"
         },
-        "namespaces:namespaces": {
+        "configuration:namespaces": {
           "default": [],
           "items": {
             "$ref": "#/$defs/NamespacesListEntry"
@@ -27,16 +27,16 @@
     "InterfacesListEntry": {
       "description": "List of configured device interfaces",
       "properties": {
-        "interfaces:name": {
+        "configuration:name": {
           "$ref": "#/$defs/NameLeaf2"
         },
-        "interfaces:ip": {
+        "configuration:ip": {
           "$ref": "#/$defs/IpLeaf",
           "default": null
         }
       },
       "required": [
-        "interfaces:name"
+        "configuration:name"
       ],
       "title": "InterfacesListEntry",
       "type": "object"
@@ -56,10 +56,10 @@
     "NamespacesListEntry": {
       "description": "List of configured device namespaces",
       "properties": {
-        "namespaces:name": {
+        "configuration:name": {
           "$ref": "#/$defs/NameLeaf"
         },
-        "interfaces:interfaces": {
+        "configuration:interfaces": {
           "default": [],
           "items": {
             "$ref": "#/$defs/InterfacesListEntry"
@@ -68,7 +68,7 @@
         }
       },
       "required": [
-        "namespaces:name"
+        "configuration:name"
       ],
       "title": "NamespacesListEntry",
       "type": "object"
@@ -84,4 +84,3 @@
   "title": "Model",
   "type": "object"
 }
-

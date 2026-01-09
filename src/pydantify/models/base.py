@@ -89,9 +89,9 @@ class Node(ABC):
         self.config: bool = __class__.__extract_config(stm)
         self.children: List[Node] = __class__.extract_statement_list(stm, "i_children")
 
-        if stm.top:
-            self.namespace = stm.top.search_one("namespace").arg
-            self.prefix = stm.top.search_one("prefix").arg
+        if stm.i_module:
+            self.namespace = stm.i_module.search_one("namespace").arg
+            self.prefix = stm.i_module.search_one("prefix").arg
         else:
             self.namespace = stm.search_one("namespace").arg
             self.prefix = stm.search_one("prefix").arg
@@ -134,7 +134,7 @@ class Node(ABC):
         qualified_name = (
             f"{self.arg}"
             if self.strip_namespace
-            else f"{self.raw_statement.top.arg}:{self.arg}"
+            else f"{self.raw_statement.i_module.arg}:{self.arg}"
         )
         self.alias_mapping[qualified_name] = FieldNameResolver(
             snake_case_field=True
