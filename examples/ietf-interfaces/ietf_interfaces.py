@@ -1,14 +1,31 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
     enabled = "enabled"
     disabled = "disabled"
+
+
+class LinkUpDownTrapEnableLeaf(RootModel[EnumerationEnum]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum
+    """
+    Controls whether linkUp/linkDown SNMP notifications
+    should be generated for this interface.
+
+    If this node is not configured, the value 'enabled' is
+    operationally used by the server for interfaces that do
+    not operate on top of any other interface (i.e., there are
+    no 'lower-layer-if' entries), and 'disabled' otherwise.
+    """
 
 
 class InterfaceListEntry(BaseModel):
@@ -31,8 +48,8 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    prefix: str = "if"
+    namespace: ClassVar[str] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: ClassVar[str] = "if"
     name: Annotated[str, Field(alias="ietf-interfaces:name")]
     """
     The name of the interface.
@@ -125,16 +142,10 @@ class InterfaceListEntry(BaseModel):
     reflected in ifAdminStatus, but if ifAdminStatus is
     changed over SNMP, this leaf is not affected.
     """
-    link_up_down_trap_enable: Annotated[EnumerationEnum, Field(alias="ietf-interfaces:link-up-down-trap-enable")] = None
-    """
-    Controls whether linkUp/linkDown SNMP notifications
-    should be generated for this interface.
-
-    If this node is not configured, the value 'enabled' is
-    operationally used by the server for interfaces that do
-    not operate on top of any other interface (i.e., there are
-    no 'lower-layer-if' entries), and 'disabled' otherwise.
-    """
+    link_up_down_trap_enable: Annotated[
+        LinkUpDownTrapEnableLeaf,
+        Field(alias="ietf-interfaces:link-up-down-trap-enable"),
+    ] = None
 
 
 class InterfacesContainer(BaseModel):
@@ -146,9 +157,12 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    prefix: str = "if"
-    interface: Annotated[List[InterfaceListEntry], Field(alias="ietf-interfaces:interface")] = None
+    namespace: ClassVar[str] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: ClassVar[str] = "if"
+    interface: Annotated[
+        List[InterfaceListEntry],
+        Field(default_factory=list, alias="ietf-interfaces:interface"),
+    ]
 
 
 class Model(BaseModel):
@@ -171,9 +185,11 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: str = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    prefix: str = "if"
-    interfaces: Annotated[InterfacesContainer, Field(alias="ietf-interfaces:interfaces")] = None
+    namespace: ClassVar[str] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: ClassVar[str] = "if"
+    interfaces: Annotated[
+        InterfacesContainer, Field(alias="ietf-interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":
@@ -181,7 +197,9 @@ if __name__ == "__main__":
         # <Initialize model here>
     )
 
-    restconf_payload = model.model_dump_json(exclude_defaults=True, by_alias=True, indent=2)
+    restconf_payload = model.model_dump_json(
+        exclude_defaults=True, by_alias=True, indent=2
+    )
 
     print(f"Generated output: {restconf_payload}")
 
