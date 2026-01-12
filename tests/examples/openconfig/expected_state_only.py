@@ -101,9 +101,7 @@ class StateContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     up: Annotated[int, Field(alias="openconfig-interfaces:up", ge=0, le=4294967295)] = 0
     """
@@ -130,9 +128,7 @@ class CountersContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     in_octets: Annotated[
         int,
@@ -413,9 +409,7 @@ class CountersContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     in_octets: Annotated[
         int,
@@ -697,9 +691,7 @@ class HoldTimeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     state: Annotated[StateContainer2, Field(alias="openconfig-interfaces:state")] = None
 
@@ -713,9 +705,7 @@ class StateContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")] = None
     """
@@ -866,9 +856,7 @@ class StateContainer3(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
@@ -970,9 +958,7 @@ class SubinterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
@@ -994,9 +980,7 @@ class SubinterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     subinterface: Annotated[
         List[SubinterfaceListEntry],
@@ -1013,9 +997,7 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")]
     """
@@ -1040,9 +1022,7 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     interface: Annotated[
         List[InterfaceListEntry],
@@ -1070,9 +1050,7 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     interfaces: Annotated[
         InterfacesContainer, Field(alias="openconfig-interfaces:interfaces")

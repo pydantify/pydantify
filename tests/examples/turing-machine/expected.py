@@ -43,9 +43,7 @@ class CellListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://example.net/turing-machine"
-    )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
     prefix: ClassVar[str] = "tm"
     coord: Annotated[
         int,
@@ -77,9 +75,7 @@ class InputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://example.net/turing-machine"
-    )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
     prefix: ClassVar[str] = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
@@ -102,9 +98,7 @@ class OutputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://example.net/turing-machine"
-    )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
     prefix: ClassVar[str] = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)] = None
     """
@@ -136,9 +130,7 @@ class TapeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://example.net/turing-machine"
-    )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
     prefix: ClassVar[str] = "tm"
     cell: Annotated[
         List[CellListEntry], Field(default_factory=list, alias="turing-machine:cell")
@@ -154,9 +146,7 @@ class DeltaListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://example.net/turing-machine"
-    )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
     prefix: ClassVar[str] = "tm"
     label: Annotated[str, Field(alias="turing-machine:label")]
     """
@@ -176,9 +166,7 @@ class TransitionFunctionContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://example.net/turing-machine"
-    )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
     prefix: ClassVar[str] = "tm"
     delta: Annotated[
         List[DeltaListEntry], Field(default_factory=list, alias="turing-machine:delta")
@@ -194,9 +182,7 @@ class TuringMachineContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://example.net/turing-machine"
-    )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
     prefix: ClassVar[str] = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
@@ -240,9 +226,7 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://example.net/turing-machine"
-    )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
     prefix: ClassVar[str] = "tm"
     turing_machine: Annotated[
         TuringMachineContainer, Field(alias="turing-machine:turing-machine")

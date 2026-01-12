@@ -14,9 +14,7 @@ class InterfaceContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
-    )
+    namespace: ClassVar[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
     prefix: ClassVar[str] = "if"
     primary: Annotated[
         List[None],
@@ -47,9 +45,7 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
-    )
+    namespace: ClassVar[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
     prefix: ClassVar[str] = "if"
     interface: Annotated[InterfaceContainer, Field(alias="interface:interface")] = None
 

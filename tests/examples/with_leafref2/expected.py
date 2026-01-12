@@ -26,12 +26,8 @@ class KeyListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
-    )
-    namespace: ClassVar[str] = (
-        "keychains"
-    )
+    namespace: ClassVar[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
+    namespace: ClassVar[str] = "keychains"
     index: Annotated[int, Field(alias="keychains:index", ge=0, le=255)]
     """
     Each key in a keychain requires a unique identifier, the index value specifies this identifier
@@ -77,12 +73,8 @@ class KeychainListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
-    )
-    namespace: ClassVar[str] = (
-        "keychains"
-    )
+    namespace: ClassVar[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
+    namespace: ClassVar[str] = "keychains"
     name: Annotated[str, Field(alias="keychains:name")]
     """
     The user configured name for the keychain
@@ -124,12 +116,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
-    )
-    namespace: ClassVar[str] = (
-        "keychains"
-    )
+    namespace: ClassVar[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
+    namespace: ClassVar[str] = "keychains"
     keychain: Annotated[
         List[KeychainListEntry], Field(default_factory=list, alias="keychains:keychain")
     ]

@@ -15,9 +15,7 @@ class ConfigContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")] = None
     """
@@ -150,9 +148,7 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
-        "http://openconfig.net/yang/interfaces"
-    )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
     prefix: ClassVar[str] = "oc-if"
     config: Annotated[ConfigContainer, Field(alias="openconfig-interfaces:config")] = (
         None

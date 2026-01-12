@@ -17,9 +17,7 @@ class InterfacesListEntry(BaseModel):
     namespace: ClassVar[str] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    namespace: ClassVar[str] = (
-        "configuration"
-    )
+    namespace: ClassVar[str] = "configuration"
     name: Annotated[str, Field(alias="configuration:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -42,9 +40,7 @@ class NamespacesListEntry(BaseModel):
     namespace: ClassVar[str] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    namespace: ClassVar[str] = (
-        "configuration"
-    )
+    namespace: ClassVar[str] = "configuration"
     name: Annotated[str, Field(alias="configuration:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -67,9 +63,7 @@ class ConfigurationContainer(BaseModel):
     namespace: ClassVar[str] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    namespace: ClassVar[str] = (
-        "configuration"
-    )
+    namespace: ClassVar[str] = "configuration"
     devicename: Annotated[str, Field(alias="configuration:devicename")]
     """
     Device name. Example value: sw01
@@ -103,9 +97,7 @@ class Model(BaseModel):
     namespace: ClassVar[str] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    namespace: ClassVar[str] = (
-        "configuration"
-    )
+    namespace: ClassVar[str] = "configuration"
     configuration: Annotated[
         ConfigurationContainer, Field(alias="configuration:configuration")
     ] = None
