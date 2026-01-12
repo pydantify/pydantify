@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Optional
+from typing import Annotated, ClassVar, List
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -14,10 +14,10 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
+    prefix: ClassVar[str] = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -37,10 +37,10 @@ class NamespacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-namespaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "ns"
+    prefix: ClassVar[str] = "ns"
     name: Annotated[str, Field(alias="namespaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -60,10 +60,10 @@ class ConfigurationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "configuration"
     )
     devicename: Annotated[str, Field(alias="configuration:devicename")]
@@ -96,10 +96,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "configuration"
     )
     configuration: Annotated[

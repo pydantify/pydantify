@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,10 +14,10 @@ class InterfaceContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
+    prefix: ClassVar[str] = "if"
     primary: Annotated[
         List[None],
         Field(alias="interface:primary", max_length=1, min_length=1),
@@ -47,10 +47,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
+    prefix: ClassVar[str] = "if"
     interface: Annotated[InterfaceContainer, Field(alias="interface:interface")] = None
 
 

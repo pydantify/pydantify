@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, Union
+from typing import Annotated, ClassVar, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,10 +14,10 @@ class Ethernet2Case(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
+    prefix: ClassVar[str] = "if"
     name2: Annotated[str, Field(alias="interfaces:name2")] = None
 
 
@@ -30,10 +30,10 @@ class EthernetContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
+    prefix: ClassVar[str] = "if"
     name: Annotated[str, Field(alias="interfaces:name")] = None
 
 
@@ -42,10 +42,10 @@ class EthernetCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
+    prefix: ClassVar[str] = "if"
     ethernet: Annotated[EthernetContainer, Field(alias="interfaces:ethernet")] = None
 
 
@@ -69,10 +69,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "if"
+    prefix: ClassVar[str] = "if"
     interface_type: Annotated[
         Union[EthernetCase, Ethernet2Case],
         Field(alias="interfaces:interface-type"),

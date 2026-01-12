@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -101,10 +101,10 @@ class StateContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     up: Annotated[int, Field(alias="openconfig-interfaces:up", ge=0, le=4294967295)] = 0
     """
     Dampens advertisement when the interface
@@ -130,10 +130,10 @@ class CountersContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     in_octets: Annotated[
         int,
         Field(alias="openconfig-interfaces:in-octets", ge=0, le=18446744073709551615),
@@ -413,10 +413,10 @@ class CountersContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     in_octets: Annotated[
         int,
         Field(alias="openconfig-interfaces:in-octets", ge=0, le=18446744073709551615),
@@ -697,10 +697,10 @@ class HoldTimeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     state: Annotated[StateContainer2, Field(alias="openconfig-interfaces:state")] = None
 
 
@@ -713,10 +713,10 @@ class StateContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")] = None
     """
     The name of the interface.
@@ -866,10 +866,10 @@ class StateContainer3(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
     ] = 0
@@ -970,10 +970,10 @@ class SubinterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
     ]
@@ -994,10 +994,10 @@ class SubinterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     subinterface: Annotated[
         List[SubinterfaceListEntry],
         Field(default_factory=list, alias="openconfig-interfaces:subinterface"),
@@ -1013,10 +1013,10 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")]
     """
     References the configured name of the interface
@@ -1040,10 +1040,10 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     interface: Annotated[
         List[InterfaceListEntry],
         Field(default_factory=list, alias="openconfig-interfaces:interface"),
@@ -1070,10 +1070,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://openconfig.net/yang/interfaces"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = "oc-if"
+    prefix: ClassVar[str] = "oc-if"
     interfaces: Annotated[
         InterfacesContainer, Field(alias="openconfig-interfaces:interfaces")
     ] = None

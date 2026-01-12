@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List, Union
+from typing import Annotated, ClassVar, List, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -26,10 +26,10 @@ class KeyListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "keychains"
     )
     index: Annotated[int, Field(alias="keychains:index", ge=0, le=255)]
@@ -77,10 +77,10 @@ class KeychainListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "keychains"
     )
     name: Annotated[str, Field(alias="keychains:name")]
@@ -124,10 +124,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
     )
-    prefix: Annotated[str, Field(json_schema_extra={"x-is-classvar": True})] = (
+    namespace: ClassVar[str] = (
         "keychains"
     )
     keychain: Annotated[
