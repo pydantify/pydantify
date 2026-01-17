@@ -88,6 +88,14 @@ class Node(ABC):
     def __init__(self, stm: Statement):
         self.config: bool = __class__.__extract_config(stm)
         self.children: List[Node] = __class__.extract_statement_list(stm, "i_children")
+
+        if stm.i_module:
+            self.namespace = stm.i_module.search_one("namespace").arg
+            self.prefix = stm.i_module.search_one("prefix").arg
+        else:
+            self.namespace = stm.search_one("namespace").arg
+            self.prefix = stm.search_one("prefix").arg
+
         self.mandatory: bool = stm.search_one("mandatory", "true") or any(
             (ch for ch in self.children if ch.mandatory is True)
         )
@@ -191,6 +199,16 @@ class Node(ABC):
 
     def _children_to_fields(self) -> Dict[str, Tuple[type, FieldInfo]]:
         ret: Dict[str, Tuple[type, FieldInfo]] = dict()
+        ret["namespace"] = (
+            str,
+            FieldInfo(
+                default=self.namespace, json_schema_extra={"x-is-classvar": True}
+            ),
+        )
+        ret["prefix"] = (
+            str,
+            FieldInfo(default=self.prefix, json_schema_extra={"x-is-classvar": True}),
+        )
         for ch in self.children:
             if (
                 self.data_type == "config"
@@ -202,7 +220,7 @@ class Node(ABC):
             ):
                 ret[ch.arg] = ch._output_model.to_field()
 
-        if ret and self.data_type == "state":
+        if len(ret) > 2 and self.data_type == "state":
             self.config = False
 
         return ret

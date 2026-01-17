@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, ClassVar
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -25,6 +25,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "if"
     address: Annotated[str, Field(alias="interfaces:address")]
     """
     Interface IP address. Example value: 10.10.10.1

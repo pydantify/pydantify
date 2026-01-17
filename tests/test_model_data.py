@@ -165,7 +165,7 @@ def reset_optparse():
             "examples/with_identity_default_list/ciphers.yang",
             "examples/with_identity_default_list/sample_data.json",
             [],
-            {"exclude_defaults": False, "mode": "json"},
+            {"exclude_defaults": True, "mode": "json"},
             id="identity default list",
         ),
         param(
@@ -174,6 +174,23 @@ def reset_optparse():
             [],
             {"exclude_defaults": True, "mode": "json"},
             id="empty",
+        ),
+        param(
+            "examples/with_import_uses/configuration.yang",
+            "examples/with_import_uses/sample_data.json",
+            [],
+            {"exclude_defaults": True, "mode": "json"},
+            id="with_import_uses",
+        ),
+        param(
+            "examples/with_augment/configuration.yang",
+            "examples/with_augment/sample_data.json",
+            [
+                "--deviation-module=tests/examples/with_augment/namespaces.yang",
+                "--deviation-module=tests/examples/with_augment/interfaces.yang",
+            ],
+            {"exclude_defaults": True, "mode": "json"},
+            id="with_augment",
         ),
     ],
 )

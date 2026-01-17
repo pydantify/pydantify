@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,6 +14,10 @@ class ServerProfileListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "ciph"
     name: Annotated[str, Field(alias="ciphers:name")]
     """
     Name of the TLS server-profile
@@ -41,9 +45,14 @@ class TlsContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "ciph"
     server_profile: Annotated[
-        List[ServerProfileListEntry], Field(alias="ciphers:server-profile")
-    ] = []
+        List[ServerProfileListEntry],
+        Field(default_factory=list, alias="ciphers:server-profile"),
+    ]
 
 
 class Model(BaseModel):
@@ -66,6 +75,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "ciph"
     tls: Annotated[TlsContainer, Field(alias="ciphers:tls")] = None
 
 

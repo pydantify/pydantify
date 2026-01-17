@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, List, Union
+from typing import Annotated, ClassVar, List, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -10,6 +10,10 @@ class DailyCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "if"
     daily: Annotated[
         List[None],
         Field(alias="interfaces:daily", max_length=1, min_length=1),
@@ -22,6 +26,10 @@ class IntervalCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "if"
     interval: Annotated[int, Field(alias="interfaces:interval", ge=0, le=65535)] = 30
 
 
@@ -30,6 +38,10 @@ class ManualCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "if"
     manual: Annotated[
         List[None],
         Field(alias="interfaces:manual", max_length=1, min_length=1),
@@ -56,6 +68,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "if"
     how: Annotated[
         Union[IntervalCase, DailyCase, ManualCase],
         Field(alias="interfaces:how"),

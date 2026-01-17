@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Union, Optional
 
 from pyang.statements import (
     ChoiceStatement,
@@ -145,6 +145,8 @@ class ChoiceNode(Node):
     def to_pydantic_model(self) -> type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
+        fields.pop("namespace")
+        fields.pop("prefix")
         bases: tuple = tuple(x[0] for x in fields.values())
         output_model: type[BaseModel] = Union[bases]  # type: ignore
         return output_model
@@ -302,7 +304,23 @@ class ModelRoot:
             # Take only children, as
             fields = self.root_node._children_to_fields()
         elif isinstance(self.root_node, Node):
-            fields = {self.root_node.arg: self.root_node.get_output_class().to_field()}
+            fields = {
+                "namespace": (
+                    str,
+                    FieldInfo(
+                        default=self.root_node.namespace,
+                        json_schema_extra={"x-is-classvar": True},
+                    ),
+                ),
+                "prefix": (
+                    str,
+                    FieldInfo(
+                        default=self.root_node.prefix,
+                        json_schema_extra={"x-is-classvar": True},
+                    ),
+                ),
+                self.root_node.arg: self.root_node.get_output_class().to_field(),
+            }
         output_model: type[BaseModel] = create_model(
             "Model", __base__=(BaseModel,), **fields
         )

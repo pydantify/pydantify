@@ -1,14 +1,36 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
     enable = "enable"
     disable = "disable"
+
+
+class AdminStateType(RootModel[EnumerationEnum]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum
+    """
+    general admin-state option.
+    """
+
+
+class AdminStateLeaf(RootModel[AdminStateType]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: AdminStateType
+    """
+    The configured, desired state of the interface
+    """
 
 
 class InterfacesListEntry(BaseModel):
@@ -20,16 +42,21 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name
     """
-    admin_state: Annotated[EnumerationEnum, Field(alias="interfaces:admin-state")] = (
-        "enable"
-    )
-    """
-    The configured, desired state of the interface
-    """
+    admin_state: Annotated[
+        AdminStateLeaf,
+        Field(
+            default_factory=lambda: AdminStateLeaf("enable"),
+            alias="interfaces:admin-state",
+        ),
+    ]
 
 
 class Model(BaseModel):
@@ -52,9 +79,14 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+    )
+    prefix: ClassVar[str] = "if"
     interfaces: Annotated[
-        List[InterfacesListEntry], Field(alias="interfaces:interfaces")
-    ] = []
+        List[InterfacesListEntry],
+        Field(default_factory=list, alias="interfaces:interfaces"),
+    ]
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ dependencies = [
     "pydantic==2.11.7",
     "pyang==2.6.1",
     "psutil>=6.0.0",
-    "datamodel-code-generator==0.32.0",
+    "datamodel-code-generator[ruff]==0.53.0",
     "requests>=2.32.3",
     "setuptools>=74.0.0",
 ]
@@ -50,6 +50,7 @@ dev = [
     "mypy>=1.11.2",
     "mkdocs>=1.6.0",
     "mkdocs-material>=9.5.33",
+    "types-lxml>=2025.11.25",
 ]
 
 [tool.pdm.scripts]

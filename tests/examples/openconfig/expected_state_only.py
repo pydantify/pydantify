@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
@@ -38,6 +38,60 @@ class EnumerationEnum4(Enum):
     lower_layer_down = "LOWER_LAYER_DOWN"
 
 
+class AdminStatusLeaf(RootModel[EnumerationEnum]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum
+    """
+    The desired state of the interface.  In RFC 7223 this leaf
+    has the same read semantics as ifAdminStatus.  Here, it
+    reflects the administrative state as set by enabling or
+    disabling the interface.
+    """
+
+
+class AdminStatusLeaf2(RootModel[EnumerationEnum3]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum3
+    """
+    The desired state of the interface.  In RFC 7223 this leaf
+    has the same read semantics as ifAdminStatus.  Here, it
+    reflects the administrative state as set by enabling or
+    disabling the interface.
+    """
+
+
+class OperStatusLeaf(RootModel[EnumerationEnum2]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum2
+    """
+    The current operational state of the interface.
+
+    This leaf has the same semantics as ifOperStatus.
+    """
+
+
+class OperStatusLeaf2(RootModel[EnumerationEnum4]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum4
+    """
+    The current operational state of the interface.
+
+    This leaf has the same semantics as ifOperStatus.
+    """
+
+
 class StateContainer2(BaseModel):
     """
     Operational state data for interface hold-time.
@@ -47,6 +101,8 @@ class StateContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     up: Annotated[int, Field(alias="openconfig-interfaces:up", ge=0, le=4294967295)] = 0
     """
     Dampens advertisement when the interface
@@ -72,6 +128,8 @@ class CountersContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     in_octets: Annotated[
         int,
         Field(alias="openconfig-interfaces:in-octets", ge=0, le=18446744073709551615),
@@ -351,6 +409,8 @@ class CountersContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     in_octets: Annotated[
         int,
         Field(alias="openconfig-interfaces:in-octets", ge=0, le=18446744073709551615),
@@ -631,6 +691,8 @@ class HoldTimeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     state: Annotated[StateContainer2, Field(alias="openconfig-interfaces:state")] = None
 
 
@@ -643,6 +705,8 @@ class StateContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")] = None
     """
     The name of the interface.
@@ -760,22 +824,11 @@ class StateContainer(BaseModel):
     ifIndex object in SNMP Interface MIB
     """
     admin_status: Annotated[
-        EnumerationEnum, Field(alias="openconfig-interfaces:admin-status")
+        AdminStatusLeaf, Field(alias="openconfig-interfaces:admin-status")
     ]
-    """
-    The desired state of the interface.  In RFC 7223 this leaf
-    has the same read semantics as ifAdminStatus.  Here, it
-    reflects the administrative state as set by enabling or
-    disabling the interface.
-    """
     oper_status: Annotated[
-        EnumerationEnum2, Field(alias="openconfig-interfaces:oper-status")
+        OperStatusLeaf, Field(alias="openconfig-interfaces:oper-status")
     ]
-    """
-    The current operational state of the interface.
-
-    This leaf has the same semantics as ifOperStatus.
-    """
     last_change: Annotated[
         int,
         Field(alias="openconfig-interfaces:last-change", ge=0, le=18446744073709551615),
@@ -803,6 +856,8 @@ class StateContainer3(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
     ] = 0
@@ -870,22 +925,11 @@ class StateContainer3(BaseModel):
     ifIndex object in SNMP Interface MIB
     """
     admin_status: Annotated[
-        EnumerationEnum3, Field(alias="openconfig-interfaces:admin-status")
+        AdminStatusLeaf2, Field(alias="openconfig-interfaces:admin-status")
     ]
-    """
-    The desired state of the interface.  In RFC 7223 this leaf
-    has the same read semantics as ifAdminStatus.  Here, it
-    reflects the administrative state as set by enabling or
-    disabling the interface.
-    """
     oper_status: Annotated[
-        EnumerationEnum4, Field(alias="openconfig-interfaces:oper-status")
+        OperStatusLeaf2, Field(alias="openconfig-interfaces:oper-status")
     ]
-    """
-    The current operational state of the interface.
-
-    This leaf has the same semantics as ifOperStatus.
-    """
     last_change: Annotated[
         int,
         Field(alias="openconfig-interfaces:last-change", ge=0, le=18446744073709551615),
@@ -914,6 +958,8 @@ class SubinterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     index: Annotated[
         int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
     ]
@@ -934,10 +980,12 @@ class SubinterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     subinterface: Annotated[
         List[SubinterfaceListEntry],
-        Field(alias="openconfig-interfaces:subinterface"),
-    ] = []
+        Field(default_factory=list, alias="openconfig-interfaces:subinterface"),
+    ]
 
 
 class InterfaceListEntry(BaseModel):
@@ -949,6 +997,8 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     name: Annotated[str, Field(alias="openconfig-interfaces:name")]
     """
     References the configured name of the interface
@@ -958,8 +1008,7 @@ class InterfaceListEntry(BaseModel):
         HoldTimeContainer, Field(alias="openconfig-interfaces:hold-time")
     ] = None
     subinterfaces: Annotated[
-        SubinterfacesContainer,
-        Field(alias="openconfig-interfaces:subinterfaces"),
+        SubinterfacesContainer, Field(alias="openconfig-interfaces:subinterfaces")
     ] = None
 
 
@@ -973,10 +1022,12 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     interface: Annotated[
         List[InterfaceListEntry],
-        Field(alias="openconfig-interfaces:interface"),
-    ] = []
+        Field(default_factory=list, alias="openconfig-interfaces:interface"),
+    ]
 
 
 class Model(BaseModel):
@@ -999,13 +1050,15 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str] = "oc-if"
     interfaces: Annotated[
         InterfacesContainer, Field(alias="openconfig-interfaces:interfaces")
     ] = None
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 

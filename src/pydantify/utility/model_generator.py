@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Literal, Optional, Type
 from datamodel_code_generator.model import pydantic_v2
 from datamodel_code_generator.parser.base import Result
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
+from datamodel_code_generator.config import JSONSchemaParserConfig
 from pyang.context import Context
 from pyang.statements import ModSubmodStatement, Statement
 from pydantic import BaseModel
@@ -126,23 +127,26 @@ class ModelGenerator:
         extra_template_data["#all#"]["config"]["regex_engine"] = '"python-re"'
         parser = JsonSchemaParser(
             json,
-            data_model_type=pydantic_v2.BaseModel,
-            data_model_root_type=pydantic_v2.RootModel,
-            data_type_manager_type=pydantic_v2.DataTypeManager,
-            data_model_field_type=pydantic_v2.DataModelField,
-            snake_case_field=True,
-            apply_default_values_for_required_fields=True,
-            use_annotated=True,
-            field_constraints=True,
-            use_schema_description=True,
-            use_field_description=True,
-            aliases=Node.alias_mapping,
-            reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
-            strict_nullable=True,
-            allow_population_by_field_name=True,
-            allow_extra_fields=False,
-            collapse_root_models=True,
-            extra_template_data=extra_template_data,
+            config=JSONSchemaParserConfig(
+                data_model_type=pydantic_v2.BaseModel,
+                data_model_root_type=pydantic_v2.RootModel,
+                data_type_manager_type=pydantic_v2.DataTypeManager,
+                data_model_field_type=pydantic_v2.DataModelField,
+                snake_case_field=True,
+                apply_default_values_for_required_fields=True,
+                use_annotated=True,
+                field_constraints=True,
+                use_schema_description=True,
+                use_field_description=True,
+                aliases=Node.alias_mapping,
+                reuse_model=False,  # Causes DCG to aggressively re-use "equivalent" classes, even if unrelated.
+                strict_nullable=True,
+                allow_population_by_field_name=True,
+                allow_extra_fields=False,
+                collapse_root_models=True,
+                extra_template_data=extra_template_data,
+                field_extra_keys=set(["x-is-classvar"]),
+            ),
         )
         return parser.parse()
 
@@ -203,4 +207,13 @@ class ModelGenerator:
 
     @classmethod
     def custom_dump(cls: Type[Self], model: Type[BaseModel]) -> Dict[str, Any]:
-        return model.model_json_schema(by_alias=True)
+        schema = model.model_json_schema(by_alias=True)
+        if cls.json_schema_output:
+            properties = schema.get("properties", {})
+            properties.pop("namespace", None)
+            properties.pop("prefix", None)
+            for def_schema in schema["$defs"].values():
+                def_properties = def_schema.get("properties", {})
+                def_properties.pop("namespace", None)
+                def_properties.pop("prefix", None)
+        return schema

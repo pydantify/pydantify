@@ -2,13 +2,7 @@
     "tls": {
         "server_profile": [
             {
-                "name": "profile1",
-                "cipher_list": [
-                    "ecdhe-ecdsa-aes256-gcm-sha384",
-                    "ecdhe-ecdsa-aes128-gcm-sha256",
-                    "ecdhe-rsa-aes256-gcm-sha384",
-                    "ecdhe-rsa-aes128-gcm-sha256"
-                ]
+                "name": "profile1"
             },
             {
                 "name": "profile2",

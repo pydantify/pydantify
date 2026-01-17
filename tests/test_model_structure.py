@@ -254,6 +254,12 @@ def reset_optparse():
             [],
             id="empty",
         ),
+        param(
+            "examples/with_import_uses/configuration.yang",
+            "examples/with_import_uses/expected.py",
+            [],
+            id="with_import_uses",
+        ),
     ],
 )
 def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Path):
@@ -405,6 +411,22 @@ def test_model(input_dir: str, expected_file: str, args: List[str], tmp_path: Pa
             "examples/with_identity_default_list/expected.json",
             ["-j"],
             id="identity default list",
+        ),
+        param(
+            "examples/with_import_uses/configuration.yang",
+            "examples/with_import_uses/expected.json",
+            ["-j"],
+            id="with_import_uses",
+        ),
+        param(
+            "examples/with_augment/configuration.yang",
+            "examples/with_augment/expected.json",
+            [
+                "-j",
+                "--deviation-module=tests/examples/with_augment/namespaces.yang",
+                "--deviation-module=tests/examples/with_augment/interfaces.yang",
+            ],
+            id="with_augment",
         ),
     ],
 )

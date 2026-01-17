@@ -1,0 +1,31 @@
+module namespaces {
+  namespace "http://pydantify.github.io/ns/yang/pydantify-multimodel-namespaces";
+
+  prefix ns;
+
+  import interfaces {
+    prefix if;
+  }
+
+  description
+    'Example using just leafs, containers and modules';
+
+  grouping namespaces-group {
+    description
+      'Just a simple example of a grouping.';
+
+    list namespaces {
+      key "name";
+      description
+        "List of configured device namespaces";
+
+      leaf name {
+        type string;
+        mandatory "true";
+        description
+          "Interface name. Example value: GigabitEthernet 0/0/0";
+      }
+      uses if:interfaces-grouping;
+    }
+  }
+}

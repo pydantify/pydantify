@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
-class InterfaceListEntry(BaseModel):
+class InterfacesListEntry(BaseModel):
     """
-    Regular IPv4 address with subnet
+    List of configured device interfaces
     """
 
     model_config = ConfigDict(
@@ -15,51 +15,62 @@ class InterfaceListEntry(BaseModel):
         regex_engine="python-re",
     )
     namespace: ClassVar[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+        "http://pydantify.github.io/ns/yang/pydantify-multimodel-interfaces"
     )
     prefix: ClassVar[str] = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    address: Annotated[
-        str,
-        Field(
-            alias="interfaces:address",
-            pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
-        ),
-    ]
+    ip: Annotated[str, Field(alias="interfaces:ip")] = None
     """
-    Interface IP address. Example value: 10.10.10.1
-    """
-    subnet_mask: Annotated[
-        str,
-        Field(
-            alias="interfaces:subnet-mask",
-            pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
-        ),
-    ]
-    """
-    Interface subnet mask. Example value: 255.255.255.0
-    """
-    enabled: Annotated[bool, Field(alias="interfaces:enabled")] = False
-    """
-    Enable or disable the interface. Example value: true
+    Interface IP
     """
 
 
-class InterfacesContainer(BaseModel):
+class NamespacesListEntry(BaseModel):
+    """
+    List of configured device namespaces
+    """
+
     model_config = ConfigDict(
         populate_by_name=True,
         regex_engine="python-re",
     )
     namespace: ClassVar[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+        "http://pydantify.github.io/ns/yang/pydantify-multimodel-namespaces"
     )
-    prefix: ClassVar[str] = "if"
-    interface: Annotated[
-        List[InterfaceListEntry],
-        Field(default_factory=list, alias="interfaces:interface"),
+    prefix: ClassVar[str] = "ns"
+    name: Annotated[str, Field(alias="namespaces:name")]
+    """
+    Interface name. Example value: GigabitEthernet 0/0/0
+    """
+    interfaces: Annotated[
+        List[InterfacesListEntry],
+        Field(default_factory=list, alias="interfaces:interfaces"),
+    ]
+
+
+class ConfigurationContainer(BaseModel):
+    """
+    Just a simple example of a container with uses.
+    """
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    namespace: ClassVar[str] = (
+        "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
+    )
+    namespace: ClassVar[str] = "configuration"
+    devicename: Annotated[str, Field(alias="configuration:devicename")]
+    """
+    Device name. Example value: sw01
+    """
+    namespaces: Annotated[
+        List[NamespacesListEntry],
+        Field(default_factory=list, alias="namespaces:namespaces"),
     ]
 
 
@@ -84,12 +95,12 @@ class Model(BaseModel):
         regex_engine="python-re",
     )
     namespace: ClassVar[str] = (
-        "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
+        "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: ClassVar[str] = "if"
-    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
-        None
-    )
+    namespace: ClassVar[str] = "configuration"
+    configuration: Annotated[
+        ConfigurationContainer, Field(alias="configuration:configuration")
+    ] = None
 
 
 if __name__ == "__main__":

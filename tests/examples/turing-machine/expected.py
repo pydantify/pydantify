@@ -1,14 +1,37 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, List
+from typing import Annotated, ClassVar, List
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
     left = "left"
     right = "right"
+
+
+class HeadDirType(RootModel[EnumerationEnum]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: EnumerationEnum
+    """
+    Possible directions for moving the read/write head, one cell
+    to the left or right (default).
+    """
+
+
+class HeadMoveLeaf(RootModel[HeadDirType]):
+    model_config = ConfigDict(
+        populate_by_name=True,
+        regex_engine="python-re",
+    )
+    root: HeadDirType
+    """
+    Move the head one cell to the left or right
+    """
 
 
 class CellListEntry(BaseModel):
@@ -20,6 +43,8 @@ class CellListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
+    prefix: ClassVar[str] = "tm"
     coord: Annotated[
         int,
         Field(
@@ -50,6 +75,8 @@ class InputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
+    prefix: ClassVar[str] = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
     Current state of the control unit.
@@ -71,6 +98,8 @@ class OutputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
+    prefix: ClassVar[str] = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)] = None
     """
     New state of the control unit. If this leaf is not
@@ -83,12 +112,13 @@ class OutputContainer(BaseModel):
     Symbol to be written to the tape cell. If this leaf is
     not present, the symbol doesn't change.
     """
-    head_move: Annotated[EnumerationEnum, Field(alias="turing-machine:head-move")] = (
-        "right"
-    )
-    """
-    Move the head one cell to the left or right
-    """
+    head_move: Annotated[
+        HeadMoveLeaf,
+        Field(
+            default_factory=lambda: HeadMoveLeaf("right"),
+            alias="turing-machine:head-move",
+        ),
+    ]
 
 
 class TapeContainer(BaseModel):
@@ -100,7 +130,11 @@ class TapeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    cell: Annotated[List[CellListEntry], Field(alias="turing-machine:cell")] = []
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
+    prefix: ClassVar[str] = "tm"
+    cell: Annotated[
+        List[CellListEntry], Field(default_factory=list, alias="turing-machine:cell")
+    ]
 
 
 class DeltaListEntry(BaseModel):
@@ -112,6 +146,8 @@ class DeltaListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
+    prefix: ClassVar[str] = "tm"
     label: Annotated[str, Field(alias="turing-machine:label")]
     """
     An arbitrary label of the transition rule.
@@ -130,7 +166,11 @@ class TransitionFunctionContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    delta: Annotated[List[DeltaListEntry], Field(alias="turing-machine:delta")] = []
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
+    prefix: ClassVar[str] = "tm"
+    delta: Annotated[
+        List[DeltaListEntry], Field(default_factory=list, alias="turing-machine:delta")
+    ]
 
 
 class TuringMachineContainer(BaseModel):
@@ -142,6 +182,8 @@ class TuringMachineContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
+    prefix: ClassVar[str] = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
     Current state of the control unit.
@@ -160,8 +202,7 @@ class TuringMachineContainer(BaseModel):
     """
     tape: Annotated[TapeContainer, Field(alias="turing-machine:tape")] = None
     transition_function: Annotated[
-        TransitionFunctionContainer,
-        Field(alias="turing-machine:transition-function"),
+        TransitionFunctionContainer, Field(alias="turing-machine:transition-function")
     ] = None
 
 
@@ -185,6 +226,8 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
+    namespace: ClassVar[str] = "http://example.net/turing-machine"
+    prefix: ClassVar[str] = "tm"
     turing_machine: Annotated[
         TuringMachineContainer, Field(alias="turing-machine:turing-machine")
     ] = None
