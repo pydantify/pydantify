@@ -17,8 +17,7 @@ class InterfaceContainer(BaseModel):
     namespace: ClassVar[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
     prefix: ClassVar[str] = "if"
     primary: Annotated[
-        List[None],
-        Field(alias="interface:primary", max_length=1, min_length=1),
+        List[None], Field(alias="interface:primary", max_length=1, min_length=1)
     ] = None
     """
     primary IP

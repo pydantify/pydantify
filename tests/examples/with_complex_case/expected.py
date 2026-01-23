@@ -15,8 +15,7 @@ class DailyCase(BaseModel):
     )
     prefix: ClassVar[str] = "if"
     daily: Annotated[
-        List[None],
-        Field(alias="interfaces:daily", max_length=1, min_length=1),
+        List[None], Field(alias="interfaces:daily", max_length=1, min_length=1)
     ] = None
     time_of_day: Annotated[str, Field(alias="interfaces:time-of-day")] = "1am"
 
@@ -43,8 +42,7 @@ class ManualCase(BaseModel):
     )
     prefix: ClassVar[str] = "if"
     manual: Annotated[
-        List[None],
-        Field(alias="interfaces:manual", max_length=1, min_length=1),
+        List[None], Field(alias="interfaces:manual", max_length=1, min_length=1)
     ] = None
 
 
@@ -73,8 +71,7 @@ class Model(BaseModel):
     )
     prefix: ClassVar[str] = "if"
     how: Annotated[
-        Union[IntervalCase, DailyCase, ManualCase],
-        Field(alias="interfaces:how"),
+        Union[IntervalCase, DailyCase, ManualCase], Field(alias="interfaces:how")
     ] = None
 
 

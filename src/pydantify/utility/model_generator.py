@@ -4,12 +4,12 @@ import sys
 from collections import defaultdict
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Type
+from typing import Any, Dict, List, Optional, Type
 
+from datamodel_code_generator.config import JSONSchemaParserConfig
 from datamodel_code_generator.model import pydantic_v2
 from datamodel_code_generator.parser.base import Result
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
-from datamodel_code_generator.config import JSONSchemaParserConfig
 from pyang.context import Context
 from pyang.statements import ModSubmodStatement, Statement
 from pydantic import BaseModel
@@ -103,6 +103,10 @@ class ModelGenerator:
             mod = ModelRoot(module)
             pydantic_model = mod.to_pydantic_model()
             if pydantic_model is None:
+                continue
+            # Skip models that only have 'prefix' and/or 'namespace' fields
+            model_fields = set(pydantic_model.model_fields.keys())
+            if model_fields <= {"prefix", "namespace"}:
                 continue
             schema = cls.custom_dump(pydantic_model)
             result = (
