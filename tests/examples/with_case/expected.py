@@ -74,8 +74,7 @@ class Model(BaseModel):
     )
     prefix: ClassVar[str] = "if"
     interface_type: Annotated[
-        Union[EthernetCase, Ethernet2Case],
-        Field(alias="interfaces:interface-type"),
+        Union[EthernetCase, Ethernet2Case], Field(alias="interfaces:interface-type")
     ] = None
 
 

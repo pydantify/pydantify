@@ -301,8 +301,7 @@ class InterfaceListEntry(BaseModel):
         HoldTimeContainer, Field(alias="openconfig-interfaces:hold-time")
     ] = None
     subinterfaces: Annotated[
-        SubinterfacesContainer,
-        Field(alias="openconfig-interfaces:subinterfaces"),
+        SubinterfacesContainer, Field(alias="openconfig-interfaces:subinterfaces")
     ] = None
 
 
@@ -352,7 +351,7 @@ class Model(BaseModel):
 
 
 if __name__ == "__main__":
-    model = Model(  # type: ignore[call-arg]
+    model = Model(
         # <Initialize model here>
     )
 
