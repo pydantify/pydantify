@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List
+from typing import Annotated, ClassVar, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,10 +14,10 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -42,7 +42,7 @@ class InterfaceListEntry(BaseModel):
     """
     Interface subnet mask. Example value: 255.255.255.0
     """
-    enabled: Annotated[bool, Field(alias="interfaces:enabled")] = False
+    enabled: Annotated[Optional[bool], Field(alias="interfaces:enabled")] = False
     """
     Enable or disable the interface. Example value: true
     """
@@ -53,12 +53,12 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     interface: Annotated[
-        List[InterfaceListEntry],
+        Optional[List[InterfaceListEntry]],
         Field(default_factory=list, alias="interfaces:interface"),
     ]
 
@@ -83,13 +83,13 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
-    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
-        None
-    )
+    prefix: ClassVar[Optional[str]] = "if"
+    interfaces: Annotated[
+        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":

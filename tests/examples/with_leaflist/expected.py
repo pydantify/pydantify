@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List
+from typing import Annotated, ClassVar, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -25,25 +25,28 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name
     """
-    ip: Annotated[List[str], Field(alias="interfaces:ip")] = []
+    ip: Annotated[Optional[List[str]], Field(alias="interfaces:ip")] = []
     """
     List of interface IPs
     """
     tagged: Annotated[
-        List[TaggedLeafList], Field(default_factory=list, alias="interfaces:tagged")
+        Optional[List[TaggedLeafList]],
+        Field(default_factory=list, alias="interfaces:tagged"),
     ]
     """
     List of tagged VLANs
     """
-    untagged: Annotated[int, Field(alias="interfaces:untagged", ge=1, le=4094)] = None
+    untagged: Annotated[
+        Optional[int], Field(alias="interfaces:untagged", ge=1, le=4094)
+    ] = None
     """
     Untagged VLAN
     """
@@ -69,12 +72,12 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     interfaces: Annotated[
-        List[InterfacesListEntry],
+        Optional[List[InterfacesListEntry]],
         Field(default_factory=list, alias="interfaces:interfaces"),
     ]
 

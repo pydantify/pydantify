@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List
+from typing import Annotated, ClassVar, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,19 +14,19 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name
     """
-    ip: Annotated[List[str], Field(alias="interfaces:ip")] = []
+    ip: Annotated[Optional[List[str]], Field(alias="interfaces:ip")] = []
     """
     List of interface IPs
     """
-    tpid: Annotated[str, Field(alias="interfaces:tpid")] = "TPID_0X8100"
+    tpid: Annotated[Optional[str], Field(alias="interfaces:tpid")] = "TPID_0X8100"
     """
     Optionally set the tag protocol identifier field (TPID) that
     is accepted on the VLAN
@@ -53,12 +53,12 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     interfaces: Annotated[
-        List[InterfacesListEntry],
+        Optional[List[InterfacesListEntry]],
         Field(default_factory=list, alias="interfaces:interfaces"),
     ]
 

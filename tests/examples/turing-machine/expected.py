@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, ClassVar, List
+from typing import Annotated, ClassVar, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -43,8 +43,8 @@ class CellListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://example.net/turing-machine"
-    prefix: ClassVar[str] = "tm"
+    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
+    prefix: ClassVar[Optional[str]] = "tm"
     coord: Annotated[
         int,
         Field(
@@ -57,7 +57,7 @@ class CellListEntry(BaseModel):
     Coordinate (index) of the tape cell.
     """
     symbol: Annotated[
-        str, Field(alias="turing-machine:symbol", max_length=1, min_length=0)
+        Optional[str], Field(alias="turing-machine:symbol", max_length=1, min_length=0)
     ] = None
     """
     Symbol appearing in the tape cell.
@@ -75,8 +75,8 @@ class InputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://example.net/turing-machine"
-    prefix: ClassVar[str] = "tm"
+    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
+    prefix: ClassVar[Optional[str]] = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
     Current state of the control unit.
@@ -98,22 +98,24 @@ class OutputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://example.net/turing-machine"
-    prefix: ClassVar[str] = "tm"
-    state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)] = None
+    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
+    prefix: ClassVar[Optional[str]] = "tm"
+    state: Annotated[
+        Optional[int], Field(alias="turing-machine:state", ge=0, le=65535)
+    ] = None
     """
     New state of the control unit. If this leaf is not
     present, the state doesn't change.
     """
     symbol: Annotated[
-        str, Field(alias="turing-machine:symbol", max_length=1, min_length=0)
+        Optional[str], Field(alias="turing-machine:symbol", max_length=1, min_length=0)
     ] = None
     """
     Symbol to be written to the tape cell. If this leaf is
     not present, the symbol doesn't change.
     """
     head_move: Annotated[
-        HeadMoveLeaf,
+        Optional[HeadMoveLeaf],
         Field(
             default_factory=lambda: HeadMoveLeaf("right"),
             alias="turing-machine:head-move",
@@ -130,10 +132,11 @@ class TapeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://example.net/turing-machine"
-    prefix: ClassVar[str] = "tm"
+    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
+    prefix: ClassVar[Optional[str]] = "tm"
     cell: Annotated[
-        List[CellListEntry], Field(default_factory=list, alias="turing-machine:cell")
+        Optional[List[CellListEntry]],
+        Field(default_factory=list, alias="turing-machine:cell"),
     ]
 
 
@@ -146,14 +149,18 @@ class DeltaListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://example.net/turing-machine"
-    prefix: ClassVar[str] = "tm"
+    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
+    prefix: ClassVar[Optional[str]] = "tm"
     label: Annotated[str, Field(alias="turing-machine:label")]
     """
     An arbitrary label of the transition rule.
     """
-    input: Annotated[InputContainer, Field(alias="turing-machine:input")] = None
-    output: Annotated[OutputContainer, Field(alias="turing-machine:output")] = None
+    input: Annotated[Optional[InputContainer], Field(alias="turing-machine:input")] = (
+        None
+    )
+    output: Annotated[
+        Optional[OutputContainer], Field(alias="turing-machine:output")
+    ] = None
 
 
 class TransitionFunctionContainer(BaseModel):
@@ -166,10 +173,11 @@ class TransitionFunctionContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://example.net/turing-machine"
-    prefix: ClassVar[str] = "tm"
+    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
+    prefix: ClassVar[Optional[str]] = "tm"
     delta: Annotated[
-        List[DeltaListEntry], Field(default_factory=list, alias="turing-machine:delta")
+        Optional[List[DeltaListEntry]],
+        Field(default_factory=list, alias="turing-machine:delta"),
     ]
 
 
@@ -182,8 +190,8 @@ class TuringMachineContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://example.net/turing-machine"
-    prefix: ClassVar[str] = "tm"
+    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
+    prefix: ClassVar[Optional[str]] = "tm"
     state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
     """
     Current state of the control unit.
@@ -200,9 +208,10 @@ class TuringMachineContainer(BaseModel):
     """
     Position of tape read/write head.
     """
-    tape: Annotated[TapeContainer, Field(alias="turing-machine:tape")] = None
+    tape: Annotated[Optional[TapeContainer], Field(alias="turing-machine:tape")] = None
     transition_function: Annotated[
-        TransitionFunctionContainer, Field(alias="turing-machine:transition-function")
+        Optional[TransitionFunctionContainer],
+        Field(alias="turing-machine:transition-function"),
     ] = None
 
 
@@ -226,10 +235,10 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://example.net/turing-machine"
-    prefix: ClassVar[str] = "tm"
+    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
+    prefix: ClassVar[Optional[str]] = "tm"
     turing_machine: Annotated[
-        TuringMachineContainer, Field(alias="turing-machine:turing-machine")
+        Optional[TuringMachineContainer], Field(alias="turing-machine:turing-machine")
     ] = None
 
 

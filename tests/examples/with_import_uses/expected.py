@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List
+from typing import Annotated, ClassVar, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,15 +14,15 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: ClassVar[str] = "configuration"
+    prefix: ClassVar[Optional[str]] = "configuration"
     name: Annotated[str, Field(alias="configuration:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    ip: Annotated[str, Field(alias="configuration:ip")] = None
+    ip: Annotated[Optional[str], Field(alias="configuration:ip")] = None
     """
     Interface IP
     """
@@ -37,16 +37,16 @@ class NamespacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: ClassVar[str] = "configuration"
+    prefix: ClassVar[Optional[str]] = "configuration"
     name: Annotated[str, Field(alias="configuration:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     interfaces: Annotated[
-        List[InterfacesListEntry],
+        Optional[List[InterfacesListEntry]],
         Field(default_factory=list, alias="configuration:interfaces"),
     ]
 
@@ -60,16 +60,16 @@ class ConfigurationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: ClassVar[str] = "configuration"
+    prefix: ClassVar[Optional[str]] = "configuration"
     devicename: Annotated[str, Field(alias="configuration:devicename")]
     """
     Device name. Example value: sw01
     """
     namespaces: Annotated[
-        List[NamespacesListEntry],
+        Optional[List[NamespacesListEntry]],
         Field(default_factory=list, alias="configuration:namespaces"),
     ]
 
@@ -94,12 +94,12 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: ClassVar[str] = "configuration"
+    prefix: ClassVar[Optional[str]] = "configuration"
     configuration: Annotated[
-        ConfigurationContainer, Field(alias="configuration:configuration")
+        Optional[ConfigurationContainer], Field(alias="configuration:configuration")
     ] = None
 
 

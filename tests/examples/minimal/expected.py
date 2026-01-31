@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar
+from typing import Annotated, ClassVar, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,10 +14,10 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     name: Annotated[str, Field(alias="interfaces:name")]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
@@ -52,13 +52,13 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
-    interfaces: Annotated[InterfacesContainer, Field(alias="interfaces:interfaces")] = (
-        None
-    )
+    prefix: ClassVar[Optional[str]] = "if"
+    interfaces: Annotated[
+        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+    ] = None
 
 
 if __name__ == "__main__":
