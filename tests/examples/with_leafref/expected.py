@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List
+from typing import Annotated, ClassVar, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,11 +14,11 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
-    test: Annotated[int, Field(alias="interfaces:test", ge=0, le=255)] = None
+    prefix: ClassVar[Optional[str]] = "if"
+    test: Annotated[Optional[int], Field(alias="interfaces:test", ge=0, le=255)] = None
     """
     Test node
     """
@@ -26,7 +26,7 @@ class InterfacesListEntry(BaseModel):
     """
     Interface name
     """
-    ip: Annotated[str, Field(alias="interfaces:ip")] = None
+    ip: Annotated[Optional[str], Field(alias="interfaces:ip")] = None
     """
     Interface IP
     """
@@ -52,15 +52,17 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     interfaces: Annotated[
-        List[InterfacesListEntry],
+        Optional[List[InterfacesListEntry]],
         Field(default_factory=list, alias="interfaces:interfaces"),
     ]
-    mgmt_interface: Annotated[str, Field(alias="interfaces:mgmt-interface")] = None
+    mgmt_interface: Annotated[
+        Optional[str], Field(alias="interfaces:mgmt-interface")
+    ] = None
     """
     Dedicated management interface
     """

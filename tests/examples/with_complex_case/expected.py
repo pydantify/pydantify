@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List, Union
+from typing import Annotated, ClassVar, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -10,14 +10,15 @@ class DailyCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     daily: Annotated[
-        List[None], Field(alias="interfaces:daily", max_length=1, min_length=1)
+        Optional[List[None]],
+        Field(alias="interfaces:daily", max_length=1, min_length=1),
     ] = None
-    time_of_day: Annotated[str, Field(alias="interfaces:time-of-day")] = "1am"
+    time_of_day: Annotated[Optional[str], Field(alias="interfaces:time-of-day")] = "1am"
 
 
 class IntervalCase(BaseModel):
@@ -25,11 +26,13 @@ class IntervalCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
-    interval: Annotated[int, Field(alias="interfaces:interval", ge=0, le=65535)] = 30
+    prefix: ClassVar[Optional[str]] = "if"
+    interval: Annotated[
+        Optional[int], Field(alias="interfaces:interval", ge=0, le=65535)
+    ] = 30
 
 
 class ManualCase(BaseModel):
@@ -37,12 +40,13 @@ class ManualCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     manual: Annotated[
-        List[None], Field(alias="interfaces:manual", max_length=1, min_length=1)
+        Optional[List[None]],
+        Field(alias="interfaces:manual", max_length=1, min_length=1),
     ] = None
 
 
@@ -66,12 +70,13 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     how: Annotated[
-        Union[IntervalCase, DailyCase, ManualCase], Field(alias="interfaces:how")
+        Optional[Union[IntervalCase, DailyCase, ManualCase]],
+        Field(alias="interfaces:how"),
     ] = None
 
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, ClassVar, List, Union
+from typing import Annotated, ClassVar, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, RootModel
 
@@ -26,8 +26,10 @@ class KeyListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
-    prefix: ClassVar[str] = "keychains"
+    namespace: ClassVar[Optional[str]] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
+    )
+    prefix: ClassVar[Optional[str]] = "keychains"
     index: Annotated[int, Field(alias="keychains:index", ge=0, le=255)]
     """
     Each key in a keychain requires a unique identifier, the index value specifies this identifier
@@ -73,26 +75,29 @@ class KeychainListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
-    prefix: ClassVar[str] = "keychains"
+    namespace: ClassVar[Optional[str]] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
+    )
+    prefix: ClassVar[Optional[str]] = "keychains"
     name: Annotated[str, Field(alias="keychains:name")]
     """
     The user configured name for the keychain
     """
-    type: Annotated[TypeLeaf, Field(alias="keychains:type")] = None
+    type: Annotated[Optional[TypeLeaf], Field(alias="keychains:type")] = None
     """
     Specifies the intended use of the keychain
 
      The type constrains the set of crypto algorithms that are available to use with each key in the keychain. It is also used to ensure that this keychain is only used by protocols for which it is intended.
     """
     active_key_for_send: Annotated[
-        Union[EnumerationEnum2, IndexLeaf], Field(alias="keychains:active-key-for-send")
+        Optional[Union[EnumerationEnum2, IndexLeaf]],
+        Field(alias="keychains:active-key-for-send"),
     ] = None
     """
     Provides the key index of the currently active Keychain key
     """
     key: Annotated[
-        List[KeyListEntry], Field(default_factory=list, alias="keychains:key")
+        Optional[List[KeyListEntry]], Field(default_factory=list, alias="keychains:key")
     ]
 
 
@@ -116,10 +121,13 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
-    prefix: ClassVar[str] = "keychains"
+    namespace: ClassVar[Optional[str]] = (
+        "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
+    )
+    prefix: ClassVar[Optional[str]] = "keychains"
     keychain: Annotated[
-        List[KeychainListEntry], Field(default_factory=list, alias="keychains:keychain")
+        Optional[List[KeychainListEntry]],
+        Field(default_factory=list, alias="keychains:keychain"),
     ]
 
 

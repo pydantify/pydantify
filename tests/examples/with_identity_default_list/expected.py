@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List
+from typing import Annotated, ClassVar, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -14,15 +14,15 @@ class ServerProfileListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "ciph"
+    prefix: ClassVar[Optional[str]] = "ciph"
     name: Annotated[str, Field(alias="ciphers:name")]
     """
     Name of the TLS server-profile
     """
-    cipher_list: Annotated[List[str], Field(alias="ciphers:cipher-list")] = [
+    cipher_list: Annotated[Optional[List[str]], Field(alias="ciphers:cipher-list")] = [
         "ecdhe-ecdsa-aes256-gcm-sha384",
         "ecdhe-ecdsa-aes128-gcm-sha256",
         "ecdhe-rsa-aes256-gcm-sha384",
@@ -45,12 +45,12 @@ class TlsContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "ciph"
+    prefix: ClassVar[Optional[str]] = "ciph"
     server_profile: Annotated[
-        List[ServerProfileListEntry],
+        Optional[List[ServerProfileListEntry]],
         Field(default_factory=list, alias="ciphers:server-profile"),
     ]
 
@@ -75,11 +75,11 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "ciph"
-    tls: Annotated[TlsContainer, Field(alias="ciphers:tls")] = None
+    prefix: ClassVar[Optional[str]] = "ciph"
+    tls: Annotated[Optional[TlsContainer], Field(alias="ciphers:tls")] = None
 
 
 if __name__ == "__main__":

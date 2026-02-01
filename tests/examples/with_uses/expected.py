@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar
+from typing import Annotated, ClassVar, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -10,15 +10,15 @@ class DestinationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
-    address: Annotated[str, Field(alias="interfaces:address")] = None
+    prefix: ClassVar[Optional[str]] = "if"
+    address: Annotated[Optional[str], Field(alias="interfaces:address")] = None
     """
     Target IP address
     """
-    port: Annotated[str, Field(alias="interfaces:port")] = None
+    port: Annotated[Optional[str], Field(alias="interfaces:port")] = None
     """
     Target port number
     """
@@ -29,12 +29,12 @@ class PeerContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
+    prefix: ClassVar[Optional[str]] = "if"
     destination: Annotated[
-        DestinationContainer, Field(alias="interfaces:destination")
+        Optional[DestinationContainer], Field(alias="interfaces:destination")
     ] = None
 
 
@@ -58,11 +58,11 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = (
+    namespace: ClassVar[Optional[str]] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[str] = "if"
-    peer: Annotated[PeerContainer, Field(alias="interfaces:peer")] = None
+    prefix: ClassVar[Optional[str]] = "if"
+    peer: Annotated[Optional[PeerContainer], Field(alias="interfaces:peer")] = None
 
 
 if __name__ == "__main__":
