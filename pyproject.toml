@@ -1,6 +1,6 @@
 [project]
 name = "pydantify"
-version = "0.9.0"
+version = "0.10.0b0"
 description = "Makes network automation pydantic."
 readme = "README.md"
 authors = [
