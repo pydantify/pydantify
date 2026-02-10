@@ -88,14 +88,18 @@ class Node(ABC):
     def __init__(self, stm: Statement):
         self.config: bool = __class__.__extract_config(stm)
         self.children: List[Node] = __class__.extract_statement_list(stm, "i_children")
+        namespace: Statement | None = None
+        prefix: Statement | None = None
 
         if stm.i_module:
-            self.namespace = stm.i_module.search_one("namespace").arg
-            self.prefix = stm.i_module.search_one("prefix").arg
+            namespace = stm.i_module.search_one("namespace")
+            prefix = stm.i_module.search_one("prefix")
         else:
-            self.namespace = stm.search_one("namespace").arg
-            self.prefix = stm.search_one("prefix").arg
+            namespace = stm.search_one("namespace")
+            prefix = stm.search_one("prefix")
 
+        self.namespace = namespace.arg if namespace else None
+        self.prefix = prefix.arg if prefix else None
         self.mandatory: bool = stm.search_one("mandatory", "true") or any(
             (ch for ch in self.children if ch.mandatory is True)
         )
