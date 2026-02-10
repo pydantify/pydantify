@@ -1,0 +1,671 @@
+classDiagram
+  class BaseModel {
+    model_config
+  }
+  class CaseNode {
+    _output_model
+    \_\_init\_\_(stm: Statement) None
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ChoiceNode {
+    _output_model
+    \_\_init\_\_(stm: ChoiceStatement) None
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ClassMapping {
+    maps_to : Callable[..., Node]
+    \_\_call\_\_() Any
+    \_\_init\_\_(self, maps_to: Callable[..., Node]) None
+  }
+  class ConfigDict {
+    alias_generator : Callable[[str], str] | AliasGenerator | None
+    allow_inf_nan
+    arbitrary_types_allowed
+    cache_strings : bool | Literal['all', 'keys', 'none']
+    coerce_numbers_to_str
+    defer_build
+    extra : ExtraValues | None
+    field_title_generator : Callable[[str, FieldInfo | ComputedFieldInfo], str] | None
+    from_attributes
+    frozen
+    hide_input_in_errors
+    ignored_types : tuple[type, ...]
+    json_encoders : dict[type[object], JsonEncoder] | None
+    json_schema_extra : JsonDict | JsonSchemaExtraCallable | None
+    json_schema_mode_override : Literal['validation', 'serialization', None]
+    json_schema_serialization_defaults_required
+    loc_by_alias
+    model_title_generator : Callable[[type], str] | None
+    plugin_settings : dict[str, object] | None
+    populate_by_name
+    protected_namespaces : tuple[str | Pattern[str], ...]
+    regex_engine : Literal['rust-regex', 'python-re']
+    revalidate_instances : Literal['always', 'never', 'subclass-instances']
+    schema_generator : type[_GenerateSchema] | None
+    ser_json_bytes : Literal['utf8', 'base64', 'hex']
+    ser_json_inf_nan : Literal['null', 'constants', 'strings']
+    ser_json_timedelta : Literal['iso8601', 'float']
+    serialize_by_alias
+    str_max_length : int | None
+    str_min_length
+    str_strip_whitespace
+    str_to_lower
+    str_to_upper
+    strict
+    title : str | None
+    use_attribute_docstrings
+    use_enum_values
+    val_json_bytes : Literal['utf8', 'base64', 'hex']
+    validate_assignment
+    validate_by_alias
+    validate_by_name
+    validate_default
+    validate_return
+    validation_error_cause
+  }
+  class ContainerNode {
+    _output_model
+    \_\_init\_\_(stm: ContainerStatement) None
+    name() str
+  }
+  class GeneratedClass {
+    class_name : str | PydanticUndefinedType
+    cls : Type[BaseModel] | Type[RootModel] | PydanticUndefinedType
+    field_annotation : Type | None
+    field_info : FieldInfo | PydanticUndefinedType
+    \_\_init\_\_(self, class_name: str | PydanticUndefinedType, cls: Type[BaseModel] | Type[RootModel] | PydanticUndefinedType, field_info: FieldInfo | PydanticUndefinedType, field_annotation: Type | None) None
+    assert_is_valid()
+    to_field() Tuple[Type[BaseModel] | Type, FieldInfo]
+  }
+  class LeafListNode {
+    _output_model
+    \_\_init\_\_(stm: LeafLeaflistStatement) None
+    get_base_class() type | Node | Enum
+    name() str
+    to_pydantic_model() type[BaseModel | RootModel]
+  }
+  class LeafNode {
+    _output_model
+    \_\_init\_\_(stm: LeafLeaflistStatement) None
+    get_base_class() type | Node | Enum
+    name() str
+    to_pydantic_model() type[BaseModel | RootModel]
+  }
+  class ListNode {
+    _output_model
+    \_\_extract_keys(stm: Statement) List[str]
+    \_\_init\_\_(stm: ListStatement) None
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ModelGenerator {
+    include_verification_code
+    input_dir : Path
+    json_schema_output
+    output_dir : Path
+    standalone
+    trim_path : Optional[str]
+    \_\_generate(modules: List[ModSubmodStatement], fd: TextIOWrapper)
+    \_\_generate_helper_code(fd: TextIOWrapper) None
+    \_\_generate_pydantic(json: str) str | dict[tuple[str, ...], Result]
+    custom_dump(model: Type[BaseModel]) Dict[str, Any]
+    generate(ctx: Context, modules: List[ModSubmodStatement], fd: TextIOWrapper)
+    split_path(path: str) List[str]
+    trim(statement: Statement, path: List[str]) Statement | None
+  }
+  class ModelRoot {
+    root_node : Node | None
+    \_\_init\_\_(stm: type[Statement])
+    to_pydantic_model() type[BaseModel] | None
+  }
+  class ModuleNode {
+    _output_model
+    \_\_init\_\_(stm: ModSubmodStatement) None
+    name() str
+    to_pydantic_model() type[BaseModel] | type[RootModel]
+  }
+  class Node {
+    _name : Optional[str]
+    _name_count : Dict[str, int]
+    _output_model
+    alias_mapping : Dict[str, str]
+    arg
+    children : List[Node]
+    comments : str | None
+    config
+    data_type : Literal['config', 'state'] | None
+    default
+    description : str | None
+    keyword
+    mandatory
+    namespace
+    prefix
+    raw_statement
+    strip_namespace
+    substmts : List[Statement]
+    \_\_extract_comments(stm: Statement) str | None
+    \_\_extract_config(stm: Statement) bool
+    \_\_extract_description(stm: Statement) str | None
+    \_\_init\_\_(stm: Statement)
+    _children_to_fields() Dict[str, Tuple[type, FieldInfo]]
+    ensure_unique_name(name: str) str
+    extract_statement_list(statement: Statement, attr_name: str) List[Node]
+    get_base_class() type | Node | Enum
+    get_output_class() GeneratedClass
+    get_qualified_name() str
+    make_unique_name(suffix: str)
+    name()* str
+    to_pydantic_model() Type[BaseModel] | Type[RootModel]
+  }
+  class NodeFactory {
+    _ignored_types : List[str]
+    _implemented_mappings : Dict[str, ClassMapping]
+    generate(stm: Statement) Node | None
+    register_statement_class(keywords: List[str])
+  }
+  class NoneType {
+  }
+  class NotImplementedException {
+  }
+  class Pydantify {
+    handle_comments
+    multiple_modules
+    \_\_init\_\_()
+    add_output_format(fmts: Dict[str, PyangPlugin])
+    emit(ctx: Context, modules: ModSubmodStatement, fd: TextIOWrapper)
+  }
+  class RootModel {
+    model_config
+  }
+  class Statement {
+    \_\_slots\_\_
+    arg
+    ext_mod
+    i_children
+    i_config
+    i_module
+    i_uses
+    i_uses_pos
+    i_uses_top
+    keyword
+    parent
+    pos
+    raw_keyword
+    substmts
+    top
+    \_\_init\_\_(top, parent, pos, keyword, arg)
+    \_\_repr\_\_()
+    \_\_str\_\_()
+    copy(parent, uses, uses_top, nocopy, ignore, copyf)
+    internal_reset()
+    main_module()
+    pprint(indent, f)
+    search(keyword, children, arg)
+    search_one(keyword, arg, children)
+  }
+  class TypeDefNode {
+    _output_model
+    \_\_init\_\_(stm: TypedefStatement) None
+    get_base_class() type | Node | Enum
+    name() str
+    to_pydantic_model() type[RootModel]
+  }
+  class TypeResolver {
+    \_\_mapping : Dict[Statement, Node]
+    \_\_resolve_pattern(patterns: List[XSDPattern]) str
+    \_\_resolve_type_spec(spec: TypeSpec) type | Enum
+    \_\_resolve_type_statement(stm_type: TypeStatement) type | Enum
+    get_model_if_known(stm: Statement) Node | None
+    register(stm: Statement, model: Node)
+    resolve_statement(stm: Statement) type | Node | Enum
+  }
+  class YANGSourcesTracker {
+    \_\_relevant_files : Set[str]
+    _relevant_files() Set[str]
+    copy_yang_files(input_root: Path, output_dir: Path) None
+    track_from_pos(pos: Position) None
+  }
+  class bool {
+    \_\_abs\_\_()*
+    \_\_add\_\_()*
+    \_\_and\_\_()*
+    \_\_bool\_\_()*
+    \_\_ceil\_\_()*
+    \_\_delattr\_\_()*
+    \_\_dir\_\_()*
+    \_\_divmod\_\_()*
+    \_\_eq\_\_()*
+    \_\_float\_\_()*
+    \_\_floor\_\_()*
+    \_\_floordiv\_\_()*
+    \_\_format\_\_()*
+    \_\_ge\_\_()*
+    \_\_getattribute\_\_()*
+    \_\_getnewargs\_\_()*
+    \_\_getstate\_\_()*
+    \_\_gt\_\_()*
+    \_\_hash\_\_()*
+    \_\_index\_\_()*
+    \_\_init\_\_()*
+    \_\_int\_\_()*
+    \_\_invert\_\_()*
+    \_\_le\_\_()*
+    \_\_lshift\_\_()*
+    \_\_lt\_\_()*
+    \_\_mod\_\_()*
+    \_\_mul\_\_()*
+    \_\_ne\_\_()*
+    \_\_neg\_\_()*
+    \_\_new\_\_()*
+    \_\_or\_\_()*
+    \_\_pos\_\_()*
+    \_\_pow\_\_()*
+    \_\_radd\_\_()*
+    \_\_rand\_\_()*
+    \_\_rdivmod\_\_()*
+    \_\_reduce\_\_()*
+    \_\_reduce_ex\_\_()*
+    \_\_repr\_\_()*
+    \_\_rfloordiv\_\_()*
+    \_\_rlshift\_\_()*
+    \_\_rmod\_\_()*
+    \_\_rmul\_\_()*
+    \_\_ror\_\_()*
+    \_\_round\_\_()*
+    \_\_rpow\_\_()*
+    \_\_rrshift\_\_()*
+    \_\_rshift\_\_()*
+    \_\_rsub\_\_()*
+    \_\_rtruediv\_\_()*
+    \_\_rxor\_\_()*
+    \_\_setattr\_\_()*
+    \_\_sizeof\_\_()*
+    \_\_str\_\_()*
+    \_\_sub\_\_()*
+    \_\_subclasshook\_\_()*
+    \_\_truediv\_\_()*
+    \_\_trunc\_\_()*
+    \_\_xor\_\_()*
+    as_integer_ratio()*
+    bit_count()*
+    bit_length()*
+    conjugate()*
+    is_integer()*
+    to_bytes()*
+  }
+  class denominator {
+  }
+  class imag {
+  }
+  class int {
+    \_\_abs\_\_()*
+    \_\_add\_\_()*
+    \_\_and\_\_()*
+    \_\_bool\_\_()*
+    \_\_ceil\_\_()*
+    \_\_delattr\_\_()*
+    \_\_dir\_\_()*
+    \_\_divmod\_\_()*
+    \_\_eq\_\_()*
+    \_\_float\_\_()*
+    \_\_floor\_\_()*
+    \_\_floordiv\_\_()*
+    \_\_format\_\_()*
+    \_\_ge\_\_()*
+    \_\_getattribute\_\_()*
+    \_\_getnewargs\_\_()*
+    \_\_getstate\_\_()*
+    \_\_gt\_\_()*
+    \_\_hash\_\_()*
+    \_\_index\_\_()*
+    \_\_init\_\_()*
+    \_\_int\_\_()*
+    \_\_invert\_\_()*
+    \_\_le\_\_()*
+    \_\_lshift\_\_()*
+    \_\_lt\_\_()*
+    \_\_mod\_\_()*
+    \_\_mul\_\_()*
+    \_\_ne\_\_()*
+    \_\_neg\_\_()*
+    \_\_new\_\_()*
+    \_\_or\_\_()*
+    \_\_pos\_\_()*
+    \_\_pow\_\_()*
+    \_\_radd\_\_()*
+    \_\_rand\_\_()*
+    \_\_rdivmod\_\_()*
+    \_\_reduce\_\_()*
+    \_\_reduce_ex\_\_()*
+    \_\_repr\_\_()*
+    \_\_rfloordiv\_\_()*
+    \_\_rlshift\_\_()*
+    \_\_rmod\_\_()*
+    \_\_rmul\_\_()*
+    \_\_ror\_\_()*
+    \_\_round\_\_()*
+    \_\_rpow\_\_()*
+    \_\_rrshift\_\_()*
+    \_\_rshift\_\_()*
+    \_\_rsub\_\_()*
+    \_\_rtruediv\_\_()*
+    \_\_rxor\_\_()*
+    \_\_setattr\_\_()*
+    \_\_sizeof\_\_()*
+    \_\_str\_\_()*
+    \_\_sub\_\_()*
+    \_\_subclasshook\_\_()*
+    \_\_truediv\_\_()*
+    \_\_trunc\_\_()*
+    \_\_xor\_\_()*
+    as_integer_ratio()*
+    bit_count()*
+    bit_length()*
+    conjugate()*
+    is_integer()*
+    to_bytes()*
+  }
+  class list {
+    \_\_add\_\_()*
+    \_\_contains\_\_()*
+    \_\_delattr\_\_()*
+    \_\_delitem\_\_()*
+    \_\_dir\_\_()*
+    \_\_eq\_\_()*
+    \_\_format\_\_()*
+    \_\_ge\_\_()*
+    \_\_getattribute\_\_()*
+    \_\_getitem\_\_()*
+    \_\_getstate\_\_()*
+    \_\_gt\_\_()*
+    \_\_iadd\_\_()*
+    \_\_imul\_\_()*
+    \_\_init\_\_()*
+    \_\_iter\_\_()*
+    \_\_le\_\_()*
+    \_\_len\_\_()*
+    \_\_lt\_\_()*
+    \_\_mul\_\_()*
+    \_\_ne\_\_()*
+    \_\_new\_\_()*
+    \_\_reduce\_\_()*
+    \_\_reduce_ex\_\_()*
+    \_\_repr\_\_()*
+    \_\_reversed\_\_()*
+    \_\_rmul\_\_()*
+    \_\_setattr\_\_()*
+    \_\_setitem\_\_()*
+    \_\_sizeof\_\_()*
+    \_\_str\_\_()*
+    \_\_subclasshook\_\_()*
+    append()*
+    clear()*
+    copy()*
+    count()*
+    extend()*
+    index()*
+    insert()*
+    pop()*
+    remove()*
+    reverse()*
+    sort()*
+  }
+  class numerator {
+  }
+  class object {
+    \_\_delattr\_\_()*
+    \_\_dir\_\_()*
+    \_\_eq\_\_()*
+    \_\_format\_\_()*
+    \_\_ge\_\_()*
+    \_\_getattribute\_\_()*
+    \_\_getstate\_\_()*
+    \_\_gt\_\_()*
+    \_\_hash\_\_()*
+    \_\_init\_\_()*
+    \_\_le\_\_()*
+    \_\_lt\_\_()*
+    \_\_ne\_\_()*
+    \_\_new\_\_()*
+    \_\_reduce\_\_()*
+    \_\_reduce_ex\_\_()*
+    \_\_repr\_\_()*
+    \_\_setattr\_\_()*
+    \_\_sizeof\_\_()*
+    \_\_str\_\_()*
+    \_\_subclasshook\_\_()*
+  }
+  class real {
+  }
+  class str {
+    \_\_add\_\_()*
+    \_\_contains\_\_()*
+    \_\_delattr\_\_()*
+    \_\_dir\_\_()*
+    \_\_eq\_\_()*
+    \_\_format\_\_()*
+    \_\_ge\_\_()*
+    \_\_getattribute\_\_()*
+    \_\_getitem\_\_()*
+    \_\_getnewargs\_\_()*
+    \_\_getstate\_\_()*
+    \_\_gt\_\_()*
+    \_\_hash\_\_()*
+    \_\_init\_\_()*
+    \_\_iter\_\_()*
+    \_\_le\_\_()*
+    \_\_len\_\_()*
+    \_\_lt\_\_()*
+    \_\_mod\_\_()*
+    \_\_mul\_\_()*
+    \_\_ne\_\_()*
+    \_\_new\_\_()*
+    \_\_reduce\_\_()*
+    \_\_reduce_ex\_\_()*
+    \_\_repr\_\_()*
+    \_\_rmod\_\_()*
+    \_\_rmul\_\_()*
+    \_\_setattr\_\_()*
+    \_\_sizeof\_\_()*
+    \_\_str\_\_()*
+    \_\_subclasshook\_\_()*
+    capitalize()
+    casefold()*
+    center(width, fillchar)
+    count(sub, start, end)
+    decode(encoding, errors)
+    encode(encoding, errors)
+    endswith()*
+    expandtabs()*
+    find(sub, start, end)
+    format()
+    format_map()*
+    index(sub, start, end)
+    isalnum()*
+    isalpha()*
+    isascii()*
+    isdecimal()*
+    isdigit()*
+    isidentifier()*
+    islower()*
+    isnumeric()*
+    isprintable()*
+    isspace()*
+    istitle()*
+    isupper()*
+    join(iterable)
+    ljust(width, fillchar)
+    lower()
+    lstrip(chars)
+    partition()*
+    removeprefix()*
+    removesuffix()*
+    replace(old, new, count)
+    rfind()*
+    rindex()*
+    rjust(width, fillchar)
+    rpartition()*
+    rsplit()*
+    rstrip(chars)
+    split()*
+    splitlines()*
+    startswith()*
+    strip(chars)
+    swapcase()
+    title()
+    translate()*
+    upper()
+    zfill()*
+  }
+  class tuple {
+    \_\_add\_\_()*
+    \_\_contains\_\_()*
+    \_\_delattr\_\_()*
+    \_\_dir\_\_()*
+    \_\_eq\_\_()*
+    \_\_format\_\_()*
+    \_\_ge\_\_()*
+    \_\_getattribute\_\_()*
+    \_\_getitem\_\_()*
+    \_\_getnewargs\_\_()*
+    \_\_getstate\_\_()*
+    \_\_gt\_\_()*
+    \_\_hash\_\_()*
+    \_\_init\_\_()*
+    \_\_iter\_\_()*
+    \_\_le\_\_()*
+    \_\_len\_\_()*
+    \_\_lt\_\_()*
+    \_\_mul\_\_()*
+    \_\_ne\_\_()*
+    \_\_new\_\_()*
+    \_\_reduce\_\_()*
+    \_\_reduce_ex\_\_()*
+    \_\_repr\_\_()*
+    \_\_rmul\_\_()*
+    \_\_setattr\_\_()*
+    \_\_sizeof\_\_()*
+    \_\_str\_\_()*
+    \_\_subclasshook\_\_()*
+    count()*
+    index()*
+  }
+  class type {
+    \_\_init\_\_
+    \_\_call\_\_()*
+    \_\_delattr\_\_()*
+    \_\_dir\_\_()*
+    \_\_eq\_\_()*
+    \_\_format\_\_()*
+    \_\_ge\_\_()*
+    \_\_getattribute\_\_()*
+    \_\_getstate\_\_()*
+    \_\_gt\_\_()*
+    \_\_hash\_\_()*
+    \_\_init\_\_()*
+    \_\_instancecheck\_\_()*
+    \_\_le\_\_()*
+    \_\_lt\_\_()*
+    \_\_ne\_\_()*
+    \_\_new\_\_()*
+    \_\_or\_\_()*
+    \_\_reduce\_\_()*
+    \_\_reduce_ex\_\_()*
+    \_\_repr\_\_()*
+    \_\_ror\_\_()*
+    \_\_setattr\_\_()*
+    \_\_sizeof\_\_()*
+    \_\_str\_\_()*
+    \_\_subclasscheck\_\_()*
+    \_\_subclasses\_\_()*
+    \_\_subclasshook\_\_()*
+    mro()*
+  }
+  NoneType --|> object
+  bool --|> int
+  int --|> object
+  denominator --|> object
+  imag --|> object
+  numerator --|> object
+  real --|> object
+  list --|> object
+  str --|> object
+  tuple --|> object
+  type --|> object
+  Statement --|> object
+  GeneratedClass --|> object
+  CaseNode --|> Node
+  ChoiceNode --|> Node
+  ContainerNode --|> Node
+  LeafListNode --|> Node
+  LeafNode --|> Node
+  ListNode --|> Node
+  ModelRoot --|> object
+  ModuleNode --|> Node
+  TypeDefNode --|> Node
+  NodeFactory --|> object
+  ClassMapping --|> object
+  TypeResolver --|> object
+  ModelGenerator --|> object
+  YANGSourcesTracker --|> object
+  NoneType --* Statement : ext_mod
+  NoneType --* Node : namespace
+  NoneType --* Node : prefix
+  bool --* ConfigDict : str_to_lower
+  bool --* ConfigDict : str_to_upper
+  bool --* ConfigDict : str_strip_whitespace
+  bool --* ConfigDict : frozen
+  bool --* ConfigDict : populate_by_name
+  bool --* ConfigDict : use_enum_values
+  bool --* ConfigDict : validate_assignment
+  bool --* ConfigDict : arbitrary_types_allowed
+  bool --* ConfigDict : from_attributes
+  bool --* ConfigDict : loc_by_alias
+  bool --* ConfigDict : allow_inf_nan
+  bool --* ConfigDict : strict
+  bool --* ConfigDict : validate_default
+  bool --* ConfigDict : validate_return
+  bool --* ConfigDict : hide_input_in_errors
+  bool --* ConfigDict : defer_build
+  bool --* ConfigDict : json_schema_serialization_defaults_required
+  bool --* ConfigDict : coerce_numbers_to_str
+  bool --* ConfigDict : validation_error_cause
+  bool --* ConfigDict : use_attribute_docstrings
+  bool --* ConfigDict : validate_by_alias
+  bool --* ConfigDict : validate_by_name
+  bool --* ConfigDict : serialize_by_alias
+  bool --* Node : config
+  bool --* Node : config
+  bool --* Node : mandatory
+  bool --* Node : strip_namespace
+  bool --* Pydantify : multiple_modules
+  bool --* Pydantify : handle_comments
+  bool --* ModelGenerator : include_verification_code
+  bool --* ModelGenerator : standalone
+  bool --* ModelGenerator : json_schema_output
+  int --* ConfigDict : str_min_length
+  list --* Statement : i_children
+  list --* Statement : substmts
+  list --* Statement : substmts
+  list --* Statement : i_uses
+  list --* Statement : i_uses
+  str --* Node : arg
+  str --* Node : keyword
+  str --* Node : _name
+  str --* Node : _name
+  tuple --* Statement : \_\_slots\_\_
+  ConfigDict --* BaseModel : model_config
+  ConfigDict --* RootModel : model_config
+  GeneratedClass --* Node : _output_model
+  GeneratedClass --* CaseNode : _output_model
+  GeneratedClass --* ChoiceNode : _output_model
+  GeneratedClass --* ContainerNode : _output_model
+  GeneratedClass --* LeafListNode : _output_model
+  GeneratedClass --* LeafNode : _output_model
+  GeneratedClass --* ListNode : _output_model
+  GeneratedClass --* ModuleNode : _output_model
+  GeneratedClass --* TypeDefNode : _output_model
+  bool --o Statement : i_uses_top
+  Statement --o Node : raw_statement

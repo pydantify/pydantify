@@ -1,0 +1,86 @@
+classDiagram
+  class BaseModel {
+    model_config : ConfigDict
+  }
+  class CaseNode {
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ChoiceNode {
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ContainerNode {
+    name() str
+  }
+  class GeneratedClass {
+    class_name : str | PydanticUndefinedType
+    cls : Type[BaseModel] | Type[RootModel] | PydanticUndefinedType
+    field_annotation : Type | None
+    field_info : FieldInfo | PydanticUndefinedType
+    assert_is_valid()
+    to_field() Tuple[Type[BaseModel] | Type, FieldInfo]
+  }
+  class LeafListNode {
+    get_base_class() type | Node | Enum
+    name() str
+    to_pydantic_model() type[BaseModel | RootModel]
+  }
+  class LeafNode {
+    get_base_class() type | Node | Enum
+    name() str
+    to_pydantic_model() type[BaseModel | RootModel]
+  }
+  class ListNode {
+    name() str
+    to_pydantic_model() type[BaseModel]
+  }
+  class ModelRoot {
+    root_node : Node | None
+    to_pydantic_model() type[BaseModel] | None
+  }
+  class ModuleNode {
+    name() str
+    to_pydantic_model() type[BaseModel] | type[RootModel]
+  }
+  class Node {
+    alias_mapping : Dict[str, str]
+    arg : str
+    children : List[Node]
+    comments : str | None
+    config : bool
+    data_type : Literal['config', 'state'] | None
+    default
+    description : str | None
+    keyword : str
+    mandatory : bool
+    namespace : NoneType
+    prefix : NoneType
+    raw_statement : Statement
+    strip_namespace : bool
+    substmts : List[Statement]
+    ensure_unique_name(name: str) str
+    extract_statement_list(statement: Statement, attr_name: str) List[Node]
+    get_base_class() type | Node | Enum
+    get_output_class() GeneratedClass
+    get_qualified_name() str
+    make_unique_name(suffix: str)
+    name()* str
+    to_pydantic_model() Type[BaseModel] | Type[RootModel]
+  }
+  class RootModel {
+    model_config : ConfigDict
+  }
+  class TypeDefNode {
+    get_base_class() type | Node | Enum
+    name() str
+    to_pydantic_model() type[RootModel]
+  }
+  CaseNode --|> Node
+  ChoiceNode --|> Node
+  ContainerNode --|> Node
+  LeafListNode --|> Node
+  LeafNode --|> Node
+  ListNode --|> Node
+  ModuleNode --|> Node
+  TypeDefNode --|> Node
