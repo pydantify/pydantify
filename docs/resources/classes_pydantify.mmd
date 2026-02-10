@@ -611,6 +611,8 @@ classDiagram
   ModelGenerator --|> object
   YANGSourcesTracker --|> object
   NoneType --* Statement : ext_mod
+  NoneType --* Node : namespace
+  NoneType --* Node : prefix
   bool --* ConfigDict : str_to_lower
   bool --* ConfigDict : str_to_upper
   bool --* ConfigDict : str_strip_whitespace
