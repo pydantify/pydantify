@@ -98,7 +98,9 @@ class ModelGenerator:
                 split_path = cls.split_path(cls.trim_path)
                 module = cls.trim(module, split_path)
             if module is None:
-                logger.error("Invalid module. Exiting.")
+                logger.error(
+                    "Invalid module. If you use 'trim-path', make sure the path starts with the module name. Exiting."
+                )
                 sys.exit(0)
             mod = ModelRoot(module)
             pydantic_model = mod.to_pydantic_model()

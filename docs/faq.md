@@ -127,3 +127,35 @@ This error occurs when optional RootModel attributes are set to None and need to
       ```
 
       By setting `exclude_defaults=True`, any attributes with default values of `None` will be excluded from the dumped model. This helps avoid the `'NoneType' object has no attribute 'root'` error.
+
+## Invalid module when using `--trim-path`
+
+This error occurs when `--trim-path` is used but the path does not start with the YANG module name. The module name is the value shown by `pyang` in the `module:` line and must be the first element of the path.
+
+??? example
+
+      For `ietf-interfaces.yang`, the module name is `ietf-interfaces`:
+
+      ```bash
+      $ pyang -f tree ietf-interfaces.yang | head
+      module: ietf-interfaces
+        +--rw interfaces
+        |  +--rw interface* [name]
+        |     +--rw name                        string
+        |     +--rw description?                string
+        |     +--rw type                        identityref
+        |     +--rw enabled?                    boolean
+        |     +--rw link-up-down-trap-enable?   enumeration {if-mib}?
+      ```
+
+      This is valid because the path starts with the module name:
+
+      ```bash
+      $ pydantify --trim-path=ietf-interfaces/interfaces ietf-interfaces.yang
+      ```
+
+      This is invalid because the path starts below the module root:
+
+      ```bash
+      $ pydantify --trim-path=interfaces ietf-interfaces.yang
+      ```
