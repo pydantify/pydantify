@@ -80,7 +80,6 @@ def restconf_patch_request(url: str, user_pw_auth: tuple[str, str], data: str):
             "Content-Type": "application/yang-data+json",
         },
         data=data,
-        verify=False,
     )
 
     return response
