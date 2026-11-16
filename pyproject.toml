@@ -41,7 +41,6 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "autopep8>=2.3.1",
-    "black>=24.8.0",
     "pylint>=3.3.7",
     "pytest>=8.3.2",
     "coverage>=7.6.1",
@@ -51,6 +50,7 @@ dev = [
     "mkdocs>=1.6.0",
     "mkdocs-material>=9.5.33",
     "types-lxml>=2025.11.25",
+    "ruff>=0.15.1",
 ]
 
 [tool.pdm.scripts]

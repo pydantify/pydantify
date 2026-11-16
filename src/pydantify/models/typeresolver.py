@@ -94,7 +94,7 @@ class TypeResolver:
     def __resolve_type_spec(cls: Type[Self], spec: TypeSpec) -> type | Enum:
         from . import Node, NodeFactory
 
-        match (spec.__class__.__qualname__):
+        match spec.__class__.__qualname__:
             case RangeTypeSpec.__qualname__:
                 if isinstance(spec.base, Decimal64TypeSpec):
                     spec.base.min = spec.min

@@ -10,6 +10,7 @@ from datamodel_code_generator.config import JSONSchemaParserConfig
 from datamodel_code_generator.model import pydantic_v2
 from datamodel_code_generator.parser.base import Result
 from datamodel_code_generator.parser.jsonschema import JsonSchemaParser
+from datamodel_code_generator.format import Formatter
 from pyang.context import Context
 from pyang.statements import ModSubmodStatement, Statement
 from pydantic import BaseModel
@@ -151,6 +152,7 @@ class ModelGenerator:
                 collapse_root_models=True,
                 extra_template_data=extra_template_data,
                 field_extra_keys=set(["x-is-classvar"]),
+                formatters=[Formatter.RUFF_FORMAT, Formatter.RUFF_CHECK],
             ),
         )
         return parser.parse()
