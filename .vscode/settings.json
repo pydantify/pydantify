@@ -22,23 +22,9 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
     "editor.renderWhitespace": "boundary",
-    "python.formatting.provider": "black",
     "files.insertFinalNewline": true,
     "files.eol": "\n",
     "files.trimTrailingWhitespace": true,
-    "python.formatting.blackArgs": [
-        "--skip-string-normalization",
-        "--line-length=120",
-    ],
-    "python.formatting.autopep8Args": [
-        "ignore=501"
-    ],
-    "python.linting.flake8Args": [
-        // Codes:
-        // https://flake8.pycqa.org/en/latest/user/error-codes.html
-        // https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
-        "--ignore=E501"
-    ],
     "python.testing.pytestArgs": [
         "tests"
     ],

@@ -7,18 +7,18 @@ pytest:
 	uv run pytest -vs ${ARGS}
 
 # Check if the python code needs to be reformatted
-.PHONY: black
-black:
-	uv run black --check ${CODE_DIRS}
+.PHONY: ruff
+ruff:
+	uv run ruff format --check ${CODE_DIRS}
 
 # Python type check
 .PHONY: mypy
 mypy:
 	uv run mypy src/${PROJECT}
 
-# Runn pytest, black and mypy
+# Runn pytest, ruff and mypy
 .PHONY: tests
-tests: pytest black mypy
+tests: pytest ruff mypy
 
 # Python type check
 .PHONY: diagrams

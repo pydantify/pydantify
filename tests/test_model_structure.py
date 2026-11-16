@@ -44,9 +44,9 @@ class ParsedAST:
             f'"Comparing:\n{"Expected":9}: {ast2.classes.keys()}\n{"Got":9}: {ast1.classes.keys()}'
         )
         for c1, c2 in zip(ast1.classes.keys(), ast2.classes.keys()):
-            assert (
-                c1 == c2
-            ), f'Mismatch {c1} vs {c2}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
+            assert c1 == c2, (
+                f'Mismatch {c1} vs {c2}\nGot: "{ast1.classes}"\nExpected: "{ast2.classes}"'
+            )
         for a, b in zip(ast1.classes.values(), ast2.classes.values()):
             # Compare classes
             assert len(a.body) == len(b.body)
