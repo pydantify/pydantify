@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class ServerProfileListEntry(BaseModel):
@@ -14,15 +14,29 @@ class ServerProfileListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "ciph"
-    name: Annotated[str, Field(alias="ciphers:name")]
+    prefix: ClassVar[str | None] = "ciph"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="ciphers:name",
+            validation_alias=AliasChoices("ciphers:name", "name"),
+        ),
+    ]
     """
     Name of the TLS server-profile
     """
-    cipher_list: Annotated[Optional[List[str]], Field(alias="ciphers:cipher-list")] = [
+    cipher_list: Annotated[
+        list[str] | None,
+        Field(
+            serialization_alias="ciphers:cipher-list",
+            validation_alias=AliasChoices(
+                "ciphers:cipher-list", "cipher_list", "cipher-list"
+            ),
+        ),
+    ] = [
         "ecdhe-ecdsa-aes256-gcm-sha384",
         "ecdhe-ecdsa-aes128-gcm-sha256",
         "ecdhe-rsa-aes256-gcm-sha384",
@@ -45,14 +59,20 @@ class TlsContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "ciph"
+    prefix: ClassVar[str | None] = "ciph"
     server_profile: Annotated[
-        Optional[List[ServerProfileListEntry]],
-        Field(default_factory=list, alias="ciphers:server-profile"),
-    ]
+        list[ServerProfileListEntry] | None,
+        Field(
+            serialization_alias="ciphers:server-profile",
+            validate_default=True,
+            validation_alias=AliasChoices(
+                "ciphers:server-profile", "server_profile", "server-profile"
+            ),
+        ),
+    ] = []
 
 
 class Model(BaseModel):
@@ -75,11 +95,17 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "ciph"
-    tls: Annotated[Optional[TlsContainer], Field(alias="ciphers:tls")] = None
+    prefix: ClassVar[str | None] = "ciph"
+    tls: Annotated[
+        TlsContainer | None,
+        Field(
+            serialization_alias="ciphers:tls",
+            validation_alias=AliasChoices("ciphers:tls", "tls"),
+        ),
+    ] = None
 
 
 if __name__ == "__main__":

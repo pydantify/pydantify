@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, Optional, Union
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class Ethernet2Case(BaseModel):
@@ -14,11 +14,17 @@ class Ethernet2Case(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
-    name2: Annotated[Optional[str], Field(alias="interfaces:name2")] = None
+    prefix: ClassVar[str | None] = "if"
+    name2: Annotated[
+        str | None,
+        Field(
+            serialization_alias="interfaces:name2",
+            validation_alias=AliasChoices("interfaces:name2", "name2"),
+        ),
+    ] = None
 
 
 class EthernetContainer(BaseModel):
@@ -30,11 +36,17 @@ class EthernetContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
-    name: Annotated[Optional[str], Field(alias="interfaces:name")] = None
+    prefix: ClassVar[str | None] = "if"
+    name: Annotated[
+        str | None,
+        Field(
+            serialization_alias="interfaces:name",
+            validation_alias=AliasChoices("interfaces:name", "name"),
+        ),
+    ] = None
 
 
 class EthernetCase(BaseModel):
@@ -42,12 +54,16 @@ class EthernetCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     ethernet: Annotated[
-        Optional[EthernetContainer], Field(alias="interfaces:ethernet")
+        EthernetContainer | None,
+        Field(
+            serialization_alias="interfaces:ethernet",
+            validation_alias=AliasChoices("interfaces:ethernet", "ethernet"),
+        ),
     ] = None
 
 
@@ -71,13 +87,18 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interface_type: Annotated[
-        Optional[Union[EthernetCase, Ethernet2Case]],
-        Field(alias="interfaces:interface-type"),
+        EthernetCase | Ethernet2Case | None,
+        Field(
+            serialization_alias="interfaces:interface-type",
+            validation_alias=AliasChoices(
+                "interfaces:interface-type", "interface_type", "interface-type"
+            ),
+        ),
     ] = None
 
 

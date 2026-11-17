@@ -140,9 +140,11 @@ class Node(ABC):
             if self.strip_namespace
             else f"{self.raw_statement.i_module.arg}:{self.arg}"
         )
-        self.alias_mapping[qualified_name] = FieldNameResolver(
-            snake_case_field=True
-        ).get_valid_name(self.arg)
+        valid_name = FieldNameResolver(snake_case_field=True).get_valid_name(self.arg)
+        if valid_name == self.arg:
+            self.alias_mapping[qualified_name] = [self.arg]
+        else:
+            self.alias_mapping[qualified_name] = [valid_name, self.arg]
         return qualified_name
 
     @abstractmethod

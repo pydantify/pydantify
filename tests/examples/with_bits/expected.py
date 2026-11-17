@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class InterfacesContainer(BaseModel):
@@ -14,19 +14,26 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
-    name: Annotated[str, Field(alias="interfaces:name")]
+    prefix: ClassVar[str | None] = "if"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="interfaces:name",
+            validation_alias=AliasChoices("interfaces:name", "name"),
+        ),
+    ]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     mybits: Annotated[
-        Optional[str],
+        str | None,
         Field(
-            alias="interfaces:mybits",
             pattern="^(disable-nagle|auto-sense-speed|ten-mb-only|\\s)*$",
+            serialization_alias="interfaces:mybits",
+            validation_alias=AliasChoices("interfaces:mybits", "mybits"),
         ),
     ] = None
 
@@ -51,12 +58,16 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+        InterfacesContainer | None,
+        Field(
+            serialization_alias="interfaces:interfaces",
+            validation_alias=AliasChoices("interfaces:interfaces", "interfaces"),
+        ),
     ] = None
 
 

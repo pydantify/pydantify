@@ -14,12 +14,12 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-    "pydantic==2.12.5",
+    "pydantic==v2.14.3",
     "pyang==2.7.1",
     "psutil>=7.0.0",
-    "datamodel-code-generator[ruff]==0.54.0",
+    "datamodel-code-generator[ruff]==v0.97.0",
     "requests>=2.32.5",
     "setuptools>=82.0.0",
 ]

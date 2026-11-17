@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class ConfigContainer(BaseModel):
@@ -15,9 +15,15 @@ class ConfigContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
-    name: Annotated[Optional[str], Field(alias="openconfig-interfaces:name")] = None
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
+    name: Annotated[
+        str | None,
+        Field(
+            serialization_alias="openconfig-interfaces:name",
+            validation_alias=AliasChoices("openconfig-interfaces:name", "name"),
+        ),
+    ] = None
     """
     The name of the interface.
 
@@ -52,7 +58,13 @@ class ConfigContainer(BaseModel):
     the system, it is instantiated with the same name in the
     /interfaces/interface[name]/state list.
     """
-    type: Annotated[str, Field(alias="openconfig-interfaces:type")]
+    type: Annotated[
+        str,
+        Field(
+            serialization_alias="openconfig-interfaces:type",
+            validation_alias=AliasChoices("openconfig-interfaces:type", "type"),
+        ),
+    ]
     """
     The type of the interface.
 
@@ -69,7 +81,13 @@ class ConfigContainer(BaseModel):
     error-tag 'invalid-value' in this case.
     """
     mtu: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:mtu", ge=0, le=65535)
+        int | None,
+        Field(
+            ge=0,
+            le=65535,
+            serialization_alias="openconfig-interfaces:mtu",
+            validation_alias=AliasChoices("openconfig-interfaces:mtu", "mtu"),
+        ),
     ] = None
     """
     Set the max transmission unit size in octets
@@ -78,7 +96,13 @@ class ConfigContainer(BaseModel):
     Ethernet interface.
     """
     loopback_mode: Annotated[
-        Optional[bool], Field(alias="openconfig-interfaces:loopback-mode")
+        bool | None,
+        Field(
+            serialization_alias="openconfig-interfaces:loopback-mode",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:loopback-mode", "loopback_mode", "loopback-mode"
+            ),
+        ),
     ] = False
     """
     When set to true, the interface is logically looped back,
@@ -86,7 +110,13 @@ class ConfigContainer(BaseModel):
     are received on the same interface.
     """
     description: Annotated[
-        Optional[str], Field(alias="openconfig-interfaces:description")
+        str | None,
+        Field(
+            serialization_alias="openconfig-interfaces:description",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:description", "description"
+            ),
+        ),
     ] = None
     """
     A textual description of the interface.
@@ -116,9 +146,13 @@ class ConfigContainer(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    enabled: Annotated[Optional[bool], Field(alias="openconfig-interfaces:enabled")] = (
-        True
-    )
+    enabled: Annotated[
+        bool | None,
+        Field(
+            serialization_alias="openconfig-interfaces:enabled",
+            validation_alias=AliasChoices("openconfig-interfaces:enabled", "enabled"),
+        ),
+    ] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -154,10 +188,14 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     config: Annotated[
-        Optional[ConfigContainer], Field(alias="openconfig-interfaces:config")
+        ConfigContainer | None,
+        Field(
+            serialization_alias="openconfig-interfaces:config",
+            validation_alias=AliasChoices("openconfig-interfaces:config", "config"),
+        ),
     ] = None
 
 

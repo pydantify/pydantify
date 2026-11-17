@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, RootModel
 
 
 class TaggedLeafList(RootModel[int]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: Annotated[int, Field(ge=1, le=4094)]
@@ -25,27 +24,49 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
-    name: Annotated[str, Field(alias="interfaces:name")]
+    prefix: ClassVar[str | None] = "if"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="interfaces:name",
+            validation_alias=AliasChoices("interfaces:name", "name"),
+        ),
+    ]
     """
     Interface name
     """
-    ip: Annotated[Optional[List[str]], Field(alias="interfaces:ip")] = []
+    ip: Annotated[
+        list[str] | None,
+        Field(
+            serialization_alias="interfaces:ip",
+            validation_alias=AliasChoices("interfaces:ip", "ip"),
+        ),
+    ] = []
     """
     List of interface IPs
     """
     tagged: Annotated[
-        Optional[List[TaggedLeafList]],
-        Field(default_factory=list, alias="interfaces:tagged"),
-    ]
+        list[TaggedLeafList] | None,
+        Field(
+            serialization_alias="interfaces:tagged",
+            validate_default=True,
+            validation_alias=AliasChoices("interfaces:tagged", "tagged"),
+        ),
+    ] = []
     """
     List of tagged VLANs
     """
     untagged: Annotated[
-        Optional[int], Field(alias="interfaces:untagged", ge=1, le=4094)
+        int | None,
+        Field(
+            ge=1,
+            le=4094,
+            serialization_alias="interfaces:untagged",
+            validation_alias=AliasChoices("interfaces:untagged", "untagged"),
+        ),
     ] = None
     """
     Untagged VLAN
@@ -72,14 +93,18 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]],
-        Field(default_factory=list, alias="interfaces:interfaces"),
-    ]
+        list[InterfacesListEntry] | None,
+        Field(
+            serialization_alias="interfaces:interfaces",
+            validate_default=True,
+            validation_alias=AliasChoices("interfaces:interfaces", "interfaces"),
+        ),
+    ] = []
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class InterfacesListEntry(BaseModel):
@@ -14,19 +14,39 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
-    test: Annotated[Optional[int], Field(alias="interfaces:test", ge=0, le=255)] = None
+    prefix: ClassVar[str | None] = "if"
+    test: Annotated[
+        int | None,
+        Field(
+            ge=0,
+            le=255,
+            serialization_alias="interfaces:test",
+            validation_alias=AliasChoices("interfaces:test", "test"),
+        ),
+    ] = None
     """
     Test node
     """
-    name: Annotated[str, Field(alias="interfaces:name")]
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="interfaces:name",
+            validation_alias=AliasChoices("interfaces:name", "name"),
+        ),
+    ]
     """
     Interface name
     """
-    ip: Annotated[Optional[str], Field(alias="interfaces:ip")] = None
+    ip: Annotated[
+        str | None,
+        Field(
+            serialization_alias="interfaces:ip",
+            validation_alias=AliasChoices("interfaces:ip", "ip"),
+        ),
+    ] = None
     """
     Interface IP
     """
@@ -52,16 +72,26 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]],
-        Field(default_factory=list, alias="interfaces:interfaces"),
-    ]
+        list[InterfacesListEntry] | None,
+        Field(
+            serialization_alias="interfaces:interfaces",
+            validate_default=True,
+            validation_alias=AliasChoices("interfaces:interfaces", "interfaces"),
+        ),
+    ] = []
     mgmt_interface: Annotated[
-        Optional[str], Field(alias="interfaces:mgmt-interface")
+        str | None,
+        Field(
+            serialization_alias="interfaces:mgmt-interface",
+            validation_alias=AliasChoices(
+                "interfaces:mgmt-interface", "mgmt_interface", "mgmt-interface"
+            ),
+        ),
     ] = None
     """
     Dedicated management interface

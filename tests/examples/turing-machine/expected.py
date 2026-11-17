@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
@@ -13,7 +13,6 @@ class EnumerationEnum(Enum):
 
 class HeadDirType(RootModel[EnumerationEnum]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: EnumerationEnum
@@ -25,7 +24,6 @@ class HeadDirType(RootModel[EnumerationEnum]):
 
 class HeadMoveLeaf(RootModel[HeadDirType]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: HeadDirType
@@ -43,21 +41,28 @@ class CellListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
-    prefix: ClassVar[Optional[str]] = "tm"
+    namespace: ClassVar[str | None] = "http://example.net/turing-machine"
+    prefix: ClassVar[str | None] = "tm"
     coord: Annotated[
         int,
         Field(
-            alias="turing-machine:coord",
             ge=-9223372036854775808,
             le=9223372036854775807,
+            serialization_alias="turing-machine:coord",
+            validation_alias=AliasChoices("turing-machine:coord", "coord"),
         ),
     ]
     """
     Coordinate (index) of the tape cell.
     """
     symbol: Annotated[
-        Optional[str], Field(alias="turing-machine:symbol", max_length=1, min_length=0)
+        str | None,
+        Field(
+            max_length=1,
+            min_length=0,
+            serialization_alias="turing-machine:symbol",
+            validation_alias=AliasChoices("turing-machine:symbol", "symbol"),
+        ),
     ] = None
     """
     Symbol appearing in the tape cell.
@@ -75,14 +80,28 @@ class InputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
-    prefix: ClassVar[Optional[str]] = "tm"
-    state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
+    namespace: ClassVar[str | None] = "http://example.net/turing-machine"
+    prefix: ClassVar[str | None] = "tm"
+    state: Annotated[
+        int,
+        Field(
+            ge=0,
+            le=65535,
+            serialization_alias="turing-machine:state",
+            validation_alias=AliasChoices("turing-machine:state", "state"),
+        ),
+    ]
     """
     Current state of the control unit.
     """
     symbol: Annotated[
-        str, Field(alias="turing-machine:symbol", max_length=1, min_length=0)
+        str,
+        Field(
+            max_length=1,
+            min_length=0,
+            serialization_alias="turing-machine:symbol",
+            validation_alias=AliasChoices("turing-machine:symbol", "symbol"),
+        ),
     ]
     """
     Symbol read from the tape cell.
@@ -98,29 +117,44 @@ class OutputContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
-    prefix: ClassVar[Optional[str]] = "tm"
+    namespace: ClassVar[str | None] = "http://example.net/turing-machine"
+    prefix: ClassVar[str | None] = "tm"
     state: Annotated[
-        Optional[int], Field(alias="turing-machine:state", ge=0, le=65535)
+        int | None,
+        Field(
+            ge=0,
+            le=65535,
+            serialization_alias="turing-machine:state",
+            validation_alias=AliasChoices("turing-machine:state", "state"),
+        ),
     ] = None
     """
     New state of the control unit. If this leaf is not
     present, the state doesn't change.
     """
     symbol: Annotated[
-        Optional[str], Field(alias="turing-machine:symbol", max_length=1, min_length=0)
+        str | None,
+        Field(
+            max_length=1,
+            min_length=0,
+            serialization_alias="turing-machine:symbol",
+            validation_alias=AliasChoices("turing-machine:symbol", "symbol"),
+        ),
     ] = None
     """
     Symbol to be written to the tape cell. If this leaf is
     not present, the symbol doesn't change.
     """
     head_move: Annotated[
-        Optional[HeadMoveLeaf],
+        HeadMoveLeaf | None,
         Field(
-            default_factory=lambda: HeadMoveLeaf("right"),
-            alias="turing-machine:head-move",
+            serialization_alias="turing-machine:head-move",
+            validate_default=True,
+            validation_alias=AliasChoices(
+                "turing-machine:head-move", "head_move", "head-move"
+            ),
         ),
-    ]
+    ] = "right"
 
 
 class TapeContainer(BaseModel):
@@ -132,12 +166,16 @@ class TapeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
-    prefix: ClassVar[Optional[str]] = "tm"
+    namespace: ClassVar[str | None] = "http://example.net/turing-machine"
+    prefix: ClassVar[str | None] = "tm"
     cell: Annotated[
-        Optional[List[CellListEntry]],
-        Field(default_factory=list, alias="turing-machine:cell"),
-    ]
+        list[CellListEntry] | None,
+        Field(
+            serialization_alias="turing-machine:cell",
+            validate_default=True,
+            validation_alias=AliasChoices("turing-machine:cell", "cell"),
+        ),
+    ] = []
 
 
 class DeltaListEntry(BaseModel):
@@ -149,17 +187,31 @@ class DeltaListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
-    prefix: ClassVar[Optional[str]] = "tm"
-    label: Annotated[str, Field(alias="turing-machine:label")]
+    namespace: ClassVar[str | None] = "http://example.net/turing-machine"
+    prefix: ClassVar[str | None] = "tm"
+    label: Annotated[
+        str,
+        Field(
+            serialization_alias="turing-machine:label",
+            validation_alias=AliasChoices("turing-machine:label", "label"),
+        ),
+    ]
     """
     An arbitrary label of the transition rule.
     """
-    input: Annotated[Optional[InputContainer], Field(alias="turing-machine:input")] = (
-        None
-    )
+    input: Annotated[
+        InputContainer | None,
+        Field(
+            serialization_alias="turing-machine:input",
+            validation_alias=AliasChoices("turing-machine:input", "input"),
+        ),
+    ] = None
     output: Annotated[
-        Optional[OutputContainer], Field(alias="turing-machine:output")
+        OutputContainer | None,
+        Field(
+            serialization_alias="turing-machine:output",
+            validation_alias=AliasChoices("turing-machine:output", "output"),
+        ),
     ] = None
 
 
@@ -173,12 +225,16 @@ class TransitionFunctionContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
-    prefix: ClassVar[Optional[str]] = "tm"
+    namespace: ClassVar[str | None] = "http://example.net/turing-machine"
+    prefix: ClassVar[str | None] = "tm"
     delta: Annotated[
-        Optional[List[DeltaListEntry]],
-        Field(default_factory=list, alias="turing-machine:delta"),
-    ]
+        list[DeltaListEntry] | None,
+        Field(
+            serialization_alias="turing-machine:delta",
+            validate_default=True,
+            validation_alias=AliasChoices("turing-machine:delta", "delta"),
+        ),
+    ] = []
 
 
 class TuringMachineContainer(BaseModel):
@@ -190,9 +246,17 @@ class TuringMachineContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
-    prefix: ClassVar[Optional[str]] = "tm"
-    state: Annotated[int, Field(alias="turing-machine:state", ge=0, le=65535)]
+    namespace: ClassVar[str | None] = "http://example.net/turing-machine"
+    prefix: ClassVar[str | None] = "tm"
+    state: Annotated[
+        int,
+        Field(
+            ge=0,
+            le=65535,
+            serialization_alias="turing-machine:state",
+            validation_alias=AliasChoices("turing-machine:state", "state"),
+        ),
+    ]
     """
     Current state of the control unit.
     The initial state is 0.
@@ -200,18 +264,34 @@ class TuringMachineContainer(BaseModel):
     head_position: Annotated[
         int,
         Field(
-            alias="turing-machine:head-position",
             ge=-9223372036854775808,
             le=9223372036854775807,
+            serialization_alias="turing-machine:head-position",
+            validation_alias=AliasChoices(
+                "turing-machine:head-position", "head_position", "head-position"
+            ),
         ),
     ]
     """
     Position of tape read/write head.
     """
-    tape: Annotated[Optional[TapeContainer], Field(alias="turing-machine:tape")] = None
+    tape: Annotated[
+        TapeContainer | None,
+        Field(
+            serialization_alias="turing-machine:tape",
+            validation_alias=AliasChoices("turing-machine:tape", "tape"),
+        ),
+    ] = None
     transition_function: Annotated[
-        Optional[TransitionFunctionContainer],
-        Field(alias="turing-machine:transition-function"),
+        TransitionFunctionContainer | None,
+        Field(
+            serialization_alias="turing-machine:transition-function",
+            validation_alias=AliasChoices(
+                "turing-machine:transition-function",
+                "transition_function",
+                "transition-function",
+            ),
+        ),
     ] = None
 
 
@@ -235,10 +315,16 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://example.net/turing-machine"
-    prefix: ClassVar[Optional[str]] = "tm"
+    namespace: ClassVar[str | None] = "http://example.net/turing-machine"
+    prefix: ClassVar[str | None] = "tm"
     turing_machine: Annotated[
-        Optional[TuringMachineContainer], Field(alias="turing-machine:turing-machine")
+        TuringMachineContainer | None,
+        Field(
+            serialization_alias="turing-machine:turing-machine",
+            validation_alias=AliasChoices(
+                "turing-machine:turing-machine", "turing_machine", "turing-machine"
+            ),
+        ),
     ] = None
 
 

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
@@ -13,7 +13,6 @@ class EnumerationEnum(Enum):
 
 class AdminStateType(RootModel[EnumerationEnum]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: EnumerationEnum
@@ -24,7 +23,6 @@ class AdminStateType(RootModel[EnumerationEnum]):
 
 class AdminStateLeaf(RootModel[AdminStateType]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: AdminStateType
@@ -42,21 +40,30 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
-    name: Annotated[str, Field(alias="interfaces:name")]
+    prefix: ClassVar[str | None] = "if"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="interfaces:name",
+            validation_alias=AliasChoices("interfaces:name", "name"),
+        ),
+    ]
     """
     Interface name
     """
     admin_state: Annotated[
-        Optional[AdminStateLeaf],
+        AdminStateLeaf | None,
         Field(
-            default_factory=lambda: AdminStateLeaf("enable"),
-            alias="interfaces:admin-state",
+            serialization_alias="interfaces:admin-state",
+            validate_default=True,
+            validation_alias=AliasChoices(
+                "interfaces:admin-state", "admin_state", "admin-state"
+            ),
         ),
-    ]
+    ] = "enable"
 
 
 class Model(BaseModel):
@@ -79,14 +86,18 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]],
-        Field(default_factory=list, alias="interfaces:interfaces"),
-    ]
+        list[InterfacesListEntry] | None,
+        Field(
+            serialization_alias="interfaces:interfaces",
+            validate_default=True,
+            validation_alias=AliasChoices("interfaces:interfaces", "interfaces"),
+        ),
+    ] = []
 
 
 if __name__ == "__main__":
