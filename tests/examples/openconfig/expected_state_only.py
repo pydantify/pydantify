@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
@@ -40,7 +40,6 @@ class EnumerationEnum4(Enum):
 
 class AdminStatusLeaf(RootModel[EnumerationEnum]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: EnumerationEnum
@@ -54,7 +53,6 @@ class AdminStatusLeaf(RootModel[EnumerationEnum]):
 
 class AdminStatusLeaf2(RootModel[EnumerationEnum3]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: EnumerationEnum3
@@ -68,7 +66,6 @@ class AdminStatusLeaf2(RootModel[EnumerationEnum3]):
 
 class OperStatusLeaf(RootModel[EnumerationEnum2]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: EnumerationEnum2
@@ -81,7 +78,6 @@ class OperStatusLeaf(RootModel[EnumerationEnum2]):
 
 class OperStatusLeaf2(RootModel[EnumerationEnum4]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: EnumerationEnum4
@@ -101,10 +97,16 @@ class StateContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     up: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:up", ge=0, le=4294967295)
+        int | None,
+        Field(
+            ge=0,
+            le=4294967295,
+            serialization_alias="openconfig-interfaces:up",
+            validation_alias=AliasChoices("openconfig-interfaces:up", "up"),
+        ),
     ] = 0
     """
     Dampens advertisement when the interface
@@ -112,7 +114,13 @@ class StateContainer2(BaseModel):
     is turned off, i.e., immediate notification.
     """
     down: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:down", ge=0, le=4294967295)
+        int | None,
+        Field(
+            ge=0,
+            le=4294967295,
+            serialization_alias="openconfig-interfaces:down",
+            validation_alias=AliasChoices("openconfig-interfaces:down", "down"),
+        ),
     ] = 0
     """
     Dampens advertisement when the interface transitions from
@@ -130,11 +138,18 @@ class CountersContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     in_octets: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:in-octets", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-octets",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-octets", "in_octets", "in-octets"
+            ),
+        ),
     ] = None
     """
     The total number of octets received on the interface,
@@ -146,9 +161,16 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     in_unicast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-unicast-pkts", ge=0, le=18446744073709551615
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-unicast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-unicast-pkts",
+                "in_unicast_pkts",
+                "in-unicast-pkts",
+            ),
         ),
     ] = None
     """
@@ -162,11 +184,16 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     in_broadcast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-broadcast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-broadcast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-broadcast-pkts",
+                "in_broadcast_pkts",
+                "in-broadcast-pkts",
+            ),
         ),
     ] = None
     """
@@ -180,11 +207,16 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     in_multicast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-multicast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-multicast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-multicast-pkts",
+                "in_multicast_pkts",
+                "in-multicast-pkts",
+            ),
         ),
     ] = None
     """
@@ -199,8 +231,15 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     in_discards: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:in-discards", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-discards",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-discards", "in_discards", "in-discards"
+            ),
+        ),
     ] = None
     """
     The number of inbound packets that were chosen to be
@@ -215,8 +254,15 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     in_errors: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:in-errors", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-errors",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-errors", "in_errors", "in-errors"
+            ),
+        ),
     ] = None
     """
     For packet-oriented interfaces, the number of inbound
@@ -233,11 +279,16 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     in_unknown_protos: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-unknown-protos",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-unknown-protos",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-unknown-protos",
+                "in_unknown_protos",
+                "in-unknown-protos",
+            ),
         ),
     ] = None
     """
@@ -257,9 +308,14 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     in_fcs_errors: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-fcs-errors", ge=0, le=18446744073709551615
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-fcs-errors",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-fcs-errors", "in_fcs_errors", "in-fcs-errors"
+            ),
         ),
     ] = None
     """
@@ -271,8 +327,15 @@ class CountersContainer(BaseModel):
     value of 'last-clear'.
     """
     out_octets: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:out-octets", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-octets",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-octets", "out_octets", "out-octets"
+            ),
+        ),
     ] = None
     """
     The total number of octets transmitted out of the
@@ -284,11 +347,16 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     out_unicast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:out-unicast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-unicast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-unicast-pkts",
+                "out_unicast_pkts",
+                "out-unicast-pkts",
+            ),
         ),
     ] = None
     """
@@ -303,11 +371,16 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     out_broadcast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:out-broadcast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-broadcast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-broadcast-pkts",
+                "out_broadcast_pkts",
+                "out-broadcast-pkts",
+            ),
         ),
     ] = None
     """
@@ -322,11 +395,16 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     out_multicast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:out-multicast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-multicast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-multicast-pkts",
+                "out_multicast_pkts",
+                "out-multicast-pkts",
+            ),
         ),
     ] = None
     """
@@ -343,9 +421,14 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     out_discards: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:out-discards", ge=0, le=18446744073709551615
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-discards",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-discards", "out_discards", "out-discards"
+            ),
         ),
     ] = None
     """
@@ -361,8 +444,15 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     out_errors: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:out-errors", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-errors",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-errors", "out_errors", "out-errors"
+            ),
+        ),
     ] = None
     """
     For packet-oriented interfaces, the number of outbound
@@ -377,11 +467,16 @@ class CountersContainer(BaseModel):
     'last-clear'.
     """
     carrier_transitions: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:carrier-transitions",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:carrier-transitions",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:carrier-transitions",
+                "carrier_transitions",
+                "carrier-transitions",
+            ),
         ),
     ] = None
     """
@@ -390,8 +485,15 @@ class CountersContainer(BaseModel):
     or the last-clear time, whichever is most recent.
     """
     last_clear: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:last-clear", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:last-clear",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:last-clear", "last_clear", "last-clear"
+            ),
+        ),
     ] = None
     """
     Timestamp of the last time the interface counters were
@@ -411,11 +513,18 @@ class CountersContainer2(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     in_octets: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:in-octets", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-octets",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-octets", "in_octets", "in-octets"
+            ),
+        ),
     ] = None
     """
     The total number of octets received on the interface,
@@ -427,9 +536,16 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     in_unicast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-unicast-pkts", ge=0, le=18446744073709551615
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-unicast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-unicast-pkts",
+                "in_unicast_pkts",
+                "in-unicast-pkts",
+            ),
         ),
     ] = None
     """
@@ -443,11 +559,16 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     in_broadcast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-broadcast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-broadcast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-broadcast-pkts",
+                "in_broadcast_pkts",
+                "in-broadcast-pkts",
+            ),
         ),
     ] = None
     """
@@ -461,11 +582,16 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     in_multicast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-multicast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-multicast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-multicast-pkts",
+                "in_multicast_pkts",
+                "in-multicast-pkts",
+            ),
         ),
     ] = None
     """
@@ -480,8 +606,15 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     in_discards: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:in-discards", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-discards",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-discards", "in_discards", "in-discards"
+            ),
+        ),
     ] = None
     """
     The number of inbound packets that were chosen to be
@@ -496,8 +629,15 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     in_errors: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:in-errors", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-errors",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-errors", "in_errors", "in-errors"
+            ),
+        ),
     ] = None
     """
     For packet-oriented interfaces, the number of inbound
@@ -514,11 +654,16 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     in_unknown_protos: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-unknown-protos",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-unknown-protos",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-unknown-protos",
+                "in_unknown_protos",
+                "in-unknown-protos",
+            ),
         ),
     ] = None
     """
@@ -538,9 +683,14 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     in_fcs_errors: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:in-fcs-errors", ge=0, le=18446744073709551615
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:in-fcs-errors",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:in-fcs-errors", "in_fcs_errors", "in-fcs-errors"
+            ),
         ),
     ] = None
     """
@@ -552,8 +702,15 @@ class CountersContainer2(BaseModel):
     value of 'last-clear'.
     """
     out_octets: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:out-octets", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-octets",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-octets", "out_octets", "out-octets"
+            ),
+        ),
     ] = None
     """
     The total number of octets transmitted out of the
@@ -565,11 +722,16 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     out_unicast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:out-unicast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-unicast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-unicast-pkts",
+                "out_unicast_pkts",
+                "out-unicast-pkts",
+            ),
         ),
     ] = None
     """
@@ -584,11 +746,16 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     out_broadcast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:out-broadcast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-broadcast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-broadcast-pkts",
+                "out_broadcast_pkts",
+                "out-broadcast-pkts",
+            ),
         ),
     ] = None
     """
@@ -603,11 +770,16 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     out_multicast_pkts: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:out-multicast-pkts",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-multicast-pkts",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-multicast-pkts",
+                "out_multicast_pkts",
+                "out-multicast-pkts",
+            ),
         ),
     ] = None
     """
@@ -624,9 +796,14 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     out_discards: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:out-discards", ge=0, le=18446744073709551615
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-discards",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-discards", "out_discards", "out-discards"
+            ),
         ),
     ] = None
     """
@@ -642,8 +819,15 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     out_errors: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:out-errors", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:out-errors",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:out-errors", "out_errors", "out-errors"
+            ),
+        ),
     ] = None
     """
     For packet-oriented interfaces, the number of outbound
@@ -658,11 +842,16 @@ class CountersContainer2(BaseModel):
     'last-clear'.
     """
     carrier_transitions: Annotated[
-        Optional[int],
+        int | None,
         Field(
-            alias="openconfig-interfaces:carrier-transitions",
             ge=0,
             le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:carrier-transitions",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:carrier-transitions",
+                "carrier_transitions",
+                "carrier-transitions",
+            ),
         ),
     ] = None
     """
@@ -671,8 +860,15 @@ class CountersContainer2(BaseModel):
     or the last-clear time, whichever is most recent.
     """
     last_clear: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:last-clear", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:last-clear",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:last-clear", "last_clear", "last-clear"
+            ),
+        ),
     ] = None
     """
     Timestamp of the last time the interface counters were
@@ -693,10 +889,14 @@ class HoldTimeContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     state: Annotated[
-        Optional[StateContainer2], Field(alias="openconfig-interfaces:state")
+        StateContainer2 | None,
+        Field(
+            serialization_alias="openconfig-interfaces:state",
+            validation_alias=AliasChoices("openconfig-interfaces:state", "state"),
+        ),
     ] = None
 
 
@@ -709,9 +909,15 @@ class StateContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
-    name: Annotated[Optional[str], Field(alias="openconfig-interfaces:name")] = None
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
+    name: Annotated[
+        str | None,
+        Field(
+            serialization_alias="openconfig-interfaces:name",
+            validation_alias=AliasChoices("openconfig-interfaces:name", "name"),
+        ),
+    ] = None
     """
     The name of the interface.
 
@@ -746,7 +952,13 @@ class StateContainer(BaseModel):
     the system, it is instantiated with the same name in the
     /interfaces/interface[name]/state list.
     """
-    type: Annotated[str, Field(alias="openconfig-interfaces:type")]
+    type: Annotated[
+        str,
+        Field(
+            serialization_alias="openconfig-interfaces:type",
+            validation_alias=AliasChoices("openconfig-interfaces:type", "type"),
+        ),
+    ]
     """
     The type of the interface.
 
@@ -763,7 +975,13 @@ class StateContainer(BaseModel):
     error-tag 'invalid-value' in this case.
     """
     mtu: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:mtu", ge=0, le=65535)
+        int | None,
+        Field(
+            ge=0,
+            le=65535,
+            serialization_alias="openconfig-interfaces:mtu",
+            validation_alias=AliasChoices("openconfig-interfaces:mtu", "mtu"),
+        ),
     ] = None
     """
     Set the max transmission unit size in octets
@@ -772,7 +990,13 @@ class StateContainer(BaseModel):
     Ethernet interface.
     """
     loopback_mode: Annotated[
-        Optional[bool], Field(alias="openconfig-interfaces:loopback-mode")
+        bool | None,
+        Field(
+            serialization_alias="openconfig-interfaces:loopback-mode",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:loopback-mode", "loopback_mode", "loopback-mode"
+            ),
+        ),
     ] = False
     """
     When set to true, the interface is logically looped back,
@@ -780,7 +1004,13 @@ class StateContainer(BaseModel):
     are received on the same interface.
     """
     description: Annotated[
-        Optional[str], Field(alias="openconfig-interfaces:description")
+        str | None,
+        Field(
+            serialization_alias="openconfig-interfaces:description",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:description", "description"
+            ),
+        ),
     ] = None
     """
     A textual description of the interface.
@@ -810,9 +1040,13 @@ class StateContainer(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    enabled: Annotated[Optional[bool], Field(alias="openconfig-interfaces:enabled")] = (
-        True
-    )
+    enabled: Annotated[
+        bool | None,
+        Field(
+            serialization_alias="openconfig-interfaces:enabled",
+            validation_alias=AliasChoices("openconfig-interfaces:enabled", "enabled"),
+        ),
+    ] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -827,21 +1061,46 @@ class StateContainer(BaseModel):
     changed over SNMP, this leaf is not affected.
     """
     ifindex: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:ifindex", ge=0, le=4294967295)
+        int | None,
+        Field(
+            ge=0,
+            le=4294967295,
+            serialization_alias="openconfig-interfaces:ifindex",
+            validation_alias=AliasChoices("openconfig-interfaces:ifindex", "ifindex"),
+        ),
     ] = None
     """
     System assigned number for each interface.  Corresponds to
     ifIndex object in SNMP Interface MIB
     """
     admin_status: Annotated[
-        AdminStatusLeaf, Field(alias="openconfig-interfaces:admin-status")
+        AdminStatusLeaf,
+        Field(
+            serialization_alias="openconfig-interfaces:admin-status",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:admin-status", "admin_status", "admin-status"
+            ),
+        ),
     ]
     oper_status: Annotated[
-        OperStatusLeaf, Field(alias="openconfig-interfaces:oper-status")
+        OperStatusLeaf,
+        Field(
+            serialization_alias="openconfig-interfaces:oper-status",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:oper-status", "oper_status", "oper-status"
+            ),
+        ),
     ]
     last_change: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:last-change", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:last-change",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:last-change", "last_change", "last-change"
+            ),
+        ),
     ] = None
     """
     This timestamp indicates the time of the last state change
@@ -853,7 +1112,11 @@ class StateContainer(BaseModel):
     the Unix Epoch (Jan 1, 1970 00:00:00 UTC).
     """
     counters: Annotated[
-        Optional[CountersContainer], Field(alias="openconfig-interfaces:counters")
+        CountersContainer | None,
+        Field(
+            serialization_alias="openconfig-interfaces:counters",
+            validation_alias=AliasChoices("openconfig-interfaces:counters", "counters"),
+        ),
     ] = None
 
 
@@ -866,10 +1129,16 @@ class StateContainer3(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     index: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
+        int | None,
+        Field(
+            ge=0,
+            le=4294967295,
+            serialization_alias="openconfig-interfaces:index",
+            validation_alias=AliasChoices("openconfig-interfaces:index", "index"),
+        ),
     ] = 0
     """
     The index of the subinterface, or logical interface number.
@@ -878,7 +1147,13 @@ class StateContainer3(BaseModel):
     default subinterface.
     """
     description: Annotated[
-        Optional[str], Field(alias="openconfig-interfaces:description")
+        str | None,
+        Field(
+            serialization_alias="openconfig-interfaces:description",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:description", "description"
+            ),
+        ),
     ] = None
     """
     A textual description of the interface.
@@ -908,9 +1183,13 @@ class StateContainer3(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    enabled: Annotated[Optional[bool], Field(alias="openconfig-interfaces:enabled")] = (
-        True
-    )
+    enabled: Annotated[
+        bool | None,
+        Field(
+            serialization_alias="openconfig-interfaces:enabled",
+            validation_alias=AliasChoices("openconfig-interfaces:enabled", "enabled"),
+        ),
+    ] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -924,7 +1203,13 @@ class StateContainer3(BaseModel):
     reflected in ifAdminStatus, but if ifAdminStatus is
     changed over SNMP, this leaf is not affected.
     """
-    name: Annotated[Optional[str], Field(alias="openconfig-interfaces:name")] = None
+    name: Annotated[
+        str | None,
+        Field(
+            serialization_alias="openconfig-interfaces:name",
+            validation_alias=AliasChoices("openconfig-interfaces:name", "name"),
+        ),
+    ] = None
     """
     The system-assigned name for the sub-interface.  This MAY
     be a combination of the base interface name and the
@@ -932,21 +1217,46 @@ class StateContainer3(BaseModel):
     system.
     """
     ifindex: Annotated[
-        Optional[int], Field(alias="openconfig-interfaces:ifindex", ge=0, le=4294967295)
+        int | None,
+        Field(
+            ge=0,
+            le=4294967295,
+            serialization_alias="openconfig-interfaces:ifindex",
+            validation_alias=AliasChoices("openconfig-interfaces:ifindex", "ifindex"),
+        ),
     ] = None
     """
     System assigned number for each interface.  Corresponds to
     ifIndex object in SNMP Interface MIB
     """
     admin_status: Annotated[
-        AdminStatusLeaf2, Field(alias="openconfig-interfaces:admin-status")
+        AdminStatusLeaf2,
+        Field(
+            serialization_alias="openconfig-interfaces:admin-status",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:admin-status", "admin_status", "admin-status"
+            ),
+        ),
     ]
     oper_status: Annotated[
-        OperStatusLeaf2, Field(alias="openconfig-interfaces:oper-status")
+        OperStatusLeaf2,
+        Field(
+            serialization_alias="openconfig-interfaces:oper-status",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:oper-status", "oper_status", "oper-status"
+            ),
+        ),
     ]
     last_change: Annotated[
-        Optional[int],
-        Field(alias="openconfig-interfaces:last-change", ge=0, le=18446744073709551615),
+        int | None,
+        Field(
+            ge=0,
+            le=18446744073709551615,
+            serialization_alias="openconfig-interfaces:last-change",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:last-change", "last_change", "last-change"
+            ),
+        ),
     ] = None
     """
     This timestamp indicates the time of the last state change
@@ -958,7 +1268,11 @@ class StateContainer3(BaseModel):
     the Unix Epoch (Jan 1, 1970 00:00:00 UTC).
     """
     counters: Annotated[
-        Optional[CountersContainer2], Field(alias="openconfig-interfaces:counters")
+        CountersContainer2 | None,
+        Field(
+            serialization_alias="openconfig-interfaces:counters",
+            validation_alias=AliasChoices("openconfig-interfaces:counters", "counters"),
+        ),
     ] = None
 
 
@@ -972,17 +1286,27 @@ class SubinterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     index: Annotated[
-        int, Field(alias="openconfig-interfaces:index", ge=0, le=4294967295)
+        int,
+        Field(
+            ge=0,
+            le=4294967295,
+            serialization_alias="openconfig-interfaces:index",
+            validation_alias=AliasChoices("openconfig-interfaces:index", "index"),
+        ),
     ]
     """
     The index number of the subinterface -- used to address
     the logical interface
     """
     state: Annotated[
-        Optional[StateContainer3], Field(alias="openconfig-interfaces:state")
+        StateContainer3 | None,
+        Field(
+            serialization_alias="openconfig-interfaces:state",
+            validation_alias=AliasChoices("openconfig-interfaces:state", "state"),
+        ),
     ] = None
 
 
@@ -996,12 +1320,18 @@ class SubinterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     subinterface: Annotated[
-        Optional[List[SubinterfaceListEntry]],
-        Field(default_factory=list, alias="openconfig-interfaces:subinterface"),
-    ]
+        list[SubinterfaceListEntry] | None,
+        Field(
+            serialization_alias="openconfig-interfaces:subinterface",
+            validate_default=True,
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:subinterface", "subinterface"
+            ),
+        ),
+    ] = []
 
 
 class InterfaceListEntry(BaseModel):
@@ -1013,21 +1343,42 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
-    name: Annotated[str, Field(alias="openconfig-interfaces:name")]
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="openconfig-interfaces:name",
+            validation_alias=AliasChoices("openconfig-interfaces:name", "name"),
+        ),
+    ]
     """
     References the configured name of the interface
     """
     state: Annotated[
-        Optional[StateContainer], Field(alias="openconfig-interfaces:state")
+        StateContainer | None,
+        Field(
+            serialization_alias="openconfig-interfaces:state",
+            validation_alias=AliasChoices("openconfig-interfaces:state", "state"),
+        ),
     ] = None
     hold_time: Annotated[
-        Optional[HoldTimeContainer], Field(alias="openconfig-interfaces:hold-time")
+        HoldTimeContainer | None,
+        Field(
+            serialization_alias="openconfig-interfaces:hold-time",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:hold-time", "hold_time", "hold-time"
+            ),
+        ),
     ] = None
     subinterfaces: Annotated[
-        Optional[SubinterfacesContainer],
-        Field(alias="openconfig-interfaces:subinterfaces"),
+        SubinterfacesContainer | None,
+        Field(
+            serialization_alias="openconfig-interfaces:subinterfaces",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:subinterfaces", "subinterfaces"
+            ),
+        ),
     ] = None
 
 
@@ -1041,12 +1392,18 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     interface: Annotated[
-        Optional[List[InterfaceListEntry]],
-        Field(default_factory=list, alias="openconfig-interfaces:interface"),
-    ]
+        list[InterfaceListEntry] | None,
+        Field(
+            serialization_alias="openconfig-interfaces:interface",
+            validate_default=True,
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:interface", "interface"
+            ),
+        ),
+    ] = []
 
 
 class Model(BaseModel):
@@ -1069,10 +1426,16 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = "http://openconfig.net/yang/interfaces"
-    prefix: ClassVar[Optional[str]] = "oc-if"
+    namespace: ClassVar[str | None] = "http://openconfig.net/yang/interfaces"
+    prefix: ClassVar[str | None] = "oc-if"
     interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="openconfig-interfaces:interfaces")
+        InterfacesContainer | None,
+        Field(
+            serialization_alias="openconfig-interfaces:interfaces",
+            validation_alias=AliasChoices(
+                "openconfig-interfaces:interfaces", "interfaces"
+            ),
+        ),
     ] = None
 
 

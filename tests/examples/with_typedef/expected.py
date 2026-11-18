@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class InterfaceListEntry(BaseModel):
@@ -14,19 +14,26 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
-    name: Annotated[str, Field(alias="interfaces:name")]
+    prefix: ClassVar[str | None] = "if"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="interfaces:name",
+            validation_alias=AliasChoices("interfaces:name", "name"),
+        ),
+    ]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     address: Annotated[
         str,
         Field(
-            alias="interfaces:address",
             pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
+            serialization_alias="interfaces:address",
+            validation_alias=AliasChoices("interfaces:address", "address"),
         ),
     ]
     """
@@ -35,14 +42,23 @@ class InterfaceListEntry(BaseModel):
     subnet_mask: Annotated[
         str,
         Field(
-            alias="interfaces:subnet-mask",
             pattern="^(?=^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$).*$",
+            serialization_alias="interfaces:subnet-mask",
+            validation_alias=AliasChoices(
+                "interfaces:subnet-mask", "subnet_mask", "subnet-mask"
+            ),
         ),
     ]
     """
     Interface subnet mask. Example value: 255.255.255.0
     """
-    enabled: Annotated[Optional[bool], Field(alias="interfaces:enabled")] = False
+    enabled: Annotated[
+        bool | None,
+        Field(
+            serialization_alias="interfaces:enabled",
+            validation_alias=AliasChoices("interfaces:enabled", "enabled"),
+        ),
+    ] = False
     """
     Enable or disable the interface. Example value: true
     """
@@ -53,14 +69,18 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interface: Annotated[
-        Optional[List[InterfaceListEntry]],
-        Field(default_factory=list, alias="interfaces:interface"),
-    ]
+        list[InterfaceListEntry] | None,
+        Field(
+            serialization_alias="interfaces:interface",
+            validate_default=True,
+            validation_alias=AliasChoices("interfaces:interface", "interface"),
+        ),
+    ] = []
 
 
 class Model(BaseModel):
@@ -83,12 +103,16 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interfaces: Annotated[
-        Optional[InterfacesContainer], Field(alias="interfaces:interfaces")
+        InterfacesContainer | None,
+        Field(
+            serialization_alias="interfaces:interfaces",
+            validation_alias=AliasChoices("interfaces:interfaces", "interfaces"),
+        ),
     ] = None
 
 

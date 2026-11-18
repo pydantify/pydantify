@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class InterfacesListEntry(BaseModel):
@@ -14,15 +14,27 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
-    name: Annotated[str, Field(alias="interfaces:name")]
+    prefix: ClassVar[str | None] = "if"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="interfaces:name",
+            validation_alias=AliasChoices("interfaces:name", "name"),
+        ),
+    ]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
-    ip: Annotated[Optional[str], Field(alias="interfaces:ip")] = None
+    ip: Annotated[
+        str | None,
+        Field(
+            serialization_alias="interfaces:ip",
+            validation_alias=AliasChoices("interfaces:ip", "ip"),
+        ),
+    ] = None
     """
     Interface IP
     """
@@ -37,18 +49,28 @@ class NamespacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-namespaces"
     )
-    prefix: ClassVar[Optional[str]] = "ns"
-    name: Annotated[str, Field(alias="namespaces:name")]
+    prefix: ClassVar[str | None] = "ns"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="namespaces:name",
+            validation_alias=AliasChoices("namespaces:name", "name"),
+        ),
+    ]
     """
     Interface name. Example value: GigabitEthernet 0/0/0
     """
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]],
-        Field(default_factory=list, alias="interfaces:interfaces"),
-    ]
+        list[InterfacesListEntry] | None,
+        Field(
+            serialization_alias="interfaces:interfaces",
+            validate_default=True,
+            validation_alias=AliasChoices("interfaces:interfaces", "interfaces"),
+        ),
+    ] = []
 
 
 class ConfigurationContainer(BaseModel):
@@ -60,18 +82,28 @@ class ConfigurationContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: ClassVar[Optional[str]] = "configuration"
-    devicename: Annotated[str, Field(alias="configuration:devicename")]
+    prefix: ClassVar[str | None] = "configuration"
+    devicename: Annotated[
+        str,
+        Field(
+            serialization_alias="configuration:devicename",
+            validation_alias=AliasChoices("configuration:devicename", "devicename"),
+        ),
+    ]
     """
     Device name. Example value: sw01
     """
     namespaces: Annotated[
-        Optional[List[NamespacesListEntry]],
-        Field(default_factory=list, alias="namespaces:namespaces"),
-    ]
+        list[NamespacesListEntry] | None,
+        Field(
+            serialization_alias="namespaces:namespaces",
+            validate_default=True,
+            validation_alias=AliasChoices("namespaces:namespaces", "namespaces"),
+        ),
+    ] = []
 
 
 class Model(BaseModel):
@@ -94,12 +126,18 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://pydantify.github.io/ns/yang/pydantify-multimodel-configuration"
     )
-    prefix: ClassVar[Optional[str]] = "configuration"
+    prefix: ClassVar[str | None] = "configuration"
     configuration: Annotated[
-        Optional[ConfigurationContainer], Field(alias="configuration:configuration")
+        ConfigurationContainer | None,
+        Field(
+            serialization_alias="configuration:configuration",
+            validation_alias=AliasChoices(
+                "configuration:configuration", "configuration"
+            ),
+        ),
     ] = None
 
 

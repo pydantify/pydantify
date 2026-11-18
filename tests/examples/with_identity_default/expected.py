@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class InterfacesListEntry(BaseModel):
@@ -14,19 +14,37 @@ class InterfacesListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
-    name: Annotated[str, Field(alias="interfaces:name")]
+    prefix: ClassVar[str | None] = "if"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="interfaces:name",
+            validation_alias=AliasChoices("interfaces:name", "name"),
+        ),
+    ]
     """
     Interface name
     """
-    ip: Annotated[Optional[List[str]], Field(alias="interfaces:ip")] = []
+    ip: Annotated[
+        list[str] | None,
+        Field(
+            serialization_alias="interfaces:ip",
+            validation_alias=AliasChoices("interfaces:ip", "ip"),
+        ),
+    ] = []
     """
     List of interface IPs
     """
-    tpid: Annotated[Optional[str], Field(alias="interfaces:tpid")] = "TPID_0X8100"
+    tpid: Annotated[
+        str | None,
+        Field(
+            serialization_alias="interfaces:tpid",
+            validation_alias=AliasChoices("interfaces:tpid", "tpid"),
+        ),
+    ] = "TPID_0X8100"
     """
     Optionally set the tag protocol identifier field (TPID) that
     is accepted on the VLAN
@@ -53,14 +71,18 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interfaces: Annotated[
-        Optional[List[InterfacesListEntry]],
-        Field(default_factory=list, alias="interfaces:interfaces"),
-    ]
+        list[InterfacesListEntry] | None,
+        Field(
+            serialization_alias="interfaces:interfaces",
+            validate_default=True,
+            validation_alias=AliasChoices("interfaces:interfaces", "interfaces"),
+        ),
+    ] = []
 
 
 if __name__ == "__main__":

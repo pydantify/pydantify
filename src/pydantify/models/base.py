@@ -4,7 +4,7 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Type
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Type, cast
 
 from datamodel_code_generator.reference import FieldNameResolver
 from pyang.statements import (
@@ -81,7 +81,7 @@ class Node(ABC):
     _name_count: Dict[str, int] = (
         dict()
     )  # keeps track of the number of models with the same name
-    alias_mapping: Dict[str, str] = dict()
+    alias_mapping: Dict[str, list[str]] = dict()
     data_type: Literal["config", "state"] | None
     strip_namespace: bool
 
@@ -140,9 +140,11 @@ class Node(ABC):
             if self.strip_namespace
             else f"{self.raw_statement.i_module.arg}:{self.arg}"
         )
-        self.alias_mapping[qualified_name] = FieldNameResolver(
-            snake_case_field=True
-        ).get_valid_name(self.arg)
+        valid_name = FieldNameResolver(snake_case_field=True).get_valid_name(self.arg)
+        if valid_name == self.arg:
+            self.alias_mapping[qualified_name] = [self.arg]
+        else:
+            self.alias_mapping[qualified_name] = [valid_name, self.arg]
         return qualified_name
 
     @abstractmethod
@@ -195,8 +197,9 @@ class Node(ABC):
         if isinstance(base, Node) or isinstance(base, Enum):
             raise Exception(f"Base model needs to be a class. Got {base}")
 
-        output_model: Type[BaseModel] = create_model(
-            self.name(), __base__=(base,), **fields
+        output_model: Type[BaseModel] | Type[RootModel] = cast(
+            Type[BaseModel] | Type[RootModel],
+            create_model(self.name(), __base__=(base,), **fields),
         )
         output_model.__doc__ = self.description or ""
         return output_model

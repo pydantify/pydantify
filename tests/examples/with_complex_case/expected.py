@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List, Optional, Union
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class DailyCase(BaseModel):
@@ -10,15 +10,28 @@ class DailyCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     daily: Annotated[
-        Optional[List[None]],
-        Field(alias="interfaces:daily", max_length=1, min_length=1),
+        list[None] | None,
+        Field(
+            max_length=1,
+            min_length=1,
+            serialization_alias="interfaces:daily",
+            validation_alias=AliasChoices("interfaces:daily", "daily"),
+        ),
     ] = None
-    time_of_day: Annotated[Optional[str], Field(alias="interfaces:time-of-day")] = "1am"
+    time_of_day: Annotated[
+        str | None,
+        Field(
+            serialization_alias="interfaces:time-of-day",
+            validation_alias=AliasChoices(
+                "interfaces:time-of-day", "time_of_day", "time-of-day"
+            ),
+        ),
+    ] = "1am"
 
 
 class IntervalCase(BaseModel):
@@ -26,12 +39,18 @@ class IntervalCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interval: Annotated[
-        Optional[int], Field(alias="interfaces:interval", ge=0, le=65535)
+        int | None,
+        Field(
+            ge=0,
+            le=65535,
+            serialization_alias="interfaces:interval",
+            validation_alias=AliasChoices("interfaces:interval", "interval"),
+        ),
     ] = 30
 
 
@@ -40,13 +59,18 @@ class ManualCase(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     manual: Annotated[
-        Optional[List[None]],
-        Field(alias="interfaces:manual", max_length=1, min_length=1),
+        list[None] | None,
+        Field(
+            max_length=1,
+            min_length=1,
+            serialization_alias="interfaces:manual",
+            validation_alias=AliasChoices("interfaces:manual", "manual"),
+        ),
     ] = None
 
 
@@ -70,13 +94,16 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interfaces"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     how: Annotated[
-        Optional[Union[IntervalCase, DailyCase, ManualCase]],
-        Field(alias="interfaces:how"),
+        IntervalCase | DailyCase | ManualCase | None,
+        Field(
+            serialization_alias="interfaces:how",
+            validation_alias=AliasChoices("interfaces:how", "how"),
+        ),
     ] = None
 
 

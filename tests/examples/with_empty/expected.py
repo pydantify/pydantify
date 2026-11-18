@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Annotated, ClassVar, List, Optional
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class InterfaceContainer(BaseModel):
@@ -14,13 +14,18 @@ class InterfaceContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     primary: Annotated[
-        Optional[List[None]],
-        Field(alias="interface:primary", max_length=1, min_length=1),
+        list[None] | None,
+        Field(
+            max_length=1,
+            min_length=1,
+            serialization_alias="interface:primary",
+            validation_alias=AliasChoices("interface:primary", "primary"),
+        ),
     ] = None
     """
     primary IP
@@ -47,12 +52,16 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-interface"
     )
-    prefix: ClassVar[Optional[str]] = "if"
+    prefix: ClassVar[str | None] = "if"
     interface: Annotated[
-        Optional[InterfaceContainer], Field(alias="interface:interface")
+        InterfaceContainer | None,
+        Field(
+            serialization_alias="interface:interface",
+            validation_alias=AliasChoices("interface:interface", "interface"),
+        ),
     ] = None
 
 

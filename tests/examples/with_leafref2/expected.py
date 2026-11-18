@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, ClassVar, List, Optional, Union
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, RootModel
 
 
 class IndexLeaf(RootModel[int]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: Annotated[int, Field(ge=0, le=255)]
@@ -26,11 +25,19 @@ class KeyListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
     )
-    prefix: ClassVar[Optional[str]] = "keychains"
-    index: Annotated[int, Field(alias="keychains:index", ge=0, le=255)]
+    prefix: ClassVar[str | None] = "keychains"
+    index: Annotated[
+        int,
+        Field(
+            ge=0,
+            le=255,
+            serialization_alias="keychains:index",
+            validation_alias=AliasChoices("keychains:index", "index"),
+        ),
+    ]
     """
     Each key in a keychain requires a unique identifier, the index value specifies this identifier
     """
@@ -47,7 +54,6 @@ class EnumerationEnum2(Enum):
 
 class KeychainTypeType(RootModel[EnumerationEnum]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: EnumerationEnum
@@ -55,7 +61,6 @@ class KeychainTypeType(RootModel[EnumerationEnum]):
 
 class TypeLeaf(RootModel[KeychainTypeType]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: KeychainTypeType
@@ -75,30 +80,54 @@ class KeychainListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
     )
-    prefix: ClassVar[Optional[str]] = "keychains"
-    name: Annotated[str, Field(alias="keychains:name")]
+    prefix: ClassVar[str | None] = "keychains"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="keychains:name",
+            validation_alias=AliasChoices("keychains:name", "name"),
+        ),
+    ]
     """
     The user configured name for the keychain
     """
-    type: Annotated[Optional[TypeLeaf], Field(alias="keychains:type")] = None
+    type: Annotated[
+        TypeLeaf | None,
+        Field(
+            serialization_alias="keychains:type",
+            validation_alias=AliasChoices("keychains:type", "type"),
+        ),
+    ] = None
     """
     Specifies the intended use of the keychain
 
      The type constrains the set of crypto algorithms that are available to use with each key in the keychain. It is also used to ensure that this keychain is only used by protocols for which it is intended.
     """
     active_key_for_send: Annotated[
-        Optional[Union[EnumerationEnum2, IndexLeaf]],
-        Field(alias="keychains:active-key-for-send"),
+        EnumerationEnum2 | IndexLeaf | None,
+        Field(
+            serialization_alias="keychains:active-key-for-send",
+            validation_alias=AliasChoices(
+                "keychains:active-key-for-send",
+                "active_key_for_send",
+                "active-key-for-send",
+            ),
+        ),
     ] = None
     """
     Provides the key index of the currently active Keychain key
     """
     key: Annotated[
-        Optional[List[KeyListEntry]], Field(default_factory=list, alias="keychains:key")
-    ]
+        list[KeyListEntry] | None,
+        Field(
+            serialization_alias="keychains:key",
+            validate_default=True,
+            validation_alias=AliasChoices("keychains:key", "key"),
+        ),
+    ] = []
 
 
 class Model(BaseModel):
@@ -121,14 +150,18 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[Optional[str]] = (
+    namespace: ClassVar[str | None] = (
         "http://ultraconfig.com.au/ns/yang/ultraconfig-keychains"
     )
-    prefix: ClassVar[Optional[str]] = "keychains"
+    prefix: ClassVar[str | None] = "keychains"
     keychain: Annotated[
-        Optional[List[KeychainListEntry]],
-        Field(default_factory=list, alias="keychains:keychain"),
-    ]
+        list[KeychainListEntry] | None,
+        Field(
+            serialization_alias="keychains:keychain",
+            validate_default=True,
+            validation_alias=AliasChoices("keychains:keychain", "keychain"),
+        ),
+    ] = []
 
 
 if __name__ == "__main__":

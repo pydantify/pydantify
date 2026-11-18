@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Union, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Union, Optional, cast, Type
 
 from pyang.statements import (
     ChoiceStatement,
@@ -47,12 +47,12 @@ class TypeDefNode(Node):
     def to_pydantic_model(self) -> type[RootModel]:
         """Generates the output class representing this Typedef."""
         base_type = TypeResolver.resolve_statement(self.raw_statement)
-        output_model: type[RootModel] = create_model(
+        output_model = create_model(
             self.name(),
             __base__=(RootModel[base_type],),  # type: ignore[misc]
         )
         output_model.__doc__ = self.description or ""
-        return output_model
+        return cast(type[RootModel], output_model)
 
 
 @NodeFactory.register_statement_class(["leaf"])
@@ -88,12 +88,18 @@ class LeafNode(Node):
 
         output_model: type[BaseModel] | type[RootModel]
         if base is not None:
-            output_model = create_model(
-                self.name(),
-                __base__=(RootModel[base],),  # type: ignore[misc]
+            output_model = cast(
+                type[RootModel],
+                create_model(
+                    self.name(),
+                    __base__=(RootModel[base],),  # type: ignore[misc]
+                ),
             )
         else:
-            output_model = create_model(self.name(), __base__=(BaseModel,), **fields)
+            output_model = cast(
+                type[BaseModel],
+                create_model(self.name(), __base__=(BaseModel,), **fields),
+            )
         output_model.__doc__ = self.description or ""
         return output_model
 
@@ -117,11 +123,9 @@ class CaseNode(Node):
     def to_pydantic_model(self) -> type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        output_model: type[BaseModel] = create_model(
-            self.name(), __base__=(BaseModel,), **fields
-        )
+        output_model = create_model(self.name(), __base__=(BaseModel,), **fields)
         output_model.__doc__ = self.description or ""
-        return output_model
+        return cast(type[BaseModel], output_model)
 
 
 @NodeFactory.register_statement_class(["choice"])
@@ -215,11 +219,9 @@ class ListNode(Node):
     def to_pydantic_model(self) -> type[BaseModel]:
         """Generates the output class representing this node."""
         fields: Dict[str, Any] = self._children_to_fields()
-        output_model: type[BaseModel] = create_model(
-            self.name(), __base__=(BaseModel,), **fields
-        )
+        output_model = create_model(self.name(), __base__=(BaseModel,), **fields)
         output_model.__doc__ = self.description or ""
-        return output_model
+        return cast(type[BaseModel], output_model)
 
 
 @NodeFactory.register_statement_class(["leaf-list"])
@@ -262,12 +264,18 @@ class LeafListNode(Node):
 
         output_model: type[BaseModel] | type[RootModel]
         if base is not None:
-            output_model = create_model(
-                self.name(),
-                __base__=(RootModel[base],),  # type: ignore[misc]
+            output_model = cast(
+                type[RootModel],
+                create_model(
+                    self.name(),
+                    __base__=(RootModel[base],),  # type: ignore[misc]
+                ),
             )
         else:
-            output_model = create_model(self.name(), __base__=(BaseModel,), **fields)
+            output_model = cast(
+                type[BaseModel],
+                create_model(self.name(), __base__=(BaseModel,), **fields),
+            )
         output_model.__doc__ = self.description or ""
         return output_model
 
@@ -321,9 +329,7 @@ class ModelRoot:
                 ),
                 self.root_node.arg: self.root_node.get_output_class().to_field(),
             }
-        output_model: type[BaseModel] = create_model(
-            "Model", __base__=(BaseModel,), **fields
-        )
+        output_model = create_model("Model", __base__=(BaseModel,), **fields)
         output_model.__doc__ = """
 Initialize an instance of this class and serialize it to JSON; this results in a RESTCONF payload.
 
@@ -338,4 +344,4 @@ Serialziation:
 - `exclude_defaults=True` omits fields set to their default value (recommended)
 - `by_alias=True` ensures qualified names are used (necessary)
 """
-        return output_model if fields else None
+        return cast(type[BaseModel], output_model) if fields else None
