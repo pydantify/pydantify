@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, ClassVar, List
+from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, RootModel
 
 
 class EnumerationEnum(Enum):
@@ -13,7 +13,6 @@ class EnumerationEnum(Enum):
 
 class LinkUpDownTrapEnableLeaf(RootModel[EnumerationEnum]):
     model_config = ConfigDict(
-        populate_by_name=True,
         regex_engine="python-re",
     )
     root: EnumerationEnum
@@ -48,9 +47,15 @@ class InterfaceListEntry(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    prefix: ClassVar[str] = "if"
-    name: Annotated[str, Field(alias="ietf-interfaces:name")]
+    namespace: ClassVar[str | None] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: ClassVar[str | None] = "if"
+    name: Annotated[
+        str,
+        Field(
+            serialization_alias="ietf-interfaces:name",
+            validation_alias=AliasChoices("ietf-interfaces:name", "name"),
+        ),
+    ]
     """
     The name of the interface.
 
@@ -81,7 +86,13 @@ class InterfaceListEntry(BaseModel):
     the system, it is instantiated with the same name in the
     /interface-state/interface list.
     """
-    description: Annotated[str, Field(alias="ietf-interfaces:description")] = None
+    description: Annotated[
+        str | None,
+        Field(
+            serialization_alias="ietf-interfaces:description",
+            validation_alias=AliasChoices("ietf-interfaces:description", "description"),
+        ),
+    ] = None
     """
     A textual description of the interface.
 
@@ -110,7 +121,13 @@ class InterfaceListEntry(BaseModel):
     be mapped to the 'description' leaf in the 'running'
     datastore.
     """
-    type: Annotated[str, Field(alias="ietf-interfaces:type")]
+    type: Annotated[
+        str,
+        Field(
+            serialization_alias="ietf-interfaces:type",
+            validation_alias=AliasChoices("ietf-interfaces:type", "type"),
+        ),
+    ]
     """
     The type of the interface.
 
@@ -126,7 +143,13 @@ class InterfaceListEntry(BaseModel):
     A NETCONF server MUST reply with an rpc-error with the
     error-tag 'invalid-value' in this case.
     """
-    enabled: Annotated[bool, Field(alias="ietf-interfaces:enabled")] = True
+    enabled: Annotated[
+        bool | None,
+        Field(
+            serialization_alias="ietf-interfaces:enabled",
+            validation_alias=AliasChoices("ietf-interfaces:enabled", "enabled"),
+        ),
+    ] = True
     """
     This leaf contains the configured, desired state of the
     interface.
@@ -143,8 +166,15 @@ class InterfaceListEntry(BaseModel):
     changed over SNMP, this leaf is not affected.
     """
     link_up_down_trap_enable: Annotated[
-        LinkUpDownTrapEnableLeaf,
-        Field(alias="ietf-interfaces:link-up-down-trap-enable"),
+        LinkUpDownTrapEnableLeaf | None,
+        Field(
+            serialization_alias="ietf-interfaces:link-up-down-trap-enable",
+            validation_alias=AliasChoices(
+                "ietf-interfaces:link-up-down-trap-enable",
+                "link_up_down_trap_enable",
+                "link-up-down-trap-enable",
+            ),
+        ),
     ] = None
 
 
@@ -157,12 +187,16 @@ class InterfacesContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    prefix: ClassVar[str] = "if"
+    namespace: ClassVar[str | None] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: ClassVar[str | None] = "if"
     interface: Annotated[
-        List[InterfaceListEntry],
-        Field(default_factory=list, alias="ietf-interfaces:interface"),
-    ]
+        list[InterfaceListEntry] | None,
+        Field(
+            serialization_alias="ietf-interfaces:interface",
+            validate_default=True,
+            validation_alias=AliasChoices("ietf-interfaces:interface", "interface"),
+        ),
+    ] = []
 
 
 class Model(BaseModel):
@@ -185,10 +219,14 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
-    prefix: ClassVar[str] = "if"
+    namespace: ClassVar[str | None] = "urn:ietf:params:xml:ns:yang:ietf-interfaces"
+    prefix: ClassVar[str | None] = "if"
     interfaces: Annotated[
-        InterfacesContainer, Field(alias="ietf-interfaces:interfaces")
+        InterfacesContainer | None,
+        Field(
+            serialization_alias="ietf-interfaces:interfaces",
+            validation_alias=AliasChoices("ietf-interfaces:interfaces", "interfaces"),
+        ),
     ] = None
 
 

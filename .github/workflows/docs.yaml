@@ -6,6 +6,7 @@ on:
     paths:
       - "docs/**"
       - "mkdocs.yml"
+      - "examples/**"
       - ".github/workflows/docs.yaml"
   release:
     types: [published]

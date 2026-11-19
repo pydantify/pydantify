@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 
 class EndpointContainer(BaseModel):
@@ -14,17 +14,39 @@ class EndpointContainer(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://pydantify.github.io/ns/yang/pydantify-endpoint"
-    prefix: ClassVar[str] = "ep"
-    address: Annotated[str, Field(alias="my-endpoint:address")]
+    namespace: ClassVar[str | None] = (
+        "http://pydantify.github.io/ns/yang/pydantify-endpoint"
+    )
+    prefix: ClassVar[str | None] = "ep"
+    address: Annotated[
+        str,
+        Field(
+            serialization_alias="my-endpoint:address",
+            validation_alias=AliasChoices("my-endpoint:address", "address"),
+        ),
+    ]
     """
     Endpoint address. IP or FQDN
     """
-    port: Annotated[int, Field(alias="my-endpoint:port", ge=1, le=65535)]
+    port: Annotated[
+        int,
+        Field(
+            ge=1,
+            le=65535,
+            serialization_alias="my-endpoint:port",
+            validation_alias=AliasChoices("my-endpoint:port", "port"),
+        ),
+    ]
     """
     Port number between 1 and 65535
     """
-    description: Annotated[str, Field(alias="my-endpoint:description")] = None
+    description: Annotated[
+        str | None,
+        Field(
+            serialization_alias="my-endpoint:description",
+            validation_alias=AliasChoices("my-endpoint:description", "description"),
+        ),
+    ] = None
     """
     Endpoint description
     """
@@ -50,9 +72,17 @@ class Model(BaseModel):
         populate_by_name=True,
         regex_engine="python-re",
     )
-    namespace: ClassVar[str] = "http://pydantify.github.io/ns/yang/pydantify-endpoint"
-    prefix: ClassVar[str] = "ep"
-    endpoint: Annotated[EndpointContainer, Field(alias="my-endpoint:endpoint")] = None
+    namespace: ClassVar[str | None] = (
+        "http://pydantify.github.io/ns/yang/pydantify-endpoint"
+    )
+    prefix: ClassVar[str | None] = "ep"
+    endpoint: Annotated[
+        EndpointContainer | None,
+        Field(
+            serialization_alias="my-endpoint:endpoint",
+            validation_alias=AliasChoices("my-endpoint:endpoint", "endpoint"),
+        ),
+    ] = None
 
 
 if __name__ == "__main__":
