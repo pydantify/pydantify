@@ -1418,7 +1418,7 @@ wheels = [
 
 [[package]]
 name = "pydantify"
-version = "0.10.0b1"
+version = "0.11.0"
 source = { editable = "." }
 dependencies = [
     { name = "datamodel-code-generator", extra = ["ruff"] },
